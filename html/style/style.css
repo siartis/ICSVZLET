@@ -1,0 +1,243 @@
+body {
+	margin: 0;
+	padding: 0;
+	font-family: "Tahoma";
+}
+
+
+#header {
+	width: 100%;
+	height: 105px;
+	background: #696666;
+}
+
+.logo {
+	width: 170px;
+	height: 105px;
+}
+
+
+/* Стили для гиперссылок */
+
+a:hover {
+	text-decoration: none;
+	background: #696666;
+/*	background: #9e9696;*/
+	color: white;
+} /*наведение*/
+
+a {
+	/*text-decoration: none;*/
+	color: black;
+}
+
+.logoText {
+	font-size: 16;
+	font-weight: bold;
+	color: white;
+	text-align: center;
+	margin-left: 150px;
+	margin-right: 70px;
+	margin-top: -73px;
+}
+
+.footerText {
+	font-size: 16;
+	width: 100%;
+	height: 20px;
+	background: #696666;
+	color: white;
+	text-align: center;
+}
+
+.Title {
+	text-align: center;
+}
+
+
+/*Различные инструкции, которые должны быть статичными*/
+#instructions {
+	margin-left: 100px;
+	margin-right: 100px;
+	text-align: justify;
+	padding: 20px;
+	font-family: Tahoma;
+	font-size: 16;
+}
+
+#middlePartPage {
+	margin-left: 100px;
+	margin-right: 100px;
+	text-align: justify;
+	padding: 20px;
+	font-family: Tahoma;
+	font-size: 16;
+}
+
+#DynamicPartPage {
+	margin-left: 100px;
+	margin-right: 100px;
+	text-align: justify;
+	padding: 20px;
+	font-size: 16;	
+}
+
+
+#ProjectName {
+	margin-left: 130px;
+	margin-right: 130px;
+	font-size: 16;
+	font-style: oblique;
+	text-align: center;
+}
+
+#UniversityName {
+	text-align: center;
+	font-size: 16pt; 
+	font-weight: 700; 
+	margin-left: 50px;
+	margin-right: 50px
+}
+
+
+.framing {
+	text-align: center;
+	font-size: 16;
+	margin-left: 80px;
+	margin-right: 80px;
+	font-weight: 700;
+	text-align: center;
+}
+
+#monitoringResponsible {
+	text-align: center;
+	font-size: 16;
+	font-weight: 700;
+	margin-left: 100px;
+	margin-right: 100px;
+	text-align: center;	
+}
+
+.headline{
+	text-align: center;
+	font-size: 18;
+	font-weight: 700;
+	margin-left: 100px;
+	margin-right: 100px;
+	text-align: center;
+}
+
+#currentDate {
+	text-align: right;
+	margin-right: 50px;
+	font-size: 18;
+	font-style: italic;
+}
+
+#currentUser {
+	text-align: right;
+	margin-right: 50px;
+	font-size: 18;
+	font-style: italic;
+}
+
+#currentPersonName {
+	text-align: right;
+	margin-right: 50px;
+	font-size: 18;
+	font-style: italic;
+}
+
+
+#currentSchoolName {
+	text-align: right;
+	margin-right: 50px;
+	font-size: 18;
+	font-style: italic;
+}
+
+#studentAppeal {
+	margin-left: 100px;
+	margin-right: 100px;
+	text-align: center;
+	padding: 20px;
+	font-family: Tahoma;
+	font-size: 16;
+}
+
+/*Текстовые поля для ввода данных*/
+.inputPole {
+    border-radius: 5px;
+    /*border: 1px solid #ccc;*/
+    border: 1px solid #ccc;
+    padding: 3px 5px;
+    /*color: #a6a6a6;*/
+    color: #828080;
+    /*box-shadow: 0px 0px 5px gray;*/
+    box-shadow: 0px 0px 5px black;
+    transition: all 500ms ease-in;
+    
+    /*Парамметры стиля нахождения на странице*/
+    width: 800; 
+    height: 45; 
+    font-size: 20pt
+}
+.inputPole:-webkit-input-placeholder {
+	color: black;
+}
+.inputPole::-moz-placeholder {
+	color: black;
+}
+
+
+
+
+
+
+
+/*Стиль для списка*/
+.square {
+  margin: 0;
+  counter-reset: li;
+  list-style: none;
+  background:#E8E8E8;
+  padding: 10px;
+}
+.square li {
+  position: relative;
+  margin: 0 0 10px 2em;
+  padding: 4px 8px;
+  border-top: 2px solid #787A77;
+  transition: .3s linear;
+  text-align: left;
+}
+.square li:last-child {
+  margin-bottom: 0;
+}
+.square li:before {
+  content: counter(li);
+  counter-increment: li;
+  position: absolute;
+  top: -2px;
+  left: -2em;
+  width: 2em;
+  box-sizing: border-box;
+  margin-right: 8px;
+  padding: 4px;
+  border-top: 2px solid #787A77;
+  border-left: 2px solid transparent;
+  border-right: 2px solid transparent;
+  border-bottom: 2px solid transparent;
+  background: #787A77;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+  transition: .3s linear;
+}
+.square li:hover {
+  border-top: 2px solid #389F70;
+}
+.square li:hover:before {
+  border: 2px solid #389F70;
+  background:  #98EABA;
+}

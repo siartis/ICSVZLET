@@ -1,0 +1,17 @@
+.vertical {
+	/*-webkit-transform: rotate(90deg);*/
+/*	-o-transform: rotate(90deg);*/
+	writing-mode: tb-rl;
+	-moz-transform: rotate(180deg);
+	width: 50px;
+	align: left;
+	/*word-wrap: normal;*/
+	font-family: Tahoma;
+	font-size: 12pt;
+	text-align: left;
+	vertical-align: top;
+	
+	margin-top: 30px;
+	
+	border: 2px solid yellow;
+}
