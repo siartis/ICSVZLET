@@ -1,0 +1,334 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1251">
+<title>Конкурс исследовательских проектов "Взлет" | Отправка на конкурс "ВЗЛЕТ"</title>
+
+
+<script type="text/javascript" src="js/Ajax.js"></script>
+<script type="text/javascript" src="js/Base64.js"></script>
+<script type="text/javascript" src="js/script.js"></script>
+
+<script>
+
+var user;
+var themeCode = 0;
+function onLoad()
+{
+	themeCode = eval(param("themeCode"));
+	if (typeof themeCode == "undefined") {
+		document.getElementById("qqq").innerHTML = "Не выбрана тема проекта. Дальнейшая работа невозможна!";
+		alert("Не выбрана тема проекта. Дальнейшая работа невозможна!");
+	}
+	else {
+		user = Ajax.runEval("/script/login.exe?user");
+		
+		//Текущий пользователь
+		setCurrentUser();
+		
+		//Если ученик, учитель ил иконсультант
+		if ((eval(user.userStatusCode) == 2) || ((eval(user.userStatusCode) == 3)) || (eval(user.userStatusCode) == 4)) {
+			getOptions();
+		}
+		else {
+			alert("Вы не имеете доступа к этому разделу!\nДоступ к этому разделу имеет только консультант, учитель и ученик.");
+			location.replace("/login?&/setAssessmentList.html?themeCode=" + themeCode);
+		}
+	}
+}
+
+function getOptions()
+{
+	var answers = Ajax.runEval("/script/conkurs.exe?getAssessmentList");
+	
+	var result = "<div align=\"center\">";
+	result += "<table border=\"1\" width=\"80%\" style=\"background: white;\">";
+	result += "<tr>";
+	result += "<td align=\"left\" valign=\"top\">" + "№п/п" + "</td>";
+	result += "<td align=\"left\" valign=\"top\">" + "Критерий" + "</td>";
+	result += "<td align=\"left\" valign=\"top\">" + "Ответ" + "</td>";
+	result += "<td align=\"left\" valign=\"top\">" + "Краткое обоснование" + "</td>";
+	
+	for(i = 0; i < answers.length; i++) {
+		result += "<tr>";
+		result += "<td align=\"left\" valign=\"top\">" + String(i+1) + "</td>";
+		result += "<td align=\"left\" valign=\"top\">" + answers[i].criteriaDistQuestionName + "</td>";
+		
+		//Текстовое поле для ввода ответа
+		result += "<td align=\"left\" valign=\"top\">" + "<input type=\"text\" id=\"answ" + (i+1) + "\" size=\"20\">" + "</td>";
+
+		//Тектовое поле для ввода обоснования
+		result += "<td align=\"left\" valign=\"top\">" + "<textarea rows=\"3\" id=\"comment" + (i+1) + "\" cols=\"20\"></textarea>" + "</td>";
+		
+	}
+	result += "</table>";
+	result += "</div>";
+	
+	result += "<br>";
+	result += "<p></p>";
+	result += "<p><a align=\"right\" href=\"javascript:setEval();\">Отправить</a></p>"
+	document.getElementById("qqq").innerHTML = result;
+}
+
+
+function setEval()
+{
+	var answ;
+	var comment;
+	var query = "setAssessmentList&" + themeCode + "&";
+	var res = "";
+	for(var i = 1; i <= 16; i++) {
+		answ = document.getElementById("answ" + i).value;
+		query += answ;
+		query += "&";
+		comment = document.getElementById("comment" + i).value;
+		query += Base64.encode(comment);
+		
+		if (i != 16)  {
+			query += "&";
+		}
+	}
+	alert(query);
+	var result = Ajax.runEval("/script/conkurs.exe", query);
+	switch (eval(result.errorCode)) {
+		case 0:
+			alert("Успех!");
+		break;
+		
+		case 2:
+			alert("Несуществующая тема!");
+		break;
+		
+		default:
+			alert("Ошибка!");
+		break;
+	}
+}
+
+
+function login()
+{	
+	if (eval(user.userStatusCode) != 0) {
+		user = Ajax.runEval("/script/login.exe?user");
+		document.getElementById("user").innerHTML = "Вы вошли как " + user.userFIO + ", " + user.userStatusName;		
+	}
+	else {
+		location.replace("/login?&/index.html");
+		onLoad();
+	}
+}
+
+
+//Определение параметра, переданного html странице
+function param(Name)
+{
+	var Params = location.search.substring(1).split("&");
+	var variable = "";
+	for (var i = 0; i < Params.length; i++)
+	{
+		if(Params[i].split("=")[0] == Name)
+	{
+	
+	if (Params[i].split("=").length > 1)
+	variable = Params[i].split("=")[1];
+	return variable;
+	}}
+	return "";
+}
+
+
+</script>
+
+
+
+<style>
+<!--
+h2
+	{margin-top:12.0pt;
+	margin-right:0cm;
+	margin-bottom:3.0pt;
+	margin-left:0cm;
+	page-break-after:avoid;
+	font-size:14.0pt;
+	font-family:Arial;
+	font-style:italic}
+ table.MsoNormalTable
+	{mso-style-parent:"";
+	font-size:10.0pt;
+	font-family:"Times New Roman";
+	}
+-->
+</style>
+
+
+
+</head>
+<link rel="stylesheet" href="style/indexstyle/style.css">
+<body onload="javascript:onLoad();" style="background-size: 100% auto" bgcolor="#DCF7FF">
+
+
+<p align="center" style="margin-top: 0; margin-bottom: 0">&nbsp;</p>
+<div align="center">
+	<table border="0" width="1844" id="table6">
+		<tr>
+			<td align="right" valign="top" width="191">&nbsp;</td>
+			<td align="left" valign="top" width="149">
+			<img border="0" src="img/coat_of_arms_SO.gif" width="149" height="148"></td>
+			<td align="left" valign="top" width="1490">
+			<p align="center" style="margin-top: 0; margin-bottom: 0"><b>
+			<font style="font-size: 23pt">Самарская 
+			научно-образовательная программа </font></b></p>
+			<p align="center" style="margin-top: 0; margin-bottom: 0"><b>
+			<font style="font-size: 23pt">конкурсного отбора в
+			<span style="font-size: 23pt">
+			Губернаторский реестр творчески одаренной молодежи</span></font></b></p>
+			<p align="center" style="margin-top: 0; margin-bottom: 0"><b>
+			<font style="font-size: 23pt">
+			<span style="font-size: 23pt">в сфере науки и техники «ВЗЛЕТ» </span>
+			</font></b></p>
+			<p>&nbsp;</td>
+		</tr>
+	</table>
+	<p>
+	
+	
+	<div name="currentUser">
+					<p style="margin-left: 100px; margin-right: 100px" align="right">
+					<font color="#FFFFFF"><b>
+					<span style="font-size: 12pt; background-color: #000080" id="currentUser">0</span></b></font><span style="font-size: 16pt">
+	</div>
+	
+	
+	</div>
+<div align="center">
+	<table border="0" width="95%" id="table1">
+		<tr>
+			<td align="center" valign="top" width="81%">
+			<div align="center">
+
+<table width="84%" id="table7" border="0" cellpadding="0">
+	<tr>
+		<td align="center" style="font-size: 150%" width="15%">
+		<p style="margin-top: 0; margin-bottom: 0"><font color="#FFFFFF">
+		<a href="index.html">
+		<span style="font-size: 12pt; text-decoration: underline; font-weight:700">
+		Главная</span></a></font></td>		
+		<td align="center" style="font-size: 150%" width="1%">&nbsp;</td>		
+		<td align="center" style="font-size: 150%" width="7%">
+		<p style="margin-top: 0; margin-bottom: 0"><font color="#FFFFFF">
+		<span style="font-size: 12pt; text-decoration: underline; font-weight:700">
+		<a href="about.html"><u>О программе
+		ВЗЛЕТ</u></a></span></font></td>		
+		<td align="center" style="font-size: 150%" width="1%">
+		<p style="margin-top: 0; margin-bottom: 0"><a href="allUsers.htm">
+		<span style="font-size: 12pt; text-decoration: underline; font-weight: 700">
+		Участники Программы</span></a></td>		
+		<td align="center" style="font-size: 150%" width="10%">
+		<p style="margin-top: 0; margin-bottom: 0"><a href="enterTheme.htm">
+		<span style="font-size: 12pt; text-decoration: underline; font-weight: 700">
+		Ввод<span lang="ru"> учеными ВУЗов</span> предлагаемой тематики исследований</span></a></td>		
+		<td align="center" style="font-size: 150%" width="1%">
+		&nbsp;</td>		
+		<td align="center" style="font-size: 150%" width="13%">
+		<p style="margin-top: 0; margin-bottom: 0">
+		<a href="enterRequestByTeacher.htm">
+		<span style="font-size: 12pt; text-decoration: underline; font-weight: 700">
+		Ввод учителями запрос<span lang="ru">ов</span> на консультирование 
+		проектов учеными ВУЗ<span lang="ru">ов</span></span></a></td>		
+		<td align="center" style="font-size: 150%" width="15%">
+		<a href="chooseTheme.htm">
+		<font size="3"><b><span style="text-decoration: underline">
+		<u>Выбор </u>тематики исследований учител</span></b><span style="text-decoration: underline" lang="ru"><b>ями 
+		и консультантами</b></span></font></a></td>		
+		<td align="center" style="font-size: 150%" width="1%">&nbsp;</td>		
+		<td align="center" style="font-size: 150%" width="15%">
+		<p style="margin-top: 0; margin-bottom: 0">
+		<b>
+		<span style="font-size: 12pt; text-decoration: underline; " lang="ru">
+		<a href="users.htm">
+		<u>Просмотр тематики исследований и информирование о ходе работ</u></a></span></b></td>		
+		<td align="center" style="font-size: 150%" width="1%">
+		&nbsp;</td>		
+		<td align="center" style="font-size: 150%" width="7%">
+		<p align="center" style="margin-top: 0; margin-bottom: 0">
+		<font color="#FFFFFF">
+		<a href="indevelop.html">
+		<span style="font-size: 12pt; text-decoration: underline; font-weight:700">
+		Тренинги,<span lang="en-us"> </span>викторины, опросы</span></a></font></td>
+		<td align="center" style="font-size: 150%" width="1%">
+		&nbsp;</td>
+		<td align="center" style="font-size: 150%" width="12%" bgcolor="#FFFF00">
+		<p align="center" style="margin-top: 0; margin-bottom: 0"><font color="#FFFFFF">
+		<span style="font-size: 12pt; text-decoration: underline; font-weight:700">
+		<a href="contest.html"><u>Конкурс исследовательских проектов</u></a></span></font></p></td>
+		<td align="center" style="font-size: 150%" width="1%">
+		&nbsp;</td>
+		<td align="center" style="font-size: 150%" width="7%">
+		<p align="center"><font color="#FFFFFF">
+		<a href="indevelop.html">
+		<span style="font-size: 12pt; text-decoration: underline; font-weight: 700">
+		Меры поощрения и поддержки</span></a></font></td>
+		<td align="center" style="font-size: 150%" width="1%">
+		&nbsp;</td>
+		<td align="center" style="font-size: 150%" width="9%">
+		<p style="margin-top: 0; margin-bottom: 0">
+		<a href="monitoringThemes.htm">
+		<span style="font-size: 12pt; text-decoration: underline; font-weight:700">
+		Мониторинг хода исследований</span></a></td>		
+		<!--<td align="center" style="font-size: 150%"><a href="conf/2014/index.htm">Международная научно-практическая конференция "ТВОРЧЕСКИЙ ПОТЕНЦИАЛ-2014"</a></td> -->
+		<!--<td align="center" style="font-size: 150%"><a href="regionalConferences.htm">Региональная коференция "ТВОРЧЕСКИЙ ПОТЕНЦИАЛ-2014" ИСТ СГАСУ</a></td> -->		
+		<!-- <td align="center" style="font-size: 150%"><a href="#">Архив исследовательской проектов школьников и студентов - участников АСВ (в разработке)</a></td> -->
+		<td align="center" style="font-size: 150%" width="1%">&nbsp;</td>
+	</tr>
+</table>
+<p style="margin-top: 0; margin-bottom: 0">
+&nbsp;</p>
+<p style="margin-top: 0; margin-bottom: 0">
+<font size="5"><span style="font-weight: 700">Отправка на конкурс &quot;ВЗЛЕТ&quot;</span></font></p>
+				<p class="MsoNormal"><span id="qqq">000</span></p>
+<p class="MsoNormal">&nbsp;</p>
+				<p class="MsoNormal" style="text-align: justify; text-indent: 35.4pt; margin: 0 30px">
+				&nbsp;</div>
+			</td>
+			<td align="left" valign="top" width="18%">
+			<p style="margin-top: 0; margin-bottom: 0" align="right"><b>
+			<a href="javascript:login();"><u>Вход в 
+			систему</u></a></b></p>
+			<p style="margin-top: 0; margin-bottom: 0" align="right">&nbsp;</p>
+			<p style="margin-top: 0; margin-bottom: 0; line-height:150%" align="right">
+			&nbsp;</p>
+			<p style="margin-top: 0; margin-bottom: 0; line-height:150%" align="right">
+			<span lang="ru"><b><font color="#FFFFFF">
+			<a href="files/conkursInstruction.doc">
+			<u>Положение о Конкурсе</u></a></font></b></span></p>
+			<p style="margin-top: 0; margin-bottom: 0; line-height:150%" align="right">
+			<span lang="ru"><font color="#FFFFFF"><b>
+			<a href="evaluationCriteria.html"><u>Критерии оценки проектов</u></a></b></font></span></p>
+			<p style="margin-top: 0; margin-bottom: 0; line-height:150%" align="right">
+			<span lang="ru"><font color="#FFFFFF"><b>
+			<a href="programResults.html"><u>Программа и результаты 
+			Конкурса</u></a></b></font></span></p>
+			<p style="margin-top: 0; margin-bottom: 0; line-height:150%" align="right">
+			<u><font color="#FFFFFF"><b><a href="childRating.html">
+			<u>Рейтинг школьников - участников 
+			Программы</u></a></b></font></u></p>
+			<p style="margin-top: 0; margin-bottom: 0; line-height:150%" align="right">
+			<span lang="ru"><b>Вход для рецензентов</b></span></p>
+			<p style="margin-top: 0; margin-bottom: 0; line-height:150%" align="right">
+			<span lang="ru"><b>Вход для секретарей секций</b></span></p></td>
+		</tr>
+		<tr>
+			<td align="left" valign="top" colspan="2" height="45">&nbsp;<p>&nbsp;</td>
+		</tr>
+	</table>
+</div>
+<p>
+
+<p><p>
+
+<center>&nbsp;</center>
+
+<p><span id="user">0</span><p>
+</body>
+
+</html>

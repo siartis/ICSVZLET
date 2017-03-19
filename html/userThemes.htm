@@ -1,0 +1,480 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1251">
+<title>Темы консультантов и т.д.</title>
+<link rel="stylesheet" href="style/style.css">
+
+<script type="text/javascript" src="js/Ajax.js"></script>
+<script type="text/javascript" src="js/Base64.js"></script>
+
+<script>
+
+var userFIO = Base64.decode(param("userFIO"));
+var userCode = param("userCode");
+var userStatusCode = param("userStatusCode");
+
+function onLoad()
+{
+	//Выводим ФИО пользователя
+	document.getElementById("userFIO").innerHTML = userFIO;
+	
+	//Консультант только может вводить темы
+	if (eval(userStatusCode) == 4) {
+		document.getElementById("enterTheme").innerHTML = "<a href=\"javascript:enterTheme();\">Ввод новой темы</a>";
+	}
+	
+	
+	/*var userInfo = Ajax.runEval("/script/enterTheme.exe?getStatusList&" + userStatusCode + "&" + userCode);
+		
+	//Получаем подробную информацию о пользователе
+	var result = "<div align=\"center\">";
+	result += "<table border=\"1\" width=\"80%\" id=\"user\">";
+	result += "<tr>";
+
+	result += "<td align=\"left\" valign=\"top\">" + "<b>ФИО</b>" + "</td>";
+	result += "<td align=\"left\" valign=\"top\">" + "<b>Название организации</b>" + "</td>";
+	
+	result += "<td align=\"left\" valign=\"top\">" + "<b>Подразделение</b>" + "</td>";
+	
+	result += "<td align=\"left\" valign=\"top\">" + "<b>Должность</b>" + "</td>";
+	result += "<td align=\"left\" valign=\"top\">" + "<b>Статус<b/>" + "</td>";		
+	
+	result += "</tr>";	
+	
+	for(var i = 0; i < userInfo.length; i++) {
+		result += "<tr>";
+		result += "<td name=" + userInfo[i].statusListCode + " align=\"left\" valign=\"top\">" + userInfo[i].statusListFIO + "</td>";
+		result += "<td align=\"left\" valign=\"top\">" + userInfo[i].statusListOrganizationName + "</td>";
+		
+		result += "<td align=\"left\" valign=\"top\">" + userInfo[i].statusListSubdivisionLevel1Name + "</td>";
+		
+		result += "<td align=\"left\" valign=\"top\">" + userInfo[i].statusListPostName + "</td>";
+		result += "<td align=\"left\" valign=\"top\">" + userInfo[i].statusListStatusName + "</td>";
+		
+		result += "</tr>";
+		
+	}
+	
+	result += "</table>";
+	result += "</div>";
+	
+	
+	result += "<br>";*/
+	//result += "<p>Для того, чтобы включиться в выполнение какой-либо темы, выясните ее код в перечне тем (ссылка \"<a href=\"chooseTheme.htm\">Темы</a> на главной странице системы) и нажмите ";
+	//result += "<a href=\"javascript:applyTheme();\">здесь</a>.</p>";
+	
+	
+	
+	//document.getElementById("userInfo").innerHTML = "";
+	//document.getElementById("userInfo").innerHTML = result;
+	
+	
+	if (eval(userStatusCode) <= 4) {
+		//Тут все, кроме ответственных
+		//Получаем список тем, к которым привязан пользователь и выводим их на экран
+	var themes = Ajax.runEval("/script/enterTheme.exe?getThemeByUser&" + userCode + "&part");
+	}
+	else {
+		var themes = Ajax.runEval("/script/enterTheme.exe?getThemeByUser&" + userCode + "&otv");
+	}
+
+	
+	result = "";
+	result = "<div align=\"center\">";
+
+	result += "<br>";
+	result += "<span>Чтобы увидеть информацию по интересующей вас теме, щелкните по ее названию</span>";
+	result += "<br>";
+
+
+
+	result += "<table border=\"1\" width=\"60%\" id=\"themeTable\">";
+	result += "<tr>";
+	result += "<td align=\"left\" valign=\"top\"><b>№ п/п</b></td>";
+	result += "<td align=\"left\" valign=\"top\"><b>Код темы</b></td>";
+	result += "<td align=\"left\" valign=\"top\"><b>Название темы</b></td>";
+	result += "<td align=\"left\" valign=\"top\"><b>Статус темы</b></td>";
+	result += "</tr>";
+
+	for(var i = 0; i < themes.length; i++) {
+		result += "<tr>";
+
+		result += "<td align=\"left\" valign=\"top\">" + String(i+1) + "</td>";
+		result += "<td align=\"left\" valign=\"top\">" + themes[i].themeCode + "</td>";
+		result += "<td align=\"left\" valign=\"top\">";
+		result += "<a href=\"javascript:getThemeInfo(" + themes[i].themeCode + ", " + themes[i].statusThemeCode + ");\">" + themes[i].themeName + "</a>";
+		result += "</td>";
+		
+		result += "<td>" + themes[i].statusThemeName + "</td>";
+		
+		/*switch (eval(themes[i].statusThemeCode)) {
+			case 1:
+				result += "<b>Предлагаемая</b>";
+			break;
+			
+			case 5:
+				result += "<b>Никакая</b>";
+			break;
+			
+			default:
+				result += "<b>Активная</b>";
+			break;
+		}*/
+		result += "</td>";
+		result += "</tr>";
+	}
+	
+	result += "</table>";
+	result += "</div>";
+	
+	document.getElementById("themeList").innerHTML = result;
+	TABLE_SORT(document.getElementById("themeTable"));
+}
+
+function getThemeInfo(themeCode, statusThemeCode)
+{
+	//Информация об участниках, прикрепленных к теме
+	if (eval(statusThemeCode) == 1) {
+		userInfoByTheme = Ajax.runEval("/script/enterTheme.exe?getUserInfoByConnectedTheme&" + themeCode);	
+	}
+	else {
+		userInfoByTheme = Ajax.runEval("/script/enterTheme.exe?getUserInfoByConnectedOfferedTheme&" + themeCode);
+	}
+	
+	var result = "<p align=\"center\"><b>Информация об участниках темы</b></p>";
+	
+	result += "<table border=\"1\" width=\"85%\">";
+	result += "<tr>";
+
+	result += "<td align=\"left\" valign=\"top\">" + "<b>ФИО</b>" + "</td>";
+	result += "<td align=\"left\" valign=\"top\">" + "<b>Название организации</b>" + "</td>";
+	
+	result += "<td align=\"left\" valign=\"top\">" + "<b>Подразделение</b>" + "</td>";
+	
+	result += "<td align=\"left\" valign=\"top\">" + "<b>Должность</b>" + "</td>";
+	result += "<td align=\"left\" valign=\"top\">" + "<b>Статус</b>" + "</td>";		
+	
+	/*if (eval(statusThemeCode) > 1) {
+			result += "<td align=\"left\" valign=\"top\">" + "<b>E-mail</b>" + "</td>";
+	}*/
+	
+	result += "<td align=\"left\" valign=\"top\">" + "<b>E-mail</b>" + "</td>";
+	result += "<td align=\"left\" valign=\"top\">" + "<b>Номер телефона (городской)</b>" + "</td>";
+	result += "<td align=\"left\" valign=\"top\">" + "<b>Номер телефона (мобильный)</b>" + "</td>";
+
+	result += "</tr>";	
+	
+	for(var i = 0; i < userInfoByTheme.length; i++) {
+		result += "<tr>";
+		result += "<td align=\"left\" valign=\"top\">" + userInfoByTheme[i].statusListFIO + "</td>";
+		result += "<td align=\"left\" valign=\"top\">" + userInfoByTheme[i].statusListOrganizationName + "</td>";
+		
+		result += "<td align=\"left\" valign=\"top\">" + userInfoByTheme[i].statusListSubdivisionLevel1Name + "</td>";
+		
+		result += "<td align=\"left\" valign=\"top\">" + userInfoByTheme[i].statusListPostName + "</td>";
+		result += "<td align=\"left\" valign=\"top\">" + userInfoByTheme[i].statusListStatusName + "</td>";
+		
+		/*if (eval(statusThemeCode) > 1) {
+			result += "<td align=\"left\" valign=\"top\">" + userInfoByTheme[i].statusListUserEMail + "</td>";
+		}*/
+		
+		result += "<td align=\"left\" valign=\"top\">" + userInfoByTheme[i].statusListUserEMail + "</td>";
+		result += "<td align=\"left\" valign=\"top\">" + userInfoByTheme[i].statusListUserPhone + "</td>";
+		result += "<td align=\"left\" valign=\"top\">" + userInfoByTheme[i].statusListUserMobilePhone + "</td>";
+
+		result += "</tr>";
+	}
+	
+	result += "</table>"
+	
+	result += "<p></p>";
+	
+	
+	var themeInfo = Ajax.runEval("/script/enterTheme.exe?getThemeInfo&" + themeCode);
+	
+	//alert("/script/enterTheme.exe?getThemeInfo&" + themeCode);
+	//alert(themeInfo);
+	
+	//var result = "<div align=\"center\"";
+	
+	result += "<p align=\"center\"><b>Информация по теме</b></p>";	
+	result += "<table border=\"1\" width=\"60%\">";
+	result += "<tr>";
+	result += "<td align=\"left\" valign=\"top\">";
+	
+	//for(var i = 0; i < themeInfo.length; i++) {
+		result += "<b>Код темы</b> - " + themeInfo.themeCode;
+		result += "<br>";
+		result += "<b>Название темы</b> - " + themeInfo.themeName;
+		result += "<br>";
+		result += "<b>Комментарий к теме</b> - " + themeInfo.themeComment;
+		result += "<br>";
+		result += "<b>Дата/время ввода темы</b> - " + themeInfo.themeDateTime;
+		result += "<br>";
+		result += "<b>Научное направление темы (1)</b> - " + themeInfo.themeScienceDirectionName1;
+		result += "<br>";
+		result += "<b>Научное направление темы (2)</b> - " + themeInfo.themeScienceDirectionName2;
+		result += "<br>";
+		result += "<b>Научное направление темы (3)</b> - " + themeInfo.themeScienceDirectionName3;
+		result += "<br>";
+		result += "<b>Статус темы</b> - " + themeInfo.themeStatusThemeName;
+		result += "<br>";
+		result += "<b>Информация об учителе</b> - " + themeInfo.themeAboutTutor;
+		result += "<br>";
+		result += "<b>Информация об ученике</b> - " + themeInfo.themeAboutChild;
+		result += "<br>";
+		result += "<b>Стадия выполнения проекта (оценка консультанта)</b> - " + themeInfo.themeStageExecuteNameByConsulntant;
+		result += "<br>";
+	//}
+	
+	result += "</td>";
+	result += "</tr>";
+	result += "</table>";
+	//result += "</div>";
+	
+	result += "<br>";
+	
+	
+	
+	
+	
+	var table = "<br>";
+	table += "<div align=\"center\">";
+	table += "<table border=\"0\" width=\"50%\">";
+	table += "<tr>";
+		
+		
+		
+	//проверка укомплектованности тройки
+	var staff = Ajax.runEval("/script/enterTheme.exe?checkCompleteness&" + themeCode);
+	
+	switch (eval(userStatusCode)) {
+		//Консультант
+		case 4:
+			if (eval(statusThemeCode) == 1) {
+				table += "<td>";
+				table += "<center><a href=\"javascript:setActiveTheme(" + themeCode + ");\">Перевести в выполняемую</a></center>";
+				table += "</td>";
+				table += "<td>";
+				table += "<center><a href=\"javascript:removeFromProposed(" + themeCode + ");\">Отклонить из предлагаемых</a></center>";						
+				table += "</td>";
+			}
+			else {
+				table += "<td>";
+				table += "<center><a href=\"javascript:enterInformationByTheme(" + themeCode + ");\">Просмотр и обновление информации по теме</a></center>";
+				table += "</td>";
+			}
+		break;
+		
+		//Ученик
+		case 2:
+			if (eval(staff.staffing) == 0) {
+				table += "<td>";
+				table += "<a href=\"javascript:applyCurrentTheme(" + themeCode + ");\">Подать заявку</a>";
+				table += "</td>";
+				table += "<td>";
+				table += "</td>";
+			}
+			else {
+				if (themeInfo.themeStatusThemeName == "Выполняемая" || eval(themeInfo.StatusThemeID) >= 2) {
+					table += "<td>";
+					table += "<center><a href=\"javascript:enterInformationByTheme(" + themeCode + ");\">Просмотр и обновление информации по теме</a></center>";
+					table += "</td>";
+				}
+				if (themeInfo.themeStatusThemeName == "Предлагаемая") {
+					result += "<p>Коллектив уже сформирован и находится на стадии рассмотрения у консультанта</p>";	
+				}
+			}
+		break;	
+
+		//Учитель
+		case 3:
+			if (eval(staff.staffing) == 0) {
+				table += "<td>";
+				table += "<a href=\"javascript:applyCurrentTheme(" + themeCode + ");\">Подать заявку</a>";
+				table += "</td>";
+				table += "<td>";
+				table += "</td>";
+			}
+			else {
+				if (themeInfo.themeStatusThemeName == "Выполняемая" || eval(themeInfo.StatusThemeID) >= 2) {
+					table += "<td>";
+					table += "<center><a href=\"javascript:enterInformationByTheme(" + themeCode + ");\">Просмотр и обновление информации по теме</a></center>";
+					table += "</td>";
+				}
+				if (themeInfo.themeStatusThemeName == "Предлагаемая") {
+					result += "<p>Коллектив уже сформирован и находится на стадии рассмотрения у консультанта</p>";	
+				}
+			}
+			
+		break;
+	}
+	
+	table += "</tr>";
+	table += "</table>";
+	table += "</div>";
+		
+	
+	//Если это тот самый пользователь, который пришел сюда со страницы users.htm
+	//Конец если
+	
+	
+	document.getElementById("themeInfo").innerHTML = result+table;	
+	
+	document.getElementById("themeInfo").scrollIntoView(true);
+	
+	
+}
+
+//Ввод информации по конкретной теме
+function enterInformationByTheme(codeTheme) 
+{
+	switch (eval(userStatusCode)) {
+		case 4:
+			location.href = "consultant.htm?themeCode=" + codeTheme;	
+		break;
+		
+		case 3:
+			location.href = "teacher.htm?themeCode=" + codeTheme;
+		break;
+		
+		case 2:
+			location.href = "child.htm?themeCode=" + codeTheme;
+		break;
+	}	
+}
+
+
+//Подача заявки на указанную тему (от ученика или учителя)
+function applyTheme(themeCode)
+{
+	var tmCode = window.prompt("Введите код темы");
+	
+	//Проверка на укомплектованность введенной темы
+	var staff = Ajax.runEval("/script/enterTheme.exe?checkCompleteness&" + tmCode);
+	if (eval(staff.staffing) == 1) {
+		alert("Коллектив выбранной темы уже сформирован и находится на стадии рассмотрения у консультанта!");
+	}
+	else {
+		location.href = "applicationTheme.htm?themeCode=" + tmCode;	
+	}
+}
+
+
+//Подача заявки на выбранную тему (от ученика или учителя)
+function applyCurrentTheme(themeCode)
+{
+	location.href = "applicationTheme.htm?themeCode=" + themeCode;
+}
+
+//Сделать тему выполняемой
+function setActiveTheme(themeCode)
+{
+	var ok = window.confirm("Вы действительно хотите сделать выполняемой выбранную тему???");
+	if (ok) {
+		//alert("делаем.....");
+				
+		var result = Ajax.run("/script/enterTheme.exe?setActiveTheme&" + themeCode);
+		
+		alert("/script/enterTheme.exe?setActiveTheme&" + themeCode);
+		
+		if (result == "ok") {
+			alert("Новая тема успешно создана!");
+			location.reload;
+		}
+		else {
+			alert(result);
+		}		
+	}
+}
+
+
+
+function enterTheme()
+{
+	location.href = "enterTheme.htm";
+	/*currentUser=Ajax.runEval("/logstat");
+	if ((currentUser.table!="dov") || (currentUser.dovID != userCode)) {
+		var pass = window.prompt("Введите пароль");	
+		//alert("http://" + userCode + "@dov:" + pass + "@localhost/entertheme.htm");
+		location.href = "http://" + userCode + "@dov:" + pass + "@localhost/entertheme.htm";
+	}
+	else {
+		location.href = "entertheme.htm";
+	}*/
+}
+
+
+//Удалить из предлагаемых
+function removeFromProposed(themeCode)
+{
+	var msg = window.confirm("Вы действительно хотите удалить эту тему из предлагаемых?");
+	if (msg) {
+		var result = Ajax.run("/script/enterTheme.exe?removeFromProposed&" + themeCode);
+		if (result == "ok") {
+			alert("Тема успешно удалена из предложенных!");
+			location.reload();
+		}
+		else {
+			alert("Произошла ошибка при удалении!");
+		}
+	}	
+}
+
+
+//Определение параметра, переданного html странице
+function param(Name)
+{
+	var Params = location.search.substring(1).split("&");
+	var variable = "";
+	for (var i = 0; i < Params.length; i++)
+	{
+		if(Params[i].split("=")[0] == Name)
+	{
+	
+	if (Params[i].split("=").length > 1)
+	variable = Params[i].split("=")[1];
+	return variable;
+	}}
+	return "";
+}
+
+
+
+
+</script>
+
+
+
+
+</head>
+
+<body onload="onLoad();">
+<div id="wrapeall">
+	<div id="header">
+		<div class="logoText">
+			<span style="background-color: #FFFF00">hfghfghfghfghfg 
+			nvbnnvbnnvnvbnvnbnvnvbnfhfghfgh</span></div>
+	</div>
+		
+	<p></p>
+
+
+	<div id="middlePartPage">
+		<p style="text-align: center"><b><span lang="ru">Список тем, в которых участвует </span><span id="userFIO">0</span> </b></p>
+		<!--<p style="text-align: center"><span id="userInfo" style="visibility: hidden;">1</span></p>-->
+		<p style="text-align: center"><span id="themeList" lang="ru">2</span><p style="text-align: center">&nbsp;<p style="text-align: center">
+		<p style="text-align: center"><span style="font-size: 16pt" id="enterTheme"></span></p>
+		<span id="themeInfo">3</span></div>	
+	<div id="footer">
+		<div class="footerText">
+			<span>Copyright ПМиВТ</span>
+		</div>
+	</div>
+</div>
+
+
+</body>
+
+</html>

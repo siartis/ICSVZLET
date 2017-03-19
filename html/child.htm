@@ -1,0 +1,525 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1251">
+<title>Электронный журнал молодого исследователя</title>
+<link rel="stylesheet" href="style/style.css">
+<link rel="stylesheet" href="style/popupStyle.css">
+
+<script type="text/javascript" src="js/Ajax.js"></script>
+<script type="text/javascript" src="js/Base64.js"></script>
+<script type="text/javascript" src="js/script.js"></script>
+
+<script>
+
+var themeCode = param("themeCode");
+var projectFile;
+function onLoad()
+{	
+	user = Ajax.runEval("/script/login.exe?user");
+	//Если учитель (или ученик) (или консультант)
+	if (eval(user.userStatusCode) == 2) {
+		
+		//Текущий пользователь
+		setCurrentUser();
+		
+		getThemeInfo(themeCode);
+		getOptions();
+		checkAllowSendToConkurs();
+		checkProjectFile();
+		//getFiles();
+	}
+	else {
+		location.replace("/login?&/child.htm?themeCode=" + themeCode);
+	}
+}
+
+
+function getOptions()
+{
+	var levelInteractions = Ajax.runEval("/script/enterTheme.exe?getLevelInteraction");
+	var levelInteractionTutor = document.getElementById("levelInteractionTutor");
+	var levelInteractionConsultant = document.getElementById("levelInteractionConsultant");
+	
+	var levInteraction = Ajax.runEval("/script/enterTheme.exe?getLevelInteractionByUser&" + themeCode);
+	
+	//Уровень взаимодействия (со школьником и учителем)
+	for(i = 0; i < levelInteractions.length; i++) {
+		levelInteractionTutor.options[levelInteractionTutor.options.length] = new Option(levelInteractions[i].levelInteractionName, levelInteractions[i].levelInteractionCode);	
+		levelInteractionConsultant.options[levelInteractionConsultant.options.length] = new Option(levelInteractions[i].levelInteractionName, levelInteractions[i].levelInteractionCode);	
+	}	
+	
+	levelInteractionTutor.value = eval(levInteraction.levelInteractionTeacherCode);
+	levelInteractionConsultant.value = eval(levInteraction.levelInteractionConsultantCode);
+
+	
+	var stageExecutes = Ajax.runEval("/script/enterTheme.exe?getStageExecuteByThemeChild&" + themeCode);
+	var stageExecute = document.getElementById("stageExecute");
+	var currentStageExecute = 0;
+
+	//Стадия выполнения
+	for(i = 0; i < stageExecutes.length; i++) {
+		stageExecute.options[stageExecute.options.length] = new Option(stageExecutes[i].stageExecuteName, stageExecutes[i].stageExecuteCode);
+		if (eval(stageExecutes[i].current) == 1) {
+			currentStageExecute = stageExecutes[i].stageExecuteCode;
+		}
+	}
+	document.getElementById("stageExecute").value = currentStageExecute;
+}
+
+
+function getThemeInfo(themeCode)
+{
+	var themeInfo = Ajax.runEval("/script/enterTheme.exe?getThemeInfo&" + themeCode);
+	
+	//var result = "<div align=\"center\"";
+	
+	var result = "<p align=\"center\"><b>Информация о теме</b></p>";	
+	result += "<table border=\"1\" width=\"60%\">";
+	result += "<tr>";
+	result += "<td align=\"left\" valign=\"top\">";
+	
+	result += "Название темы - " + themeInfo.themeName;
+	result += "<br>";
+	result += "Комментарий к теме - " + themeInfo.themeComment;
+	result += "<br>";
+	result += "Дата/время ввода темы - " + themeInfo.themeDateTime;
+	result += "<br>";
+	result += "Научное направление темы (1) - " + themeInfo.themeScienceDirectionName1;
+	result += "<br>";
+	result += "Научное направление темы (2) - " + themeInfo.themeScienceDirectionName2;
+	result += "<br>";
+	result += "Научное направление темы (3) - " + themeInfo.themeScienceDirectionName3;
+	result += "<br>";
+	result += "Статус темы - " + themeInfo.themeStatusThemeName;
+	result += "<br>";
+	result += "Стадия выполнения проекта (оценка консультанта) - " + themeInfo.themeStageExecuteNameByConsulntant;
+	result += "<br>";
+
+	
+	result += "</td>";
+	result += "</tr>";
+	result += "</table>";
+	//result += "</div>";
+	
+	result += "<br>";
+	
+	
+	
+	
+	//Информация об участниках, прикрепленных к теме
+	var userInfoByTheme = Ajax.runEval("/script/enterTheme.exe?getUserInfoByConnectedTheme&" + themeCode);
+	
+	result += "<p align=\"center\"><b>Информация об участниках темы</b></p>";
+	
+	result += "<table border=\"1\" width=\"80%\">";
+	result += "<tr>";
+
+	result += "<td align=\"left\" valign=\"top\">" + "ФИО" + "</td>";
+	result += "<td align=\"left\" valign=\"top\">" + "Название организации" + "</td>";
+	
+	result += "<td align=\"left\" valign=\"top\">" + "Подразделение 1" + "</td>";
+	
+	result += "<td align=\"left\" valign=\"top\">" + "Должность" + "</td>";
+	result += "<td align=\"left\" valign=\"top\">" + "Статус" + "</td>";		
+	
+	result += "</tr>";	
+	
+	for(var i = 0; i < userInfoByTheme.length; i++) {
+		result += "<tr>";
+		result += "<td align=\"left\" valign=\"top\">" + userInfoByTheme[i].statusListFIO + "</td>";
+		result += "<td align=\"left\" valign=\"top\">" + userInfoByTheme[i].statusListOrganizationName + "</td>";
+		
+		result += "<td align=\"left\" valign=\"top\">" + userInfoByTheme[i].statusListSubdivisionLevel1Name + "</td>";
+		
+		result += "<td align=\"left\" valign=\"top\">" + userInfoByTheme[i].statusListPostName + "</td>";
+		result += "<td align=\"left\" valign=\"top\">" + userInfoByTheme[i].statusListStatusName + "</td>";
+		
+		result += "</tr>";
+	}
+	
+	result += "</table>"
+		
+	result += "<p></p>";
+	document.getElementById("themeInfo").innerHTML = result;
+}
+
+
+//Ввод данных
+function enterInteraction()
+{
+	var levelInteractionTutorCode = document.getElementById("levelInteractionTutor").value;
+	var levelInteractionConsultantCode = document.getElementById("levelInteractionConsultant").value;
+	var currentStageExecute = document.getElementById("stageExecute").value;
+	
+	var query = "/script/enterTheme.exe?setInteractionByChild&" + themeCode + "&" + levelInteractionConsultantCode  + "&" + levelInteractionTutorCode + "&" + currentStageExecute;
+	//alert(query);
+	var result = Ajax.run(query);
+	if (String(result) == "[error]") {
+		alert("Ошибка ввода данных!");
+	}
+	else {
+		alert(result);
+		location.href = "index.html";
+	}
+}
+
+
+//Отправить рецензию
+function setReview()
+{
+	location.href = "review.htm?themeCode=" + themeCode;
+}
+
+//Определение параметра, переданного html странице
+function param(Name)
+{
+	var Params = location.search.substring(1).split("&");
+	var variable = "";
+	for (var i = 0; i < Params.length; i++)
+	{
+		if(Params[i].split("=")[0] == Name)
+	{
+	
+	if (Params[i].split("=").length > 1)
+	variable = Params[i].split("=")[1];
+	return variable;
+	}}
+	return "";
+}
+
+function checkProjectFile()
+{
+	var checkFile = Ajax.runEval("/script/file.exe?checkProjectFile&" + themeCode);
+	if (eval(checkFile.resultCode) == 0) {
+		document.getElementById("sendToConkurs").style.visibility = "visible";
+		document.getElementById("someReview").style.visibility = "hidden";
+	}
+	else {
+		document.getElementById("sendToConkurs").innerHTML = "<center><p><font color=\"#000033\"><b><span style=\"font-size: 14pt\">Файл работы отправлен на конкурс &quot;ВЗЛЕТ&quot;</span></b></font></p></center>";
+		document.getElementById("someReview").style.visibility = "visible";
+	}
+}
+
+function onNew(div) {
+	var t = div.files[0].name;
+//Здесь проверить формат файла
+	var fileFormat = t.slice(-3);
+	
+	if (fileFormat == "doc" || t.slice(-4) == "docx" || fileFormat == "rtf" || fileFormat == "pdf") {
+		reader = new FileReader();
+       	reader.onload = function(e) {
+			var x=this.result;
+			projectFile = x;
+		}
+		
+		reader.readAsDataURL(div.files[0]);
+
+		//Проверка на объем
+		//if (eval(div.files[0].size) > 3.7*1024*1024) {
+		if (eval(div.files[0].size) > 1.7*1024*1024) {
+			document.getElementById("submitButton").disabled = true;
+			//alert("Выбранный файл больше 3.7Мб. \n Выберите другой файл или произведите уменьшение объема до разрешенного!");	
+			alert("Выбранный файл больше 1.7Мб. \n Выберите другой файл или произведите уменьшение объема до разрешенного!");	
+		}
+		else {
+			document.getElementById("submitButton").disabled = false;
+		}
+	}
+	else {
+		alert("Разрешается загружать только файлы формата doc, docx, rtf или pdf! ");
+	}
+}
+
+function setFile()
+{
+	document.getElementById("parent_popup_enter").style.visibility = "visible";
+	document.getElementById("parent_popup_enter").style.height = "100%";
+	document.getElementById("parent_popup_enter").style.display = "block";
+	
+	var fileName = document.getElementById("documentFile").value;
+	
+	var xhr = new XMLHttpRequest();
+
+	var x="";
+	var x1;
+	var x2;
+	var x3;
+	var projectFileSize = projectFile.length;
+	var countBytesUpload = 0;
+	while(projectFile.length>0) {
+		if(projectFile.length>400000)x1=400000;else x1=projectFile.length;
+		x2=projectFile.substr(0,x1);
+		projectFile=projectFile.substr(x1);
+		xhr.open("POST", "/script/part.exe", false);
+	    xhr.send("part&"+x2);
+//document.write(x2);	    
+		x3=xhr.responseText;	    
+		if(x=="")x+=x3;else x+=","+x3;
+		countBytesUpload += x2.length;
+
+		//Индикатор
+		document.getElementById("countProgress").innerHTML = "Выполнено - " + String(Math.ceil(((countBytesUpload*100)/projectFileSize))) + "%. ";
+		
+	}
+	
+	var s="uploadFile&" + themeCode + "&" + Base64.encode(fileName) + "&" + x;
+	
+//	alert(s);
+
+	xhr.open("POST", "/script/file.exe", false);
+    xhr.send(s);
+	var t=xhr.responseText;
+	
+	alert(t);	
+	document.getElementById("parent_popup_enter").style.visibility = "hidden";
+    document.getElementById("parent_popup_enter").style.height = "1%";
+    document.getElementById("parent_popup_enter").style.display = "block";
+    location.reload();
+}
+
+function removeFile(fileCode)
+{
+	document.getElementById("parent_popup_enter").style.visibility = "visible";
+	document.getElementById("parent_popup_enter").style.height = "100%";
+	document.getElementById("parent_popup_enter").style.display = "block";
+
+	if (window.confirm("Вы действительно хотите удалить файл? ")) {
+		var query = "/script/file.exe?removeFile&" + fileCode;
+	
+		document.getElementById("parent_popup_enter").style.visibility = "hidden";
+		document.getElementById("parent_popup_enter").style.height = "1%";
+		document.getElementById("parent_popup_enter").style.display = "block";
+		
+		alert(Ajax.run(query));
+		location.reload();
+	}
+	else {
+		alert("Файл не был удален! ");
+		document.getElementById("parent_popup_enter").style.visibility = "hidden";
+		document.getElementById("parent_popup_enter").style.height = "1%";
+		document.getElementById("parent_popup_enter").style.display = "block";
+	}
+}
+
+function downloadFile(fileCode)
+{
+	var result;
+	var xhr = new XMLHttpRequest();
+      xhr.onload = xhr.onerror = function() {
+        if (this.status == 200) {
+          document.getElementById("uploadProgress").innerHTML = "Файл успешно загружен! ";
+          
+          document.getElementById("parent_popup_enter").style.visibility = "hidden";
+	      document.getElementById("parent_popup_enter").style.height = "1%";
+          document.getElementById("parent_popup_enter").style.display = "block";
+          
+          result = JSON.parse(xhr.responseText);
+          location.href = result.projectFileData;
+//		  location.href = "<a download=\"" + result.projectFileName + "\" href=\"" + result.projectFileData + "\">" + result.projectFileName + "</a>";
+          
+        } else {
+          alert("Ошибка загрузки файла! ");
+
+          document.getElementById("parent_popup_enter").style.visibility = "hidden";
+	      document.getElementById("parent_popup_enter").style.height = "1%";
+          document.getElementById("parent_popup_enter").style.display = "block";
+        }
+      };
+
+      // обработчик для закачки
+      xhr.upload.onprogress = function(event) {
+      	document.getElementById("uploadProgress").innerHTML = event.loaded + ' / ' + event.total + "байт загружено. Подождите, пожалуйста";
+      }
+
+      xhr.open("POST", "/script/file.exe", true);
+      xhr.send("getFile&" + fileCode);
+
+}
+
+function getFiles()
+{
+	var files = Ajax.runEval("/script/file.exe?getFiles");
+	var result = "";
+	for(var i = 0; i < files.length; i++) {
+		//result += "<a download=\"" + files.projectFileName + "\" href=\"" + files.projectFileData + "\">" + files.projectFileName + "</a>" + "       " + "<a href=\"javascript:removeFile(" + files.projectFileCode + ");\">" + "X</a>";
+		
+//		result += "<a href = \"javascript:downloadFile(" + files[i].projectFileCode + ");\">" + files[i].projectFileName + "</a>" + "     " + "<a href=\"javascript:removeFile(" + files[i].projectFileCode + ");\">" + "X</a>";
+		result += "<a href = \"javascript:downloadFile(" + files[i].projectFileCode + ");\">" + files[i].projectFileName + "</a>";
+		
+		result += "<br>";
+	}
+	
+	document.getElementById("files").innerHTML = result;
+	result = "";
+}
+
+function checkAllowSendToConkurs()
+{
+	var checkAllow = Ajax.runEval("/script/enterTheme.exe?checkAllowSendToConkurs&" + themeCode);
+	if (eval(checkAllow.resultCode) == 1) {
+		document.getElementById("sendToConkurs").style.visibility = "visible";
+	}
+	else {
+		document.getElementById("sendToConkurs").style.visibility = "visible";
+		document.getElementById("sendToConkurs").innerHTML = "<p align=\"center\"><font color=\"#FFFF00\"><span style=\"font-size: 14pt; font-weight: 800\">Отправка проекта на конкурс еще не разрешена руководителем!</span></font></p>";
+	}
+}
+
+
+</script>
+
+</head>
+
+<body onload="onLoad();">
+
+
+	<div style="visibility: hidden;" id="parent_popup_enter">
+  		<div id="popup_enter">
+		    <div id="placeHolderImage">
+		    	<div style="padding: 20px; margin-left:100px; margin-right: 100px; font-family: Tahoma; font-size: 18;">
+					<center><font color="#000000"><span><i>Выполняется ввод информации в систему</i></span></font></center>
+					<center><font color="#000000"><span><i id="countDownload">Пожалуйста, подождите...</i></span></font></center>
+					<center><font color="#000000"><span><i style="font-family: Tahoma; font-size: 18;" id="countProgress"></i></span></font><br>
+					<center><img src="img/loader2.gif" /></center>
+				</div>
+		    </div>
+		</div>
+	</div>
+
+
+
+<div id="wrapeall">
+	<div id="header">
+		<div class="logoText">
+			<span style="background-color: #FFFF00">hfghfghfghfghfg 
+			nvbnnvbnnvnvbnvnbnvnvbnfhfghfgh</span></div>
+	</div>
+		
+	<p></p>
+
+
+	<div class="headline">
+		Электронный журнал молодого исследователя<span> </span>
+		
+		
+		<div name="currentUser">
+					<p style="margin-left: 100px; margin-right: 100px" align="right">
+					<font color="#FFFFFF"><b>
+					<span style="font-size: 12pt; background-color: #000080" id="currentUser">0</span></b></font><span style="font-size: 16pt">
+		</div>
+		
+		
+		<p><span id="themeInfo" style="font-weight: 400">0</span></div>	
+
+
+	<div id="middlePartPage">
+		<div align="center">
+			<table border="1" width="66%" id="table1">
+				<tr>
+					<td align="left" valign="top" colspan="2">
+					<p align="center"><span style="font-size: 16pt">
+					<font color="#FF0000">
+					<span style="font-size: 16pt; font-weight: 700; font-style: italic">
+					Для того, чтобы отраженная на странице информация была 
+					актуализирована текущей датой, даже если вы не внесли 
+					изменений, нажмите кнопку &quot;Ввод&quot;!</span></font></td>
+				</tr>
+				<tr>
+					<td align="left" valign="top">&nbsp;</td>
+					<td align="left" valign="top" width="363">
+					&nbsp;</td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" bgcolor="#FFAE5E">Оцените текущий уровень 
+					взаимодействия с учителем</td>
+					<td align="left" valign="top" width="363">
+					<select size="1" id="levelInteractionTutor" name="D1"></select></td>
+				</tr>
+				<tr>
+					<td align="left" valign="top">&nbsp;</td>
+					<td align="left" valign="top" width="363">
+					&nbsp;</td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" bgcolor="#FFAE5E">Оцените текущий уровень 
+					взаимодействия с консультантом</td>
+					<td align="left" valign="top" width="363">
+					<select size="1" id="levelInteractionConsultant" name="D2"></select></td>
+				</tr>
+				<tr>
+					<td align="left" valign="top">&nbsp;</td>
+					<td align="left" valign="top" width="363">
+					&nbsp;</td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" bgcolor="#FFAE5E">Стадия выполнения проекта
+					<span lang="ru">по вашей оценке</span></td>
+					<td align="left" valign="top" width="363">
+					<select size="1" id="stageExecute" name="D3"></select></td>
+				</tr>
+				<tr>
+					<td align="left" valign="top">&nbsp;</td>
+					<td align="left" width="363">
+					&nbsp;<p><span style="font-size: 16pt">
+					<input type="button" value="Ввести" name="B3" onclick="javascript:enterInteraction();" style="float: left"></p>
+					<p>&nbsp;</td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" colspan="2">
+					<span style="font-size: 14pt">
+						<p align="center"><b>Режим отправки работы на конкурс 
+						&quot;ВЗЛЕТ&quot;</b></span><p align="center">
+					<font color="#FFFF00" style="font-size: 16pt">
+					<span style="background-color: #FF0000"><b>Отправка работ 
+					будет разрешена с 3 апреля 2017г. (с 00<span lang="en-us">:</span>00 
+					часов)</b></span></font></td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" bgcolor="#FFAE5E">
+							
+							<div id="sendToConkurs" style="visibility: hidden;">
+							
+									<p style="margin-top: 0; margin-bottom: 0" align="center">
+									<b><font size="3" color="#000033">Отправка 
+									работы на конкурс разрешена руководителем!</font></b><span style="font-size: 16pt"><span style="font-size: 10pt"><p style="margin-top: 0; margin-bottom: 0">
+									<i><span id="uploadProgress">Загружайте файл формата
+									<span lang="en-us">.doc, .docx, .rtf, .pdf</span>, объемом - не больше 
+									1.7Мб<span lang="ru">. Длина имени файла - 
+									не более 70 символов.</span></span></i></span><p style="margin-top: 0; margin-bottom: 0">
+									<input type="file" accept="application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document, application/rtf, application/pdf" id="documentFile" onchange="javascript:onNew(this);" name="T1" size="84">&nbsp;
+									<input type="submit" value="Отправить" name="B4" id="submitButton" onclick="javascript:setFile();" disabled></p>
+									<p style="margin-top: 0; margin-bottom: 0">&nbsp;</p>
+									<p style="margin-top: 0; margin-bottom: 0">
+									<i><span id="files">0</span></i>
+									
+									<p style="margin-top: 0; margin-bottom: 0" align="right">
+									&nbsp;<p style="margin-top: 0; margin-bottom: 0" align="right">
+									
+									
+							</div>
+									<center><span id="someReview" style="font-size: 14pt"><a href="javascript:setReview();">Отправить саморецензию на свою работу</a></center>
+					</td>
+							<td align="left" valign="top" width="363">
+							&nbsp;</td>
+					
+					</div>
+					
+				</tr>
+				<tr>
+					<td align="left" valign="top" colspan="2">&nbsp;</td>
+				</tr>
+				</table>
+			</div>
+	</div>	
+	<div id="footer">
+		<div class="footerText">
+			<span>Copyright ПМиВТ</span>
+		</div>
+	</div>
+</div>
+
+
+</body>
+
+</html>

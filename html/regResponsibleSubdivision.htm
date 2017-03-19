@@ -1,0 +1,270 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1251">
+<title>Регистрация координатора от кафедры, школы и т.п.</title>
+<link rel="stylesheet" href="style/style.css">
+<link rel="stylesheet" href="style/popupStyle.css">
+
+<script type="text/javascript" src="js/Ajax.js"></script>
+<script type="text/javascript" src="js/Base64.js"></script>
+<script type="text/javascript" src="js/script.js"></script>
+<script type="text/javascript" src="js/remText.js"></script>
+
+<script>
+
+var user;
+var organizationCode, subdivisionLevel1Code, organizationTypeCode = 0; //Коды организации, подразделения и типа организации
+function onLoad()
+{
+	user = Ajax.runEval("/script/login.exe?user");
+	//Если ответственный от организации
+	if (eval(user.userStatusCode) == 5) {
+	
+		organizationCode = user.userOrganizationCode;
+		subdivisionLevel1Code = user.userSubdivisionCode;
+		organizationTypeCode = user.userOrganizationTypeCode;
+	
+		//Текущий пользователь
+		setCurrentUser();
+		
+		getOptions();
+	}
+	else {
+		alert("Вы не имеете права на регистрацию!");
+		location.replace("/login?&/regResponsibleSubdivision.htm");
+	}
+}
+
+
+function getOptions()
+{
+	var degree = document.getElementById("degree");
+	var degrees = Ajax.runEval("/script/regUser.exe?getDegree");
+	 
+	//Ученая степень
+	for(var i = 0; i < degrees.length; i++)
+	{
+		degree.options[degree.options.length] = new Option(degrees[i].degreeName, degrees[i].degreeCode);	
+	}
+		
+	var academicDirection = document.getElementById("academicDirection");
+	var academicDirections = Ajax.runEval("/script/regUser.exe?getAcademicDirection");
+	
+	//Ученое звание
+	for(var i = 0; i < academicDirections.length; i++)
+	{
+		academicDirection.options[academicDirection.options.length] = new Option(academicDirections[i].academicDirectionName, academicDirections[i].academicDirectionCode);	
+	}
+	
+	/*var post = document.getElementById("post");
+	post.innerHTML = "";
+
+	var posts = Ajax.runEval("/script/regUser.exe?getPostByOrganizationType&" + organizationTypeCode);
+
+	//Должность в организации
+	for(var i = 0; i < posts.length; i++)
+	{
+		post.options[post.options.length] = new Option(posts[i].postName, posts[i].postCode);	
+	}*/
+	
+	
+	
+	
+	subdivisionLevel1.innerHTML = "";
+	
+	var subdivisionsLevel1 = Ajax.runEval("/script/regUser.exe?getSubdivisionByOrganizationCode&" + organizationCode);
+
+	//Название организации
+	for(var i = 0; i < subdivisionsLevel1.length; i++)
+	{
+		subdivisionLevel1.options[subdivisionLevel1.options.length] = new Option(subdivisionsLevel1[i].subdivisionLevel1Name, subdivisionsLevel1[i].subdivisionLevel1Code);	
+	}
+	
+	
+	
+	//Выводим на экран название организации, название подразделения и название типа организации
+	document.getElementById("organizationName").innerHTML = user.userOrganizationName;
+	document.getElementById("organizationTypeName").innerHTML = user.userOrganizationTypeName;
+}
+
+
+//Регистрация нового пользователя
+function setUser()
+{
+	var userFIO = document.getElementById("userFIO").value;
+	var userHonoraryTitle = document.getElementById("userHonoraryTitle").value;
+	var userPhone = document.getElementById("userPhone").value;
+	var userMobilePhone = document.getElementById("userMobilePhone").value;
+	var userEMail = document.getElementById("userEMail").value;
+	var subdivisionLevel1 = document.getElementById("subdivisionLevel1").value;
+	var degree = document.getElementById("degree").value;
+	var academicDirection = document.getElementById("academicDirection").value;
+
+	var post = document.getElementById("post").value;
+	
+	document.getElementById("parent_popup_enter").style.visibility = "visible";
+	document.getElementById("parent_popup_enter").style.height = "100%";
+	document.getElementById("parent_popup_enter").style.display = "block";	
+	
+	if (window.confirm("Вы уверены?\nПосле ввода этой информации в систему внесение корректив возможно только через межвузовский центр (mvc@vzletsamara.ru). ")) {
+		var query = "/script/regUser.exe?setUserResponsibleSubdivision&" + Base64.encode(T(userFIO)) + "&" +
+		Base64.encode(T(userHonoraryTitle)) + "&" + T(userPhone) + "&" + T(userMobilePhone) + "&" + Base64.encode(T(userEMail.trim())) + "&" + degree + "&" + academicDirection + "&" + 
+		organizationCode + "&" + subdivisionLevel1 + "&" + Base64.encode(T(post));
+		
+		
+		var result = Ajax.run(query);
+		
+		document.getElementById("parent_popup_enter").style.visibility = "hidden";
+		document.getElementById("parent_popup_enter").style.height = "1%";
+		document.getElementById("parent_popup_enter").style.display = "block";
+	
+		alert(result);	
+		location.href = "main.html";
+	}
+	else {
+		document.getElementById("parent_popup_enter").style.visibility = "hidden";
+		document.getElementById("parent_popup_enter").style.height = "1%";
+		document.getElementById("parent_popup_enter").style.display = "block";
+	}
+}
+
+</script>
+
+
+
+
+</head>
+
+<body onload="onLoad();">
+
+	<div style="visibility: hidden;" id="parent_popup_enter">
+  		<div id="popup_enter">
+		    <div id="placeHolderImage">
+		    	<div style="padding: 20px; margin-left:100px; margin-right: 100px; font-family: Tahoma; font-size: 18;">
+					<center><font color="#000000"><span><i>Выполняется ввод информации в систему</i></span></font></center>
+					<center><font color="#000000"><span><i id="countDownload">Пожалуйста, подождите...</i></span></font></center>
+					<center><img src="img/univ_loader.gif" /></center>
+				</div>
+		    </div>
+		</div>
+	</div>
+	
+	
+
+<div id="wrapeall">
+	<div id="header">
+		<div class="logoText">
+			<span style="background-color: #FFFF00">hfghfghfghfghfg 
+			nvbnnvbnnvnvbnvnbnvnvbnfhfghfgh</span></div>
+	</div>
+		
+	<p></p>
+
+
+	<div class="headline">
+		
+		<div name="currentUser">
+					<p style="margin-left: 100px; margin-right: 100px" align="right">
+					<font color="#FFFFFF"><b>
+					<span style="font-size: 12pt; background-color: #000080" id="currentUser">0</span></b></font><span style="font-size: 16pt">
+		</div>
+		
+		<p>Регистрация координатора от кафедры, школы и т.п.</div>	
+
+
+	<div id="middlePartPage">
+		<div align="center">
+			<table border="1" width="1255" id="table1">
+				<tr>
+					<td align="left" valign="top" width="486" bgcolor="#FFAE5E">
+					Тип</td>
+					<td align="left" valign="top" width="753">
+					<span style="font-size: 14pt; font-weight: 700; font-style: italic" id="organizationTypeName">00</span></td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" width="486" bgcolor="#FFAE5E">
+					Название</td>
+					<td align="left" valign="top" width="753">
+					<span id="organizationName" style="font-size: 14pt; font-weight: 700; font-style: italic">01</span></td>
+					</tr>
+					<tr>
+					<td align="left" valign="top" width="486" bgcolor="#FFAE5E">
+					<span lang="ru">Кафедра/Школа</span></td>
+					<td align="left" valign="top" width="753">
+					<select size="1" id="subdivisionLevel1" name="D5"></select></td>
+					</tr>
+				<tr>
+					<td align="left" valign="top" width="486" bgcolor="#FFAE5E">Ф<span lang="ru">амилия
+					</span>И<span lang="ru">мя </span>О<span lang="ru">тчество</span><font color="#FF0000"> *</font></td>
+					<td align="left" valign="top" width="753">
+					<input type="text" id="userFIO" name="T1" size="59"></td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" width="486" bgcolor="#FFAE5E">
+					<span style="font-size: 12pt">
+					Должность<span lang="ru"> (например, специалист) </span>
+					<font color="#FF0000">*</font></td>
+					<td align="left" valign="top" width="753">
+					<span style="font-size: 16pt">
+					<input type="text" id="post" name="T6" size="59"></td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" width="486" bgcolor="#FFAE5E">Ученая степень</td>
+					<td align="left" valign="top" width="753">
+					<select size="1" id="degree" name="D1"></select></td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" width="486" bgcolor="#FFAE5E">Ученое звание</td>
+					<td align="left" valign="top" width="753">
+					<select size="1" id="academicDirection" name="D2"></select></td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" width="486" bgcolor="#FFAE5E">Почетные звания</td>
+					<td align="left" valign="top" width="753">
+					<input type="text" id="userHonoraryTitle" name="T2" size="59"></td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" width="486" bgcolor="#FFAE5E">Номер телефона 
+					(стационарный, с кодом города) <font color="#FF0000">*</font></td>
+					<td align="left" valign="top" width="753">
+					<input type="text" id="userPhone" name="T3" size="59"></td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" width="486" bgcolor="#FFAE5E">Номер телефона 
+					(мобильный) <font color="#FF0000">*</font></td>
+					<td align="left" valign="top" width="753">
+					<input type="text" id="userMobilePhone" name="T4" size="59"></td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" width="486" bgcolor="#FFAE5E">Адрес электронной 
+					почты <font color="#FF0000">*</font></td>
+					<td align="left" valign="top" width="753">
+					<input type="text" id="userEMail" name="T5" size="59"></td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" width="1239" colspan="2"><i>
+					<span lang="ru">Пароль выслан на адрес электронной почты, указанный вами.</span></i></td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" width="1239" colspan="2">&nbsp;</td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" width="486">&nbsp;</td>
+					<td align="left" valign="top" width="753">
+					<input type="button" value="Регистрация" name="B3" onclick="setUser();"></td>
+				</tr>
+				</table>
+		</div>
+	</div>	
+	<div id="footer">
+		<div class="footerText">
+			<span>Copyright ПМиВТ</span>
+		</div>
+	</div>
+</div>
+
+
+</body>
+
+</html>

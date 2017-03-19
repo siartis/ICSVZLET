@@ -1,0 +1,418 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1251">
+<title>Режим учителя</title>
+<link rel="stylesheet" href="style/style.css">
+<link rel="stylesheet" href="style/popupStyle.css">
+<link rel="stylesheet" href="style/reviewStyle.css">
+<link rel="stylesheet" href="style/tables.css">
+
+<script type="text/javascript" src="js/Ajax.js"></script>
+<script type="text/javascript" src="js/Base64.js"></script>
+<script type="text/javascript" src="js/script.js"></script>
+
+<script>
+
+var themeCode = param("themeCode");
+var statusThemeCode;
+
+function onLoad()
+{
+	user = Ajax.runEval("/script/login.exe?user");
+	//Если учитель
+	if (eval(user.userStatusCode) == 3) {
+		
+		//Текущий пользователь
+		setCurrentUser();
+		
+		getThemeInfo(themeCode);
+		checkAllowSendToConkurs();
+		checkProjectFile();
+		getOptions();
+	}
+	else {
+		location.replace("/login?&/teacher.htm?themeCode=" + themeCode);
+	}
+}
+
+function getOptions()
+{
+	var levelInteractions = Ajax.runEval("/script/enterTheme.exe?getLevelInteraction");
+	var levelInteractionConsultant = document.getElementById("levelInteractionConsultant");
+	var levelInteractionChild = document.getElementById("levelInteractionChild");
+	
+	var levInteraction = Ajax.runEval("/script/enterTheme.exe?getLevelInteractionByUser&" + themeCode);
+	
+	//Уровень взаимодействия (со школьником и учителем)
+	for(i = 0; i < levelInteractions.length; i++) {
+		levelInteractionConsultant.options[levelInteractionConsultant.options.length] = new Option(levelInteractions[i].levelInteractionName, levelInteractions[i].levelInteractionCode);	
+		levelInteractionChild.options[levelInteractionChild.options.length] = new Option(levelInteractions[i].levelInteractionName, levelInteractions[i].levelInteractionCode);	
+	}
+	
+	levelInteractionChild.value = eval(levInteraction.levelInteractionChildCode);
+	levelInteractionConsultant.value = eval(levInteraction.levelInteractionConsultantCode);
+		
+	var stageExecutes = Ajax.runEval("/script/enterTheme.exe?getStageExecuteByThemeTeacher&" + themeCode);
+	var stageExecute = document.getElementById("stageExecute");
+	var currentStageExecute = 0;
+
+	//Стадия выполнения
+	for(i = 0; i < stageExecutes.length; i++) {
+		stageExecute.options[stageExecute.options.length] = new Option(stageExecutes[i].stageExecuteName, stageExecutes[i].stageExecuteCode);
+		if (eval(stageExecutes[i].current) == 1) {
+			currentStageExecute = stageExecutes[i].stageExecuteCode;
+		}
+	}
+	document.getElementById("stageExecute").value = currentStageExecute;
+
+}
+
+
+function getThemeInfo(themeCode)
+{
+	var themeInfo = Ajax.runEval("/script/enterTheme.exe?getThemeInfo&" + themeCode);
+	
+	//var result = "<div align=\"center\"";
+	
+	var result = "<p align=\"center\"><b>Информация о теме</b></p>";	
+	result += "<table border=\"1\" width=\"60%\">";
+	result += "<tr>";
+	result += "<td align=\"left\" valign=\"top\">";
+	
+	result += "Код темы - " + themeInfo.themeCode;
+	result += "<br>";
+	result += "Название темы - " + themeInfo.themeName;
+	result += "<br>";
+	result += "Комментарий к теме - " + themeInfo.themeComment;
+	result += "<br>";
+	result += "Дата/время ввода темы - " + themeInfo.themeDateTime;
+	result += "<br>";
+	result += "Научное направление темы (1) - " + themeInfo.themeScienceDirectionName1;
+	result += "<br>";
+	result += "Научное направление темы (2) - " + themeInfo.themeScienceDirectionName2;
+	result += "<br>";
+	result += "Научное направление темы (3) - " + themeInfo.themeScienceDirectionName3;
+	result += "<br>";
+	result += "Статус темы - " + themeInfo.themeStatusThemeName;
+	result += "<br>";
+	result += "Стадия выполнения проекта (оценка консультанта) - " + themeInfo.themeStageExecuteNameByConsulntant;
+	result += "<br>";
+	statusThemeCode = themeInfo.statusThemeCode;
+	
+	result += "</td>";
+	result += "</tr>";
+	result += "</table>";
+	//result += "</div>";
+	
+	result += "<br>";
+	
+	
+	//Примечание консультанта
+	document.getElementById("consultantNote").innerHTML = themeInfo.consultantNote;
+	
+
+	//Информация об участниках, прикрепленных к теме
+
+	result += "<p align=\"center\"><b>Информация об участниках темы</b></p>";
+	
+	result += "<table border=\"1\" width=\"80%\">";
+	result += "<tr>";
+
+	result += "<td align=\"left\" valign=\"top\">" + "ФИО" + "</td>";
+	result += "<td align=\"left\" valign=\"top\">" + "Название организации" + "</td>";
+	
+	result += "<td align=\"left\" valign=\"top\">" + "Подразделение 1" + "</td>";
+	
+	result += "<td align=\"left\" valign=\"top\">" + "Должность" + "</td>";
+	result += "<td align=\"left\" valign=\"top\">" + "Статус" + "</td>";	
+	
+	result += "</tr>";	
+	
+	//Информация об участниках, прикрепленных к теме
+	var userInfoByTheme = Ajax.runEval("/script/enterTheme.exe?getUserInfoByConnectedTheme&" + themeCode);
+	
+	for(var i = 0; i < userInfoByTheme.length; i++) {
+		result += "<tr>";
+		result += "<td align=\"left\" valign=\"top\">" + userInfoByTheme[i].statusListFIO + "</td>";
+		result += "<td align=\"left\" valign=\"top\">" + userInfoByTheme[i].statusListOrganizationName + "</td>";
+		
+		result += "<td align=\"left\" valign=\"top\">" + userInfoByTheme[i].statusListSubdivisionLevel1Name + "</td>";
+		
+		result += "<td align=\"left\" valign=\"top\">" + userInfoByTheme[i].statusListPostName + "</td>";
+		result += "<td align=\"left\" valign=\"top\">" + userInfoByTheme[i].statusListStatusName + "</td>";
+		
+		result += "</tr>";
+	}
+	
+	result += "</table>"
+	
+	result += "<p></p>";
+
+	document.getElementById("themeInfo").innerHTML = result;	
+}
+
+
+function checkAllowSendToConkurs()
+{
+	var checkAllow = Ajax.runEval("/script/enterTheme.exe?checkAllowSendToConkurs&" + themeCode);
+	if (eval(checkAllow.resultCode) == 1) {
+		document.getElementById("allowSend").innerHTML = "<a href=\"javascript:unSetAllowSendToConkurs();\"> Разрешена</a>";
+	}
+	else {
+		document.getElementById("allowSend").innerHTML = "<a href=\"javascript:setAllowSendToConkurs();\"> Не&nbsp;разрешена</a>";
+	}
+	
+	
+	var checkUserFile = Ajax.runEval("/script/enterTheme.exe?checkFileByTheme&" + themeCode);
+	if (eval(checkUserFile.checkCode) == 1) {
+		document.getElementById("allowSend").style.visibility = "hidden";	
+		document.getElementById("Allows").style.visibility = "hidden";	
+	}
+}
+
+function checkProjectFile()
+{
+	var checkFile = Ajax.runEval("/script/file.exe?checkProjectFile&" + themeCode);
+	if (eval(checkFile.resultCode) == 1) {
+		document.getElementById("projectFile").style.visibility = "visible";
+	}
+}
+
+
+//Разрешение отправки проекта на конкурс "ВЗЛЕТ"
+function unSetAllowSendToConkurs()
+{
+	var checkAllow = Ajax.run("/script/enterTheme.exe?unSetAllowToSendConkurs&" + themeCode);
+	if (checkAllow == "ok") {
+		document.getElementById("allowSend").innerHTML = "<a href=\"javascript:setAllowSendToConkurs();\"> Не разрешена</a>";
+	}
+}
+
+//Отмена разрешения отправки проекта на конкурс "ВЗЛЕТ"
+function setAllowSendToConkurs()
+{
+	var checkAllow = Ajax.run("/script/enterTheme.exe?setAllowToSendConkurs&" + themeCode);
+	if (checkAllow == "ok") {
+		document.getElementById("allowSend").innerHTML = "<a href=\"javascript:unSetAllowSendToConkurs();\"> Разрешена</a>";
+	}
+}
+
+//Отправить рецензию
+function setReview()
+{
+	location.href = "review.htm?themeCode=" + themeCode;
+}
+
+//Ввод данных
+function enterInteraction()
+{
+	var levelInteractionConsultantCode = document.getElementById("levelInteractionConsultant").value;
+	var levelInteractionChildCode = document.getElementById("levelInteractionChild").value;
+	var currentStageExecute = document.getElementById("stageExecute").value;
+	
+	var query = "/script/enterTheme.exe?setInteractionByTeacher&" + themeCode + "&" + levelInteractionChildCode + "&" + levelInteractionConsultantCode + "&" + currentStageExecute;
+	//alert(query);
+	var result = Ajax.run(query);
+	if (String(result) == "[error]") {
+		alert("Ошибка ввода данных!");
+	}
+	else {
+		alert(result);
+		location.href = "index.html";
+	}
+}
+
+function downloadFile()
+{
+	document.getElementById("parent_popup_enter").style.visibility = "visible";
+    document.getElementById("parent_popup_enter").style.height = "100%";
+    document.getElementById("parent_popup_enter").style.display = "block";
+	
+	var result;
+	var xhr = new XMLHttpRequest();
+      xhr.onload = xhr.onerror = function() {
+        if (this.status == 200) {
+          //document.getElementById("uploadProgress").innerHTML = "Файл успешно загружен! ";
+          
+          result = JSON.parse(xhr.responseText);
+          
+          if (eval(result.errorCode) == 1) {
+          	alert("не обнаружен файл в системе! \nВозможно, он еще не был загружен.");	
+          }
+          else {
+			  location.href = result.projectFileData;
+
+	          document.getElementById("parent_popup_enter").style.visibility = "hidden";
+		      document.getElementById("parent_popup_enter").style.height = "1%";
+	          document.getElementById("parent_popup_enter").style.display = "block";
+          }
+         
+        } else {
+          alert("Ошибка загрузки файла! ");
+
+          document.getElementById("parent_popup_enter").style.visibility = "hidden";
+	      document.getElementById("parent_popup_enter").style.height = "1%";
+          document.getElementById("parent_popup_enter").style.display = "block";
+        }
+      };
+
+      // обработчик для закачки
+      xhr.upload.onprogress = function(event) {
+      	//document.getElementById("uploadProgress").innerHTML = event.loaded + ' / ' + event.total + "байт загружено. Подождите, пожалуйста";
+      }
+
+      xhr.open("POST", "/script/file.exe", true);
+      xhr.send("getFileByTheme&" + themeCode);
+
+}
+
+
+
+//Определение параметра, переданного html странице
+function param(Name)
+{
+	var Params = location.search.substring(1).split("&");
+	var variable = "";
+	for (var i = 0; i < Params.length; i++)
+	{
+		if(Params[i].split("=")[0] == Name)
+	{
+	
+	if (Params[i].split("=").length > 1)
+	variable = Params[i].split("=")[1];
+	return variable;
+	}}
+	return "";
+}
+
+
+</script>
+
+</head>
+
+<body onload="onLoad();">
+
+<div style="visibility: hidden;" id="parent_popup_enter">
+  		<div id="popup_enter">
+		    <div id="placeHolderImage">
+		    	<div style="padding: 20px; margin-left:100px; margin-right: 100px; font-family: Tahoma; font-size: 18;">
+					<center><font color="#000000"><span><i>Выполняется загрузка файла</i></span></font></center>
+					<center><font color="#000000"><span><i id="countDownload">Пожалуйста, подождите...</i></span></font></center>
+					<center><img src="img/univ_loader.gif" /></center>
+				</div>
+		    </div>
+		</div>
+	</div>
+
+
+
+<div id="wrapeall">
+	<div id="header">
+		<div class="logoText">
+			<span style="background-color: #FFFF00">hfghfghfghfghfg 
+			nvbnnvbnnvnvbnvnbnvnvbnfhfghfgh</span></div>
+	</div>
+		
+	<p></p>
+
+
+	<div class="headline">
+		Учитель<span> </span>
+		
+		<div name="currentUser">
+					<p style="margin-left: 100px; margin-right: 100px" align="right">
+					<font color="#FFFFFF"><b>
+					<span style="font-size: 12pt; background-color: #000080" id="currentUser">0</span></b></font><span style="font-size: 16pt">
+		</div>
+		
+		
+		<p><span id="themeInfo" style="font-weight: 400">0</span></div>	
+
+
+	<div id="middlePartPage">
+		<div align="center">
+			<table border="1" width="80%" id="table1">
+				<tr>
+					<td align="left" valign="top" colspan="2">
+					<p align="center">Комментарии консультанта</td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" colspan="2">
+					<p id="consultantNote" align="justify"><i>01</i></td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" colspan="2">
+					<p align="center"><font color="#FF0000">
+					<span style="font-size: 16pt; font-weight: 700; font-style: italic">
+					Для того, чтобы отраженная на странице информация была 
+					актуализирована текущей датой, даже если вы не внесли 
+					изменений, нажмите кнопку &quot;Ввод&quot;!</span></font></td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" width="40%">&nbsp;</td>
+					<td align="left" valign="top" width="30%">
+					&nbsp;</td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" bgcolor="#FFAE5E" width="40%">Оцените текущий уровень 
+					взаимодействия с консультантом</td>
+					<td align="left" valign="top" width="30%">
+					<select size="1" id="levelInteractionConsultant" name="D1"></select></td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" width="40%">&nbsp;</td>
+					<td align="left" valign="top" width="30%">
+					&nbsp;</td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" bgcolor="#FFAE5E" width="40%">Оцените текущий уровень 
+					взаимодействия с учеником</td>
+					<td align="left" valign="top" width="30%">
+					<select size="1" id="levelInteractionChild" name="D2"></select></td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" width="40%">&nbsp;</td>
+					<td align="left" valign="top" width="30%">
+					&nbsp;</td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" bgcolor="#FFAE5E" width="40%">Стадия выполнения проекта по 
+					вашей оценке</td>
+					<td align="left" valign="top" width="30%">
+					<select size="1" id="stageExecute" name="D3"></select></td>
+				</tr>
+				<tr>
+					<td align="center" width="40%">
+						<div id="projectFile" style="visibility: hidden;"><p align="center">
+							<span style="font-size: 16pt; background-position: 0% 100px">
+							Проект отправлен учеником на конкурс &quot;ВЗЛЕТ&quot;</span><p align="center">
+							<a class="button button-green" href="javascript:downloadFile();">
+							<span style="font-size: 16pt">Нажмите, чтобы скачать 
+							файл с текстом проекта</span></a>
+						</div>
+					</td>
+					<td align="left" valign="top" width="30%"><span id="Allows">Разрешить отправку проекта на конкурс &quot;ВЗЛЕТ&quot; - </span><span style="font-size: 12pt" id="allowSend"></span>
+					<p><a href="javascript:setReview();">Отправить рецензию</a>
+					<i><b>(только удостоверившись в том, что ученик отправил 
+					файл работы в системе)</b></i></p></td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" width="40%">&nbsp;</td>
+					<td align="left" valign="top" width="30%">
+					<input type="button" value="Ввести" name="B3" onclick="javascript:enterInteraction();"></td>
+				</tr>
+				</table>
+			<p><span id="statusList">222</span></div>
+	</div>	
+	<div id="footer">
+		<div class="footerText">
+			<span>Copyright ПМиВТ</span>
+		</div>
+	</div>
+</div>
+
+
+</body>
+
+</html>

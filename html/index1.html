@@ -1,0 +1,550 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1251">
+<title>Главная</title>
+<link rel="stylesheet" href="style/style.css">
+<link rel="stylesheet" href="style/popupStyle.css">
+
+<script type="text/javascript" src="js/Ajax.js"></script>
+<script type="text/javascript" src="js/AjaxAsynx.js"></script>
+<script type="text/javascript" src="js/Base64.js"></script>
+<script type="text/javascript" src="js/script.js"></script>
+<script type="text/javascript" src="js/remText.js"></script>
+
+<script>
+
+var user;
+function onLoad()
+{
+	
+	/*document.getElementById("parent_popup").style.visibility = "visible";
+	document.getElementById("advertisment").innerHTML = Ajax.run("files/advertisment.htm");
+	document.getElementById("parent_popup").style.height = "100%";
+	document.getElementById("parent_popup").style.display = "block";*/
+	
+	
+	
+	user = Ajax.runEval("/script/login.exe?user");
+	
+	//Текущий пользователь
+	setCurrentUser();
+}
+
+function register()
+{
+	//Если координатор от кафедры
+	if (eval(user.userStatusCode) == 6) {
+		location.href = "regUser.htm";
+	}
+	//Если координатор от школы
+	if (eval(user.userStatusCode) == 16) {
+	location.href = "regMember.htm";			
+	}
+	
+	if (eval(user.userStatusCode) == 0) {
+		location.href = "regUser.htm";	
+	}
+}
+
+function getUserInstructions(imgFlag, partText)
+{
+	document.getElementById("participant").innerHTML = partText;
+	document.getElementById("userInstruction").src = "/img/instructions/" + imgFlag + ".png";
+	document.getElementById("parent_popup").style.visibility = "visible";
+	document.getElementById("parent_popup").style.height = "100%";
+	document.getElementById("parent_popup").style.display = "block";	
+}
+
+
+function recoveryAccessCodes()
+{
+	var userEMail = window.prompt("Введите адрес электронной почты, который вы указали при регистрации");
+	if (userEMail != "" && userEMail != null) {
+		
+		document.getElementById("parent_popup_enter").style.visibility = "visible";
+		document.getElementById("parent_popup_enter").style.height = "1%";
+		document.getElementById("parent_popup_enter").style.display = "block";
+		
+		var result = Ajax.run("/script/regUser.exe?recoveryPassword&" + Base64.encode(T(userEMail.trim()))); 
+		alert(result);
+		
+		document.getElementById("parent_popup_enter").style.visibility = "hidden";
+		document.getElementById("parent_popup_enter").style.height = "1%";
+		document.getElementById("parent_popup_enter").style.display = "block";
+	}
+}
+
+function regFinished()
+{
+	alert("В текущем цикле работы Программы \"ВЗЛЕТ\" регистрация завершена! ");
+}
+
+
+</script>
+
+
+
+</head>
+<link rel="stylesheet" href="style/indexstyle/style.css">
+
+<style>
+#parent_popup {
+  background: #000;
+  /*height: 100%;*/
+  height: 0px;
+  opacity: 0.9;
+  position: fixed;
+  width: 100%;
+  z-index: 100;
+  top: 0;
+  left: 0;
+}
+
+#parent_popup_enter {
+  background: #000;
+  /*height: 100%;*/
+  height: 0px;
+  opacity: 0.9;
+  position: fixed;
+  width: 100%;
+  z-index: 100;
+  top: 0;
+  left: 0;
+}
+
+#exit {
+	width: 25px;
+	text-align: right;
+}
+
+#popup {
+  background-color: #ffffff;
+  /*height:0px;*/
+  height: 650px;
+  position: fixed;
+  top: 100px;
+  left: 13%;
+  color: #f00;
+  width: 1455px;
+}
+
+#popup_enter {
+  background-color: #ffffff;
+  /*height:0px;*/
+  height: 139px;
+  position: fixed;
+  top: 300px;
+  left: 39%;
+  color: #f00;
+  width: 500px;
+}
+
+ table.MsoNormalTable
+	{mso-style-parent:"";
+	font-size:10.0pt;
+	font-family:"Times New Roman";
+	}
+h1
+	{margin-right:0cm;
+	margin-left:0cm;
+	font-size:24.0pt;
+	font-family:"Times New Roman"}
+</style>
+
+
+
+
+
+<body onload="javascript:onLoad();" style="background-size: 100% auto" bgcolor="#DCF7FF">
+
+
+	<div style="visibility: hidden;" id="parent_popup_enter">
+  		<div id="popup_enter">
+		    <div id="placeHolderImage">
+		    	<div style="padding: 20px; margin-left:100px; margin-right: 100px; font-family: Tahoma; font-size: 18;">
+					<center><font color="#000000"><span><i>Выполняется обработка информации</i></span></font></center>
+					<center><font color="#000000"><span><i id="countDownload">Пожалуйста, подождите...</i></span></font></center>
+					<center><img src="img/univ_loader.gif" /></center>
+				</div>
+		    </div>
+		</div>
+	</div>
+
+
+
+<!--	<div style="visibility: hidden;" id="parent_popup">
+  		<div id="popup">
+  			<p class="exit" align="right"></p>
+		      <div id="placeHolderImage">
+				<p align="center"><font face="Tahoma" color="#000000"><b><span id="participant" style="font-size: 14pt"></span></b></font></p>
+				<p align="center">
+				<img id="userInstruction" src-"" />
+				<div id="advertisment"></div>
+		    </div>
+		</div>
+	</div> -->
+
+
+
+
+<!--	<div style="visibility: hidden;" id="parent_popup">
+  		<div id="popup">
+  			<p class="exit" align="right"><a style="cursor: pointer;" onclick="document.getElementById('parent_popup').style.display='none';">Закрыть</a></p>
+		    <div id="placeHolderImage">
+		    	<div style="padding: 20px; margin-left:100px; margin-right: 100px; font-family: Tahoma; font-size: 18;">
+					<center><font color="#000000"><span><i>Выполняется загрузка и обработка данных...</i></span></font></center>
+					<center><font color="#000000"><span><i id="countDownload">Пожалуйста, подождите...</i></span></font></center>
+					<center><img src="img/univ_loader.gif" /></center>
+				</div>
+		    </div>
+		</div>
+	</div>-->
+
+
+
+
+
+
+
+
+<p align="center" style="margin-top: 0; margin-bottom: 0">&nbsp;</p>
+<div align="center">
+	<table border="0" width="1844" id="table4">
+		<tr>
+			<td align="right" valign="top" width="191">&nbsp;</td>
+			<td align="left" width="149">
+			<img border="0" src="img/coat_of_arms_SO.gif" width="149" height="148"></td>
+			<td align="left" valign="top" width="1490">
+			<p align="center" style="margin-top: 0; margin-bottom: 0"><b>
+			<font style="font-size: 23pt">Самарская 
+			научно-образовательная программа 
+			<span style="font-size: 23pt">«ВЗЛЕТ»</span></font></b></p>
+			<p align="center" style="margin-top: 0; margin-bottom: 0"><b>
+			<font style="font-size: 23pt">конкурсного отбора школьников в
+			<span style="font-size: 23pt">
+			Губернаторский реестр</span></font></b></p>
+			<p align="center" style="margin-top: 0; margin-bottom: 0"><b>
+			<font style="font-size: 23pt"><span style="font-size: 23pt">
+			творчески одаренной молодежи</span></font></b></p>
+			<p align="center" style="margin-top: 0; margin-bottom: 0"><b>
+			<font style="font-size: 23pt">
+			<span style="font-size: 23pt">в сфере науки и техники&nbsp;</span></font></b></p></td>
+		</tr>
+	</table>
+</div>
+<p align="center" style="margin-top: 0; margin-bottom: 0">&nbsp;</p>
+	<p align="center" style="margin-top: 0; margin-bottom: 0">Система оптимизирована 
+под бесплатные браузеры <span lang="en-us">Mozilla FireFox, Opera, Google Chrome</span>. 
+Скачать можно, например, <b>
+<a href="https://download.mozilla.org/?product=firefox-stub&os=win&lang=ru"><u>здесь</u></a></b>.</p>
+	<p align="center" style="margin-top: 0; margin-bottom: 0">Оргвопросы -<b><a href="mailto:mvc@vzletsamara.ru"> <u> 
+	mvc@vzletsamara.ru</u></a></b></p>
+	<p align="center" style="margin-top: 0; margin-bottom: 0">Техподдержка - <b><span lang="en-us">
+	<a href="mailto:admin@vzletsamara.ru"><u>admin@vzletsamara.ru</u></a></span></b></p>
+	
+	
+				<div name="currentUser">
+					<p style="margin-left: 100px; margin-right: 100px" align="right">
+					<font color="#FFFFFF"><b>
+					<span style="font-size: 12pt; background-color: #000080" id="currentUser">0</span></b></font><span style="font-size: 16pt">
+				</div>
+	
+	
+<div align="center">
+	<table border="0" width="95%" id="table1" height="679">
+		<tr>
+			<td align="center" valign="top" width="90%" rowspan="2">
+			<div align="center">
+
+<table width="84%" id="table5" border="0" cellpadding="0" align="center">
+	<tr>
+ 		<!--<td align="center" style="font-size: 150%"><a href="conf/2014/index.htm">Международная научно-практическая конференция "ТВОРЧЕСКИЙ ПОТЕНЦИАЛ-2014"</a></td> -->
+		<!--<td align="center" style="font-size: 150%"><a href="regionalConferences.htm">Региональная коференция "ТВОРЧЕСКИЙ ПОТЕНЦИАЛ-2014" ИСТ СГАСУ</a></td> -->		
+		<!-- <td align="center" style="font-size: 150%"><a href="#">Архив исследовательской проектов школьников и студентов - участников АСВ (в разработке)</a></td> -->
+		<td align="center" style="font-size: 150%" width="1%">
+		<div align="center">
+			<table border="0" width="100%" id="table8">
+				<tr>
+					<td align="center" bgcolor="#FFFF00">
+					<p style="margin-top: 0; margin-bottom: 0"><b>
+					<a href="index.html"><u>Главная</u></a></b></td>
+					<!--<td align="center">
+					<p style="margin-top: 0; margin-bottom: 0"><b>
+					<a href="about.html">О программе &quot;ВЗЛЕТ&quot;</a></b></td>-->
+					<td align="center">
+					<p style="margin-top: 0; margin-bottom: 0"><b>
+					<a href="allUsers.htm"><u>Участники программы</u></a></b></td>
+					<td align="center">
+					<a href="enterInfo.htm"><p style="margin-top: 0; margin-bottom: 0"><b>
+					<u>Ввод тематики<span lang="ru">,</span> запросов<span lang="ru">,</span> 
+					коллективов</u></b></a></td>
+					<td align="center">
+					<p style="margin-top: 0; margin-bottom: 0"><b>
+					<a href="chooseTheme.htm"><u>Выбор тематики и&nbsp;формирование 
+					коллективов</u></a></b></td>
+					<td align="center">
+					<p style="margin-top: 0; margin-bottom: 0">
+					<a href="viewEnter.htm">
+					<span style="font-size: 12pt; text-decoration:underline">
+					<b>
+					Просмотр 
+					и ввод информации о ходе исследования</b></a></td>
+					<td align="center">
+					<p style="margin-top: 0; margin-bottom: 0"><b>
+					<a href="events.htm"><u>Запишись и участвуй</u></a></b></td>
+					<td align="center">
+					<p style="margin-top: 0; margin-bottom: 0"><b>
+					<a href="monitoringThemes.htm"><u>Мониторинг хода&nbsp;исследований</u></a></b></td>
+					<td align="center">
+					<p style="margin-top: 0; margin-bottom: 0"><b>
+					<a href="contest.html"><u>Региональный конкурс &quot;ВЗЛЕТ&quot;</u></a></b></td>
+					<td align="center">
+					<p style="margin-top: 0; margin-bottom: 0"><b>
+					<a href="enterInfo1.htm"><u>Достижения в других 
+					конкурсах/конференциях</u></a></b></td>
+				</tr>
+			</table>
+		</div>
+		</td>
+	</tr>
+</table>
+				<p style="margin-top: 0; margin-bottom: 0">&nbsp;</p>
+<table border="1" width="100%" id="table6">
+	<tr>
+		<td width="60%" align="left" valign="top">
+		<p class="MsoNormal" style="text-align: center; text-indent: 35.4pt; margin: 0 30px">&nbsp;</p><span style="font-size: 16pt">
+		</span>
+		<p class="MsoNormal" style="text-align: center; text-indent: 35.4pt; margin: 0 30px">&nbsp;</p>
+		</span>
+		<p class="MsoNormal" style="margin: 0 30px; text-indent:45px" align="center">
+		<span style="font-size: 16pt; font-weight: 700"><font color="#FF0000">
+		<span>Уважаемые коллеги и юные друзья - участники Программы!</span></font></span></p>
+		<p class="MsoNormal" style="margin: 0 30px; text-indent:45px" align="right">
+		&nbsp;</p><span style="font-size: 16pt">
+				<p class="MsoNormal" style="margin: 0 30px; text-indent:45px" align="justify">
+		<span style="font-size: 20pt">Успешно завершена работа Программы &quot;ВЗЛЕТ&quot; 
+		в 2015/16 учебном году. Ее результаты и перспективы развития доложены 
+		министру образования РФ Д.В. Ливанову во время его пребывания в Самаре 3<span lang="en">&nbsp;</span>июня 
+		с.г.</span></p>
+		<p class="MsoNormal" style="margin: 0 30px; text-indent:45px" align="justify">
+		<span style="font-size: 20pt">В настоящее время происходит согласование 
+		и утверждение документов, определяющих продолжение и развитие Программы 
+		&quot;ВЗЛЕТ&quot; в 2016/17&nbsp;учебном году, включая формирование Губернаторского 
+		реестра творчески одаренной молодежи в сфере науки и техники и 
+		объединенного Губернского конкурса творческих достижений молодежи и 
+		объединенного конкурса достижений творчески одаренной молодежи самарской 
+		области в сфере науки, техники и технологий.</span></p>
+		<p class="MsoNormal" style="margin: 0 30px; text-indent:45px" align="justify">
+		<span style="font-size: 20pt">В число членов Губернаторского реестра 
+		будут включены практически все участники Программы, направившие 
+		законченные работы на дистанционный этап конкурса &quot;ВЗЛЕТ&quot;. Те, кто не 
+		вошел в их число, но зарегистрировался в Программе в прошедшем учебном 
+		году, а также все другие желающие школьники 8-11 классов также смогут 
+		принять участие в Программе &quot;ВЗЛЕТ&quot;. </span></p>
+		<p class="MsoNormal" style="margin: 0 30px; text-indent:45px" align="justify">
+		<span style="font-size: 20pt">Более подробная информация будет 
+		появляться на сайте по мере ее получения из руководящих органов.</span></p>
+		<p class="MsoNormal" style="margin: 0 30px; text-indent:45px" align="justify">
+		&nbsp;</p>
+		</td>
+		<td align="left" valign="top" width="40%">
+		<table border="0" width="100%" id="table7">
+			<tr>
+				<td align="center">
+				<span style="font-size: 16pt">
+		<p align="center" style="margin-top: 0; margin-bottom: 0">
+		<span style="font-weight: 700; font-size: 21pt" lang="ru">Информационные&nbsp; 
+		материалы</span></p></td>
+			</tr>
+			<tr>
+				<td align="left">
+				<span style="font-size: 16pt">
+				<p style="margin: 0 10px">
+				<a href="mainDocuments.htm"><u><span lang="ru">
+				Документы и новости <font color="#FF0000"> <b> (13.05.16</b></font></span><font color="#FF0000"><b><span lang="en-us">:</span><span lang="ru">
+				Сводка о ходе работ)</span></b></font></u></a></p></td>
+			</tr>
+			<tr>
+				<td align="left">
+				<span style="font-size: 16pt">
+				<p style="margin: 0 10px"><u>
+				<a href="themeExample.htm"><u>Примеры тематики ранее выполненных 
+				проектов исследовательской направленности</u></a></p></td>
+			</tr>
+			<tr>
+				<td align="left">
+				<p style="margin: 0 10px">
+				<span style="font-size: 16pt; font-weight:700; font-style:italic">
+				<span lang="ru">Рекомендации</span>:</td>
+			</tr>
+			<tr>
+				<td align="left">
+				<span style="font-size: 14pt">
+				<p style="margin-top: 0; margin-bottom: 0; margin-left:50px; margin-right:10px">
+				<a href="files/instructions/forChild.pdf"><u>автору проекта (ученику)</u></a></td>
+			</tr>
+			<tr>
+				<td align="left">
+				<p style="margin-left: 50px; margin-right: 10px; margin-top: 0; margin-bottom: 0">
+			<span style="font-size: 14pt">
+				<a href="/files/instructions/forTutor.pdf"><span lang="ru"><u>р</u></span><u>уководител<span lang="ru">ю</span> проекта (учител<span lang="ru">ю</span>)</u></a></td>
+			</tr>
+			<span style="font-size: 16pt">
+			<tr>
+				<td align="left">
+				<p style="margin-top: 0; margin-bottom: 0; margin-left:50px; margin-right:10px">
+				<a href="/files/instructions/forConsultant.pdf"><span lang="ru">
+				<u><font style="font-size: 14pt">к</font></u></span><u><span style="font-size: 14pt">онсультант</span><span style="font-size: 14pt" lang="ru">у</span><span style="font-size: 14pt"> 
+				проекта (учен<span lang="ru">ому</span>)</span></u></a><span style="font-size: 14pt"></span></span></p></td>
+			</tr>
+			<tr>
+				<td align="center">
+				<p style="margin-top: 0; margin-bottom: 0">
+				&nbsp;</td>
+			</tr>
+			<tr>
+				<td align="center">
+				<span style="font-size: 16pt">
+				<p style="margin: 0 10px" align="left">
+				<span style="font-size: 16pt; font-weight:700; font-style:italic">
+				<span lang="ru">Рекомендации координатору Программы</span>:</td>
+			</tr>
+			<tr>
+				<td align="left">
+				<p style="margin-left: 50px; margin-right: 10px; margin-top: 0; margin-bottom: 0">
+				<span style="font-size: 14pt">
+				<a href="/files/instructions/forUnivCoord.pdf"><u>от университета</u></a></span></td>
+				</tr>
+			<tr>
+				<td align="left">
+				<p style="margin-top: 0; margin-bottom: 0; margin-left:50px; margin-right:10px">
+				<span style="font-size: 14pt">
+				<a href="files/instructions/forEdDistCoord.pdf"><u>от территориального 
+				управления</u></a></span></p></td>
+				</tr>
+			<tr>
+				<td align="left">
+				<p style="margin-left: 50px; margin-right: 10px; margin-top: 0; margin-bottom: 0">
+				<span style="font-size: 14pt">
+				<a href="/files/instructions/forDepCoord.pdf"><u>от кафедры</u></a></span></td>
+			</tr>
+			<tr>
+				<td align="left">
+				<p style="margin-left: 50px; margin-right: 10px; margin-top: 0; margin-bottom: 0">
+				<span style="font-size: 14pt">
+				<a href="files/instructions/forSchoolCoord.pdf"><u>от школы</u></a></span></td>
+			</tr>
+			<tr>
+				<td align="left">
+				<p style="margin: 0 50px">
+				<span style="font-size: 14pt">
+				<a href="files/instructions/forCoordPartnerOrganization.pdf"><u>от 
+				организации-партнера</u></a></span></td>
+			</tr>
+			<tr>
+				<td align="left">
+				&nbsp;</td>
+			</tr>
+			</table>
+		</td>
+	</tr>
+</table>
+<p><span style="font-size: 23pt"><b>Университеты</b></span><b><font style="font-size: 23pt"> 
+- участники Программы &quot;ВЗЛЕТ&quot;</font></b></p>
+<table border="0" width="70%" id="table3">
+	<tr>
+		<td align="center" width="6%">
+		<a href="http://ssau.ru">
+		<img border="0" src="img/organizations/ssau.gif" width="118" height="65" alt="Самарский государственный аэрокосмический университет имени академика С.П. Королева (национальный исследовательский университет)"></a></td>
+		<td align="center" width="6%">
+		<span style="font-size: 16pt">
+		<a href="http://samsu.ru">
+		<img border="0" src="img/organizations/samgu.jpg" width="78" height="64" alt="Самарский государственный университет"></a></td>
+		<td align="center" width="6%">
+		<span style="font-size: 16pt">
+				<a href="http://sseu.ru">
+		<img border="0" src="img/organizations/sgeu.jpg" width="63" height="66" alt="Самарский государственный экономический университет"></a></td>
+		<td align="center" width="6%">
+		<span style="font-size: 16pt">
+				<a href="http://samgasu.ru">
+		<img border="0" src="img/organizations/sgasu.jpg" width="80" height="61" alt="Самарский государственный архитектурно-строительный университет"></a></td>
+		<td align="center" width="6%">
+		<span style="font-size: 16pt">
+		<a href="http://samgtu.ru">
+		<img border="0" src="img/organizations/samgtu.jpg" width="61" height="55" alt="Самарский государственный технический университет"></a></td>
+		<td align="center" width="6%">
+		<span style="font-size: 16pt">
+				<a href="http://psuti.ru">
+		<img border="0" src="img/organizations/pguti.png" width="110" height="64" alt="Поволжский государственный университет телекоммуникаций и информатики"></a></td>
+		<td align="center" width="6%">
+		<span style="font-size: 16pt">
+				<a href="http://samsmu.ru">
+		<img border="0" src="img/organizations/samgmu.gif" width="63" height="58" alt="Самарский государственный медицинский университет"></a></td>
+		<td align="center" width="6%">
+		<a href="http://www.tltsu.ru">
+		<img border="0" src="img/organizations/tgu.png" width="62" height="65" alt="Тольяттинский государственный университет"></a></td>
+		<td align="center" width="6%">
+		<a href="http://pgsga.ru">
+		<img border="0" src="img/organizations/pgsga.png" width="59" height="63" alt="Поволжская государственная социально-гуманитарная академия"></a></td>
+		<td align="center" width="6%">
+		<a href="http://smrgaki.ru">
+		<img border="0" src="img/organizations/sgik.jpg" width="63" height="66" alt="Самарский государственный институт культуры"></a></td>
+		<td align="center" width="6%">
+		<a href="http://www.ssaa.ru">
+		<img border="0" src="img/organizations/sagsha.png" width="58" height="68" alt="Самарская государственная сельскохозяйственная академия"></a></td>
+		<td align="center" width="6%">
+		<a href="http://www.samgum.ru">
+		<img border="0" src="img/organizations/saga.jpg" width="80" height="67" alt="Самарская гуманитарная академия"></a></td>
+	</tr>
+</table>
+			</div>
+			</td>
+			<td align="left" valign="top" width="10%" height="272">
+			<p style="margin-top: 0; margin-bottom: 0" align="right"><b>
+			<a href="/login?&/index.html"><u>Вход пользователя</u></a></b></p>
+			<p style="margin-top: 0; margin-bottom: 0" align="right">&nbsp;</p>
+			<p style="margin-top: 0; margin-bottom: 0" align="right">
+			<span lang="ru"><u><b><a href="javascript:recoveryAccessCodes();">
+			<u>Забыли пароль?</u></a></b></u></span></p>
+			<p style="margin-top: 0; margin-bottom: 0" align="right">&nbsp;</p>
+			<p style="margin-top: 0; margin-bottom: 0" align="right"><u><b>
+			<a href="admin.htm"><u>Вход администратора</u></a></b></u></p>
+			<p style="margin-top: 0; margin-bottom: 0" align="right">&nbsp;</p>
+			<p style="margin-top: 0; margin-bottom: 0" align="right">&nbsp;</p>
+			<p style="margin-top: 0; margin-bottom: 0" align="center"><b>
+			РЕГИСТРАЦИЯ</b></p>
+			<p style="margin-top: 0; margin-bottom: 0" align="right">&nbsp;</p>
+			<ul>
+				<li>
+				<p style="margin-top: 0; margin-bottom: 0">
+				<b><font color="#FF8000"><u><!--<a href="regOrganization.htm">--><a href="javascript:regFinished();"><u> вуза, тер.управления </u></a> </u></font></b></p></li>
+				<li>
+				<p style="margin-top: 0; margin-bottom: 0"><b><u>
+				<!--<a href="regResponsibleOrganization.htm">--><a href="javascript:regFinished();"><u>координатора от вуза, тер.управления</u></a></u></b></p></li>
+				<li>
+				<p style="margin-top: 0; margin-bottom: 0">
+				<!--<a href="regSubdivision.htm">--><a href="javascript:regFinished();"><u><b>кафедры, школы и<span lang="en">&nbsp;</span>т.п.</b></u></a></p>
+				</li>
+				<li>
+				<p style="margin-top: 0; margin-bottom: 0"><u><b>
+				<!--<a href="regResponsibleSubdivision.htm">--><a href="javascript:regFinished();"><u>координатора от кафедры, школы и<span lang="en">&nbsp;</span>т.п.</u></a></b></p>
+				</li>
+				</u><u>
+				<li>
+				<p style="margin-top: 0; margin-bottom: 0"><b>
+				<font color="#FFFFFF"><!--<a href="regUser.htm">--><a href="javascript:regFinished();"><u>ученика, руководителя, консультанта</u></a></font></b></li>
+			</ul>
+			</td>
+		</tr>
+		<tr>
+			<td align="left" valign="top" width="10%" height="378">
+			&nbsp;<p>&nbsp;</p>
+			<p align="center">
+			<img border="0" src="img/scienceCup.jpg" width="163" height="282"></td>
+		</tr>
+	</table>
+</div>
+</body>
+
+</html>

@@ -1,0 +1,171 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1251">
+<title>О сайте</title>
+
+
+<script type="text/javascript" src="js/Ajax.js"></script>
+<script type="text/javascript" src="js/Base64.js"></script>
+
+<script>
+
+var user;
+
+function onLoad()
+{
+	user = Ajax.runEval("/script/login.exe?user");
+	if (eval(user.userStatusCode) != 0) {
+		document.getElementById("user").innerHTML = "Вы вошли как " + user.userFIO + ", " + user.userStatusName;	
+	}		
+}
+
+
+
+function login()
+{	
+	if (eval(user.userStatusCode) != 0) {
+		user = Ajax.runEval("/script/login.exe?user");
+		document.getElementById("user").innerHTML = "Вы вошли как " + user.userFIO + ", " + user.userStatusName;		
+	}
+	else {
+		location.replace("/login?&/index.html");
+		onLoad();
+	}
+}
+</script>
+
+
+
+</head>
+<link rel="stylesheet" href="style/indexstyle/style.css">
+<body onload="javascript:onLoad();" style="background-size: 100% auto" bgcolor="#DCF7FF">
+
+
+<p align="center" style="margin-top: 0; margin-bottom: 0">&nbsp;</p>
+<div align="center">
+	<table border="0" width="100%" id="table5">
+		<tr>
+			<td align="right" valign="top" width="1683">
+			<p align="center" style="margin-top: 0; margin-bottom: 0">
+			<span style="font-size: 23pt" lang="ru"><b>Инфокоммуникационная 
+			система </b></span></p>
+			<p align="center" style="margin-top: 0; margin-bottom: 0">
+			<span style="font-size: 23pt" lang="ru"><b>для организации и 
+			проведения научно-исследовательских работ </b></span></p>
+			<p align="center" style="margin-top: 0; margin-bottom: 0">
+			<span style="font-size: 23pt" lang="ru"><b>творчески одаренной 
+			молодежью </b></span></p>
+			<p align="center" style="margin-top: 0; margin-bottom: 0">
+			<span style="font-size: 23pt" lang="ru"><b>в сфере науки и техники</b></span></p>
+			<p align="center" style="margin-top: 0; margin-bottom: 0">&nbsp;</p>
+			<p align="center" style="margin-top: 0; margin-bottom: 0"><b>
+			<font style="font-size: 23pt">Самарская 
+			научно-образовательная программа «ВЗЛЕТ»</font></b></p>
+			<p align="center" style="margin-top: 0; margin-bottom: 0"><b>
+			<font style="font-size: 23pt">конкурсного отбора школьников в
+			Губернаторский реестр</font></b></p>
+			<p align="center" style="margin-top: 0; margin-bottom: 0"><b>
+			<font style="font-size: 23pt">творчески одаренной молодежи</font></b></p>
+			<p align="center" style="margin-top: 0; margin-bottom: 0"><b>
+			<font style="font-size: 23pt">
+			в сфере науки и техники&nbsp;</font></b></p></td>
+		</tr>
+	</table>
+</div>
+<div align="center">
+	&nbsp;</div>
+<div align="center">
+	<table border="0" width="100%" id="table1">
+		<tr>
+			<td align="center" valign="top">
+			<div align="center">
+
+<span style="font-size: 16pt">
+		<div align="center">
+			<table border="0" width="100%" id="table7">
+				<tr>
+					<td align="center">
+					<p style="margin-top: 0; margin-bottom: 0"><b>
+					<a href="index.html"><u>Главная</u></a></b></td>
+					<!--<td align="center">
+					<p style="margin-top: 0; margin-bottom: 0"><b>
+					<a href="about.html">О программе &quot;ВЗЛЕТ&quot;</a></b></td>-->
+					<td align="center" bgcolor="#FFFF00">
+					<p style="margin-top: 0; margin-bottom: 0"><b>
+					<a href="about.html"><u>О сайте</u></a></b></td>
+					<td align="center">
+					<p style="margin-top: 0; margin-bottom: 0"><b>
+					<a href="allUsers.htm"><u>Участники программы</u></a></b></td>
+					<td align="center">
+					<a href="enterInfo.htm"><p style="margin-top: 0; margin-bottom: 0"><b>
+					<u>Ввод тематики<span lang="ru">,</span> запросов<span lang="ru">,</span> 
+					коллективов</u></b></a></td>
+					<td align="center">
+					<p style="margin-top: 0; margin-bottom: 0"><b>
+					<a href="chooseTheme.htm"><u>Выбор тематики и&nbsp;формирование 
+					коллективов</u></a></b></td>
+					<td align="center">
+					<p style="margin-top: 0; margin-bottom: 0">
+					<a href="viewEnter.htm">
+					<span style="font-size: 12pt; text-decoration:underline">
+					<b>
+					Просмотр 
+					и ввод информации о ходе исследования</b></a></td>
+					<td align="center">
+					<p style="margin-top: 0; margin-bottom: 0"><b>
+					<a href="events.htm"><u>Запишись и участвуй</u></a></b></td>
+					<td align="center">
+					<p style="margin-top: 0; margin-bottom: 0"><b>
+					<a href="monitoringThemes.htm"><u>Мониторинг хода&nbsp;исследований</u></a></b></td>
+					<td align="center">
+					<p style="margin-top: 0; margin-bottom: 0"><b>
+					<a href="contest.html"><u>Региональный конкурс &quot;ВЗЛЕТ&quot;</u></a></b></td>
+					<td align="center">
+					<p style="margin-top: 0; margin-bottom: 0"><b>
+					<a href="enterInfo1.htm"><u>Достижения в других 
+					конкурсах/конференциях</u></a></b></td>
+				</tr>
+			</table>
+		</div>
+		</span>
+<p>
+				&nbsp;</p>
+<p>
+				<span style="font-size: 18pt; font-weight: 700">О сайте</span></p>
+<p class="MsoNormal" style="text-align: justify; text-indent: 35.4pt; margin-left: 30px; margin-right: 30px">
+<span style="font-size: 15pt">Сайт </span>
+<span lang="EN-US" style="font-size: 15pt"><u>
+<a target="_blank" style="color: blue; text-decoration: underline; text-underline: single" href="http://www.vzletsamara.ru/">
+www<span lang="RU">.</span>vzletsamara<span lang="RU">.</span>ru</a></u> </span>
+<span style="font-size: 15pt">разработан Ассоциацией вузов «Самарский 
+региональный научно-образовательный комплекс в<span lang="en">&nbsp;</span>соответствии 
+с постановлением Правительства Самарской области от 17.06.2015 № 346 «Об 
+установлении отдельных расходных обязательств Самарской области в 2015 году» и 
+распоряжением министерства образования и науки Самарской области от 25.08.2015 № 
+527-р «Об утверждении Ассоциации вузов «Самарский региональный 
+научно-образовательный комплекс» получателем субсидии, предоставляемой в 2015 
+году из областного бюджета социально ориентированным некоммерческим 
+организациям, не являющимся государственными (муниципальными) учреждениями, на 
+проведение мероприятий, направленных&nbsp; на создание благоприятных условий для 
+развития&nbsp; творчески одарённой молодёжи в сфере науки и техники».</span></p>
+<p class="MsoNormal" style="text-align: justify; text-indent: 35.4pt; margin-left: 30px; margin-right: 30px">&nbsp;</p>
+<p class="MsoNormal" style="text-align: justify; text-indent: 35.4pt; margin-left: 30px; margin-right: 30px">
+<span style="font-size: 15pt"><a href="files/documents/RegulationGov.pdf"><u>Постановление Правительства Самарской области от 
+17.06.2015 № 346</u></a><u>.</u></span></p>
+<p class="MsoNormal" style="text-align: justify; text-indent: 35.4pt; margin-left: 30px; margin-right: 30px">
+<span style="font-size: 15pt"><a href="files/documents/RegulationMONSO.pdf"><u>Распоряжение министерства образования и науки 
+Самарской области от 25.08.2015 № 527-р.</u></a></span></p>
+<p class="MsoNormal" style="text-align: justify; text-indent: 35.4pt; margin-left: 30px; margin-right: 30px">
+<span style="font-size: 15pt"><a href="files/documents/RegulationICS.pdf"><u>Положение об Инфокоммуникационной системе для 
+организации и проведения научно-исследовательских работ творчески одаренной 
+молодежью в сфере науки и техники. </u></a> </span></div>
+			</td>
+			<td align="left" valign="top">
+			&nbsp;</td>
+		</tr>
+		</table>
+</div>
+</body>
+
+</html>

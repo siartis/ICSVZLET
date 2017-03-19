@@ -1,0 +1,289 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1251">
+<title>Список участников мероприятия</title>
+<link rel="stylesheet" href="style/style.css">
+
+<script type="text/javascript" src="js/Ajax.js"></script>
+<script type="text/javascript" src="js/Base64.js"></script>
+<script type="text/javascript" src="js/remText.js"></script>
+
+<script>
+
+var eventCode = param("eventCode");
+var user;
+function onLoad()
+{
+	user = Ajax.runEval("/script/login.exe?user");
+	//Если координатор от организации-партнера
+	if (eval(user.userStatusCode) == 17) {
+		document.getElementById("user").innerHTML = "Вы вошли как " + user.userFIO + ", " + user.userStatusName;
+		getEventInfo();
+	}
+	else {
+		location.replace("/login?&/eventMarkPresence.htm?eventCode=" + eventCode);
+	}
+}
+
+function getEventInfo()
+{
+	var eventInfo = Ajax.runEval("/script/monitoringEvent.exe?getEventInfo&" + eventCode);
+	
+	var result = "<p align=\"center\"><b>Информация о выбранном мероприятии</b></p>";	
+	result += "<table border=\"1\" width=\"60%\">";
+	result += "<tr>";
+	result += "<td align=\"left\" valign=\"top\">";
+	
+	//result += "<b><u>Код темы</u></b> - " + eventInfo.eventCode;
+	//result += "<br>";
+	result += "<b><u>Название, место и дата проведения мероприятия</u></b> - " + eventInfo.eventName;
+	result += "<br>";
+	result += "<b><u>Краткое описание мероприятия</u></b> - " + eventInfo.eventComment;
+	result += "<br>";
+	result += "<b><u>Приоритетное направление</u></b> - " + eventInfo.priorityDirectionName;
+	result += "<br>";
+	result += "<b><u>Связь с предприятиями научно-промышленной сферы области</u></b> - " + eventInfo.scienceIndustrialSphereName;
+	result += "<br>";
+	result += "<b><u>Дата/время ввода мероприятия</u></b> - " + eventInfo.eventDateTime;
+	result += "<br>";
+	result += "<b><u>Научное направление мероприятия (1)</u></b> - " + eventInfo.eventScienceDirectionName1;
+	result += "<br>";
+	result += "<b><u>Научное направление мероприятия (2)</u></b> - " + eventInfo.eventScienceDirectionName2;
+	result += "<br>";
+	result += "<b><u>Научное направление мероприятия (3)</u></b> - " + eventInfo.eventScienceDirectionName3;
+	result += "<br>";
+	result += "<b><u>Статус мероприятия</u></b> - " + eventInfo.eventStatusThemeName;
+
+	result += "</td>";
+	result += "</tr>";
+	result += "</table>";
+	
+	result += "<br>";
+	
+	
+	//Информация об участниках, прикрепленных к мероприятию
+	var userInfoByEvent = Ajax.runEval("/script/monitoringEvent.exe?getUserInfoByConnectedEvent&" + eventCode);
+	var j = 1;
+	
+	result += "<p align=\"center\"><b>Информация об участниках данного мероприятия</b></p>";
+	
+	result += "<table border=\"1\" id=\"eventMarkTable\" style=\"align: center;\" width=\"80%\">";
+	result += "<tr>";
+
+	result += "<td align=\"left\" valign=\"top\">" + "№ п/п" + "</td>";
+	result += "<td align=\"left\" valign=\"top\">" + "ФИО" + "</td>";
+	result += "<td align=\"left\" valign=\"top\">" + "Название университета, округа, района" + "</td>";
+	
+	result += "<td align=\"left\" valign=\"top\">" + "Университет, НИИ школа" + "</td>";
+	
+	result += "<td align=\"left\" valign=\"top\">" + "Статус" + "</td>";		
+	
+	
+	result += "<td align=\"left\" valign=\"top\">" + "Краткий комментарий, указанный пользователем" + "</td>";
+	
+	result += "<td align=\"left\" valign=\"top\">" + "Отметка об участии" + "</td>";
+	
+	result += "<td align=\"left\" valign=\"top\">" + "Отметка об активном участии" + "</td>";
+	
+	result += "</tr>";	
+	
+	for(var i = 0; i < userInfoByEvent.length; i++) {
+		result += "<tr>";
+		
+		result += "<td align=\"center\" valign=\"center\">" + String(j) + "</td>";
+		
+		result += "<td align=\"left\" valign=\"top\">" + userInfoByEvent[i].statusListFIO + "</td>";
+		result += "<td align=\"left\" valign=\"top\">" + userInfoByEvent[i].statusListOrganizationName + "</td>";
+		
+		result += "<td align=\"left\" valign=\"top\">" + userInfoByEvent[i].statusListSubdivisionLevel1Name + "</td>";
+		
+		//result += "<td align=\"left\" valign=\"top\">" + userInfoByEvent[i].statusListPostName + "</td>";
+		result += "<td align=\"left\" valign=\"top\">" + userInfoByEvent[i].statusListStatusName + "</td>";
+		
+		result += "<td align=\"left\" valign=\"top\">" + userInfoByEvent[i].statusListEventComment + "</td>";
+		
+		
+		//Проверка присутствия (участия)
+		if (eval(userInfoByEvent[i].statusListMarkPresence) == 1) {
+			result += "<td align=\"left\" valign=\"top\">" + "<b><c>Присутствовал(-а)</c></b>" + "</td>";
+		}
+		else {
+			result += "<td id=\"markPresence" + userInfoByEvent[i].statusListCode + "\" " + "align=\"left\" valign=\"top\"><font size=\"2\"><a href=\"javascript:markPresence(" + userInfoByEvent[i].statusListCode + "," + eventCode + ");\">" + "<b><c>Записался(-ась)</c></b>" + "</font></a></td>";			
+		}
+		
+		
+		//Проверка активного участия
+		if (eval(userInfoByEvent[i].statusListMarkActive) == 1) {
+			result += "<td align=\"left\" valign=\"top\">" + "<b><c>Активно участвовал(-а) и отличился(-ась)</c></b>" + "</td>";
+		}
+		else {
+			result += "<td id=\"markActive" + userInfoByEvent[i].statusListCode + "\" " + "align=\"left\" valign=\"top\"><font size=\"2\"><a href=\"javascript:markActive(" + userInfoByEvent[i].statusListCode + "," + eventCode + ");\">" + "<b><c>Участвовал(-а)</c></b>" + "</font></a></td>";			
+		}
+
+		
+		
+		result += "</tr>";
+		j++;
+	}
+	
+	result += "</table>"
+	result += "<p></p>";
+	
+	
+	document.getElementById("eventInfo").innerHTML = result;
+	TABLE_SORT(document.getElementById("eventMarkTable"));	
+}
+
+
+function markPresence(userCode, eventCode)
+{
+	var preResult = "<img src=\"img/loader2.gif\" />";
+	document.getElementById("markPresence" + userCode).innerHTML = preResult;
+	
+	var result = Ajax.run("/script/monitoringEvent.exe?setMarkPresence&" + userCode + "&" + eventCode);
+	if (result == "ok") {
+		document.getElementById("markPresence" + userCode).innerHTML = "<b><c>Присутствовал(-а)</c></b>";
+	}
+	else {
+		alert("Ошибка!");
+		document.getElementById("markPresence" + userCode).innerHTML = "<a href=\"javascript:markPresence(" + userCode + "," + eventCode + ");\">" + "<b><c>Отметить</c></b>";
+	}
+}
+
+
+function markActive(userCode, eventCode)
+{
+	var preResult = "<img src=\"img/loader2.gif\" />";
+	document.getElementById("markActive" + userCode).innerHTML = preResult;
+	
+	var result = Ajax.run("/script/monitoringEvent.exe?setMarkActive&" + userCode + "&" + eventCode);
+	if (result == "ok") {
+		document.getElementById("markActive" + userCode).innerHTML = "<b><c>Активно участвовал(-а) и отличился(-ась)</c></b>";
+	}
+	else {
+		alert("Ошибка!");
+		document.getElementById("markActive" + userCode).innerHTML = "<a href=\"javascript:markActive(" + userCode + "," + eventCode + ");\">" + "<b><c>Отметить</c></b>";
+	}
+}
+
+
+//Определение параметра, переданного html странице
+function param(Name)
+{
+	var Params = location.search.substring(1).split("&");
+	var variable = "";
+	for (var i = 0; i < Params.length; i++)
+	{
+		if(Params[i].split("=")[0] == Name)
+	{
+	
+	if (Params[i].split("=").length > 1)
+	variable = Params[i].split("=")[1];
+	return variable;
+	}}
+	return "";
+}
+
+</script>
+
+</head>
+
+<style>
+#parent_popup {
+  background: #000;
+  /*height: 100%;*/
+  height: 0px;
+  opacity: 0.9;
+  position: fixed;
+  width: 100%;
+  z-index: 100;
+  top: 0;
+  left: 0;
+}
+
+#parent_popup_enter {
+  background: #000;
+  /*height: 100%;*/
+  height: 0px;
+  opacity: 0.9;
+  position: fixed;
+  width: 100%;
+  z-index: 100;
+  top: 0;
+  left: 0;
+}
+
+#exit {
+	width: 25px;
+	text-align: right;
+}
+
+#popup {
+  background-color: #ffffff;
+  /*height:0px;*/
+  height: 650px;
+  position: fixed;
+  top: 100px;
+  left: 13%;
+  color: #f00;
+  width: 1455px;
+}
+
+#popup_enter {
+  background-color: #ffffff;
+  /*height:0px;*/
+  height: 139px;
+  position: fixed;
+  top: 300px;
+  left: 39%;
+  color: #f00;
+  width: 500px;
+}
+
+</style>
+
+
+
+
+<body onload="onLoad();">
+			
+			<div style="visibility: hidden;" id="parent_popup">
+			  		<div id="popup">
+			  			<p class="exit" align="right"><a style="cursor: pointer;" onclick="document.getElementById('parent_popup').style.display='none';">Закрыть</a></p>
+					    <div id="placeHolderImage">
+							<p align="center"><font face="Tahoma" color="#000000"><b><span id="participant" style="font-size: 14pt"></span></b></font></p>
+							<p align="center">
+							<img id="userInstruction" src-"" />
+					    </div>
+					</div>
+			</div>
+
+
+
+
+<div id="wrapeall">
+	<div id="header">
+		<div class="logoText">
+			<span style="background-color: #FFFF00"></span></div>
+	</div>
+		
+	<p></p>
+
+
+	<div class="headline">
+		<p id="user" style="text-align: right"><span style="font-weight: 400"><i>000</i></span></p>
+		<p>
+		<span id="eventInfo" style="font-weight: 400">0</span><p>
+		&nbsp;</div>	
+	<div id="footer">
+		<div class="footerText">
+			<span>Copyright ПМиВТ</span>
+		</div>
+	</div>
+</div>
+
+
+</body>
+
+</html>

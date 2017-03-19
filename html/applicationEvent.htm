@@ -1,0 +1,258 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1251">
+<title>Подача заявки на включение в тему</title>
+<link rel="stylesheet" href="style/style.css">
+
+<script type="text/javascript" src="js/Ajax.js"></script>
+<script type="text/javascript" src="js/Base64.js"></script>
+<script type="text/javascript" src="js/remText.js"></script>
+
+<script>
+
+var eventCode = param("eventCode");
+var user;
+var childCode = 0;
+function onLoad()
+{
+	user = Ajax.runEval("/script/login.exe?user");
+
+	//Если или ученик, учитель, консультант, координатор от организации-партнера, администратор, аналитик
+	if (eval(user.userStatusCode) == 2 || eval(user.userStatusCode) == 3 || eval(user.userStatusCode) == 4 || eval(user.userStatusCode) == 100 || eval(user.userStatusCode) == 14 || eval(user.userStatusCode) == 17) {
+		document.getElementById("user").innerHTML = "Вы вошли как " + user.userFIO + ", " + user.userStatusName;
+		getEventInfo();
+	}
+	else {
+		alert("Записываться могут только ученики, их руководители и научные консультанты, зарегистрированные в Программы \"ВЗЛЕТ\"");
+//		Вы не имеете права работать с данным режимом! ");
+		location.replace("/login?&/applicationEvent.htm?eventCode=" + eventCode);
+	}
+}
+
+function getEventInfo()
+{
+	var eventInfo = Ajax.runEval("/script/enterEvent.exe?getEventInfo&" + eventCode);
+
+	var result = "<p align=\"center\"><b>Информация о выбранной теме</b></p>";	
+	result += "<table border=\"1\" width=\"60%\">";
+	result += "<tr>";
+	result += "<td align=\"left\" valign=\"top\">";
+	result += "<b><u>Название, место и дата проведения мероприятия</u></b> - " + eventInfo.eventName;
+	result += "<br>";
+	result += "<b><u>Комментарий</u></b> - " + eventInfo.eventComment;
+	result += "<br>";
+	
+	result += "<b><u>Приоритетное направление</u></b> - " + eventInfo.priorityDirectionName;
+	result += "<br>";
+	result += "<b><u>Связь с предприятиями научно-промышленной сферы области</u></b> - " + eventInfo.scienceIndustrialSphereName;
+	result += "<br>";
+		
+	result += "<b><u>Дата/время ввода мероприятия</u></b> - " + eventInfo.eventDateTime;
+	result += "<br>";
+	result += "<b><u>Научное направление мероприятия (1)</u></b> - " + eventInfo.eventScienceDirectionName1;
+	result += "<br>";
+	result += "<b><u>Научное направление мероприятия (2)</u></b> - " + eventInfo.eventScienceDirectionName2;
+	result += "<br>";
+	result += "<b><u>Научное направление мероприятия (3)</u></b> - " + eventInfo.eventScienceDirectionName3;
+	result += "<br>";
+	result += "<b><u>Статус мероприятия</u></b> - " + eventInfo.eventStatusThemeName;
+	result += "<br>";
+
+	result += "</td>";
+	result += "</tr>";
+	result += "</table>";
+	
+	result += "<br>";
+	
+	
+	
+	//Информация об участниках, прикрепленных к мероприятию
+	var userInfoByEvent = Ajax.runEval("/script/enterEvent.exe?getUserInfoByConnectedEvent&" + eventCode);
+	var j = 1;
+	
+	result += "<p align=\"center\"><b>Информация об участниках выбранной темы</b></p>";
+	
+	result += "<table border=\"1\" width=\"80%\">";
+	result += "<tr>";
+
+	result += "<td align=\"left\" valign=\"top\">" + "№ п/п" + "</td>";
+	result += "<td align=\"left\" align=\"center\" valign=\"top\">" + "<b>ФИО</b>" + "</td>";
+	result += "<td align=\"left\" align=\"center\" valign=\"top\">" + "<b>Название университета, округа, района</b>" + "</td>";
+	
+	result += "<td align=\"left\" align=\"center\" valign=\"top\">" + "<b>Университет, НИИ школа</b>" + "</td>";
+	
+	result += "<td align=\"left\" align=\"center\" valign=\"top\">" + "<b>Должность</b>" + "</td>";
+	result += "<td align=\"left\" align=\"center\" valign=\"top\">" + "<b>Статус</b>" + "</td>";		
+	
+	result += "</tr>";	
+	
+	for(var i = 0; i < userInfoByEvent.length; i++) {
+		result += "<tr>";
+		
+		result += "<td align=\"center\" valign=\"center\">" + String(j) + "</td>";
+		result += "<td align=\"left\" valign=\"top\">" + userInfoByEvent[i].statusListFIO + "</td>";
+		result += "<td align=\"left\" valign=\"top\">" + userInfoByEvent[i].statusListOrganizationName + "</td>";
+		
+		result += "<td align=\"left\" valign=\"top\">" + userInfoByEvent[i].statusListSubdivisionLevel1Name + "</td>";
+		
+		result += "<td align=\"left\" valign=\"top\">" + userInfoByEvent[i].statusListPostName + "</td>";
+		result += "<td align=\"left\" valign=\"top\">" + userInfoByEvent[i].statusListStatusName + "</td>";
+		
+		result += "</tr>";
+		j++;
+	}
+	
+	result += "</table>"
+	result += "<p></p>";
+	
+	document.getElementById("eventInfo").innerHTML = result;
+	
+	document.getElementById("forChild").style.visibility = "visible";
+}
+
+
+
+//Включение консультанта в тему
+function applyToEvent()
+{
+	if (window.confirm("Вы уверены, что хотите принять участие в этом мероприятии?")) {
+		document.getElementById("parent_popup_enter").style.visibility = "visible";
+		document.getElementById("parent_popup_enter").style.height = "1%";
+		document.getElementById("parent_popup_enter").style.display = "block";
+		
+		
+		var comment = window.prompt("Напишите краткий комментарий для участия ");
+		alert(Ajax.run("/script/enterEvent.exe?applyToEvent&" + eventCode + "&" + Base64.encode(T(comment))));			
+		
+		document.getElementById("parent_popup_enter").style.visibility = "hidden";
+		document.getElementById("parent_popup_enter").style.height = "1%";
+		document.getElementById("parent_popup_enter").style.display = "block";
+		
+		location.href = "index.html";
+	}
+}
+
+
+//Определение параметра, переданного html странице
+function param(Name)
+{
+	var Params = location.search.substring(1).split("&");
+	var variable = "";
+	for (var i = 0; i < Params.length; i++)
+	{
+		if(Params[i].split("=")[0] == Name)
+	{
+	
+	if (Params[i].split("=").length > 1)
+	variable = Params[i].split("=")[1];
+	return variable;
+	}}
+	return "";
+}
+
+
+</script>
+
+</head>
+
+<style>
+#parent_popup {
+  background: #000;
+  /*height: 100%;*/
+  height: 0px;
+  opacity: 0.9;
+  position: fixed;
+  width: 100%;
+  z-index: 100;
+  top: 0;
+  left: 0;
+}
+
+#parent_popup_enter {
+  background: #000;
+  /*height: 100%;*/
+  height: 0px;
+  opacity: 0.9;
+  position: fixed;
+  width: 100%;
+  z-index: 100;
+  top: 0;
+  left: 0;
+}
+
+#exit {
+	width: 25px;
+	text-align: right;
+}
+
+#popup {
+  background-color: #ffffff;
+  /*height:0px;*/
+  height: 650px;
+  position: fixed;
+  top: 100px;
+  left: 13%;
+  color: #f00;
+  width: 1455px;
+}
+
+#popup_enter {
+  background-color: #ffffff;
+  /*height:0px;*/
+  height: 139px;
+  position: fixed;
+  top: 300px;
+  left: 39%;
+  color: #f00;
+  width: 500px;
+}
+
+</style>
+
+
+
+
+<body onload="onLoad();">
+			
+	<div style="visibility: hidden;" id="parent_popup_enter">
+  		<div id="popup_enter">
+		    <div id="placeHolderImage">
+		    	<div style="padding: 20px; margin-left:100px; margin-right: 100px; font-family: Tahoma; font-size: 18;">
+					<center><font color="#000000"><span><i>Выполняется ввод информации в систему</i></span></font></center>
+					<center><font color="#000000"><span><i id="countDownload">Пожалуйста, подождите...</i></span></font></center>
+					<center><img src="img/univ_loader.gif" /></center>
+				</div>
+		    </div>
+		</div>
+	</div>
+
+
+
+
+<div id="wrapeall">
+	<div id="header">
+		<div class="logoText">
+			<span style="background-color: #FFFF00">hfghfghfghfghfg 
+			nvbnnvbnnvnvbnvnbnvnvbnfhfghfgh</span></div>
+	</div>
+		
+	<p></p>
+
+
+	<div class="headline">
+		<p id="user" style="text-align: right"><span style="font-weight: 400"><i>000</i></span></p>
+		<p>
+		<span id="eventInfo" style="font-weight: 400">0</span><p>
+		<span id="forChild" style="font-weight: 400; visibility: hidden;">Если вы хотите принять участие в данном мероприятии, нажмите <a href="javascript:applyToEvent();">здесь</a></span><p>&nbsp;<p>&nbsp;<p>&nbsp;</div>	
+	<div id="footer">
+		<div class="footerText">
+			<span>Copyright ПМиВТ</span>
+		</div>
+	</div>
+</div>
+
+
+</body>
+
+</html>

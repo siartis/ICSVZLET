@@ -1,0 +1,346 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1251">
+<title>Регистрация пользователя</title>
+<link rel="stylesheet" href="style/style.css">
+
+<script type="text/javascript" src="js/Ajax.js"></script>
+<script type="text/javascript" src="js/Base64.js"></script>
+<script type="text/javascript" src="js/script.js"></script>
+
+<script>
+
+var user;
+var organizationCode, subdivisionLevel1Code, organizationTypeCode = 0; //Коды организации, подразделения и типа организации
+function onLoad()
+{
+	//Текущий пользователь
+	setCurrentUser();
+	
+	user = Ajax.runEval("/script/login.exe?user");
+	//Если ответственный от подразделения или учитель
+	//if ((eval(user.userStatusCode) == 16) || ((eval(user.userStatusCode) == 3))) {
+	if (eval(user.userStatusCode) == 16) {
+			organizationCode = user.userOrganizationCode;
+		subdivisionLevel1Code = user.userSubdivisionCode;
+		organizationTypeCode = user.userOrganizationTypeCode;
+		
+		getOptions();
+	}
+	else {
+		alert("Вы не имеете права на регистрацию!");
+		location.replace("/login?&/regMember.htm");
+	}
+}
+
+
+function getOptions()
+{
+	var degree = document.getElementById("degree");
+	var degrees = Ajax.runEval("/script/regUser.exe?getDegree");
+	 
+	//Ученая степень
+	for(var i = 0; i < degrees.length; i++)
+	{
+		degree.options[degree.options.length] = new Option(degrees[i].degreeName, degrees[i].degreeCode);	
+	}
+	
+	
+	var academicDirection = document.getElementById("academicDirection");
+	var academicDirections = Ajax.runEval("/script/regUser.exe?getAcademicDirection");
+	
+	//Ученое звание
+	for(var i = 0; i < academicDirections.length; i++)
+	{
+		academicDirection.options[academicDirection.options.length] = new Option(academicDirections[i].academicDirectionName, academicDirections[i].academicDirectionCode);	
+	}
+	
+	
+	var status = document.getElementById("status");
+	var statuses = Ajax.runEval("/script/regUser.exe?getSchoolStatus");
+
+	//Статус в организации
+	for(var i = 0; i < statuses.length; i++)
+	{
+		status.options[status.options.length] = new Option(statuses[i].statusName, statuses[i].statusCode);	
+	}
+	
+	
+	var post = document.getElementById("post");
+	post.innerHTML = "";
+//	var posts = Ajax.runEval("/script/regUser.exe?getPostByOrganizationType&" + organizationTypeCode);
+	var posts = Ajax.runEval("/script/regUser.exe?getPostSchoolByOrganizationType&" + organizationTypeCode);
+
+	//Должность в организации
+	for(var i = 0; i < posts.length; i++)
+	{
+		post.options[post.options.length] = new Option(posts[i].postName, posts[i].postCode);	
+	}
+	
+	
+	//Выводим на экран название организации, название подразделения и название типа организации
+	document.getElementById("organizationName").innerHTML = user.userOrganizationName;
+	document.getElementById("subdivisionLevel1Name").innerHTML = user.userSubdivisionName;
+	document.getElementById("organizationTypeName").innerHTML = user.userOrganizationTypeName;
+}
+
+
+function postChanged()
+{
+//	document.getElementById("teacherProperties").style.visibility = "hidden";
+}
+
+
+//Регистрация нового пользователя
+function setUser()
+{
+	var userFIO = document.getElementById("userFIO").value;
+	var userHonoraryTitle = document.getElementById("userHonoraryTitle").value;
+	var userPhone = document.getElementById("userPhone").value;
+	var userMobilePhone = document.getElementById("userMobilePhone").value;
+	var userEMail = document.getElementById("userEMail").value;
+	
+	var degree = document.getElementById("degree").value;
+	var academicDirection = document.getElementById("academicDirection").value;
+	var status = document.getElementById("status").value;
+
+	var post = document.getElementById("post").value;
+	
+	var query = "/script/regUser.exe?setUser&" + Base64.encode(userFIO) + "&" +
+	Base64.encode(userHonoraryTitle) + "&" + userPhone + "&" + userMobilePhone + "&" + Base64.encode(userEMail) + "&" + degree + "&" + academicDirection + "&" + 
+	organizationCode + "&" + status + "&" + subdivisionLevel1Code + "&" + post;
+	
+	//alert(query);
+	
+	alert(Ajax.run(query));
+
+	//alert(degree);
+}
+
+
+
+
+</script>
+
+
+
+
+</head>
+
+<body onload="onLoad();">
+<div id="wrapeall">
+	<div id="header">
+		<div class="logoText">
+			<span style="background-color: #FFFF00">hfghfghfghfghfg 
+			nvbnnvbnnvnvbnvnbnvnvbnfhfghfgh</span></div>
+	</div>
+		
+	<p></p>
+
+
+				<div class="currentUser">
+					<p style="margin-left: 100px; margin-right: 100px" align="right">
+					<font color="#FFFFFF"><b>
+					<span style="font-size: 12pt; background-color: #000080" id="currentUser">0</span></b></font><span style="font-size: 16pt">
+					</span><span style="font-size: 16pt">
+
+		
+		
+		
+		<p style="margin-left: 100px; margin-right: 100px" align="center">
+		<b>Регистрация нового участника Программы</b></span><span style="font-size: 16pt"></div>	
+
+
+	<div id="middlePartPage">
+		<div align="center">
+			<table border="1" width="80%" id="table1">
+				<tr>
+					<td align="left" valign="top" width="30%" bgcolor="#FFAE5E">
+					Тип участника</td>
+					<td align="left" valign="top" width="70%">
+					<select size="1" id="status" name="D7" onchange="postChanged();">
+					<option selected value="0">Укажите</option>
+					</select></td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" width="30%" bgcolor="#FFAE5E">
+					ФИО участника</td>
+					<td align="left" valign="top" width="70%">
+					<input type="text" id="userFIO" name="T1" size="59"></td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" width="30%" bgcolor="#FFAE5E">
+					<span lang="ru">Текущий статус участника</span></td>
+					<td align="left" valign="top" width="70%">
+					<select size="1" id="post" name="D6">
+					<option selected value="0">Укажите</option>
+					</select></td>
+				</tr>
+				<tr id="teacherProperties">
+					<td align="left" valign="top" width="30%" bgcolor="#FFAE5E">Ученая степень</td>
+					<td align="left" valign="top" width="70%">
+					<select size="1" id="degree" name="D1"></select></td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" width="30%" bgcolor="#FFAE5E">Ученое звание</td>
+					<td align="left" valign="top" width="70%">
+					<select size="1" id="academicDirection" name="D2"></select></td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" width="30%" bgcolor="#FFAE5E">Почетные звания</td>
+					<td align="left" valign="top" width="70%">
+					<input type="text" id="userHonoraryTitle" name="T2" size="59"></td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" width="30%" bgcolor="#FFAE5E">Номер телефона 
+					(стационарный, с кодом города)</td>
+					<td align="left" valign="top" width="70%">
+					<input type="text" id="userPhone" name="T3" size="59"></td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" width="30%" bgcolor="#FFAE5E" height="26">Номер телефона 
+					(мобильный)</td>
+					<td align="left" valign="top" width="70%" height="26">
+					<input type="text" id="userMobilePhone" name="T4" size="59"></td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" width="30%" bgcolor="#FFAE5E">Адрес электронной 
+					почты</td>
+					<td align="left" valign="top" width="70%">
+					<input type="text" id="userEMail" name="T5" size="59"></td>
+				</tr>
+				</table>
+			<p>&nbsp;</p>
+			<table border="1" width="80%" id="table2">
+				<tr>
+					<td align="left" valign="top" colspan="4">
+					<p align="center"><b><span style="font-size: 16pt">Сведения 
+					о предыдущих достижениях</span></b></td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" width="30%">Кол-во 
+					районных/городских научных конференций, в которых принимал 
+					участие со своими проектами/был руководителем авторов 
+					проектов</td>
+					<td align="left" valign="top" width="10%">
+					&nbsp;</td>
+					<td align="left" valign="top" width="251">
+					<p style="margin-top: 0; margin-bottom: 0">
+					<span style="font-size: 12pt">В скольких из них был 
+					победителем/лауреатом или их руководителем</td>
+					<td align="left" valign="top" width="10%">
+					&nbsp;</td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" width="30%">&nbsp;</td>
+					<td align="left" valign="top" width="10%">
+					&nbsp;</td>
+					<td align="left" valign="top" width="251">
+					&nbsp;</td>
+					<td align="left" valign="top" width="10%">
+					&nbsp;</td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" width="30%">Кол-во 
+					региональных/отраслевых научных конференций, в которых 
+					принимал участие со своими проектами/был руководителем 
+					авторов проектов</td>
+					<td align="left" valign="top" width="10%">
+					&nbsp;</td>
+					<td align="left" valign="top" width="251">
+					<span style="font-size: 12pt">В скольких из них был 
+					победителем/лауреатом или их руководителем</td>
+					<td align="left" valign="top" width="10%">
+					&nbsp;</td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" width="30%">&nbsp;</td>
+					<td align="left" valign="top" width="10%">
+					&nbsp;</td>
+					<td align="left" valign="top" width="251">
+					&nbsp;</td>
+					<td align="left" valign="top" width="10%">
+					&nbsp;</td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" width="30%">Кол-во публикаций 
+					с его участием в научных журналах</td>
+					<td align="left" valign="top" width="10%">
+					&nbsp;</td>
+					<td align="left" valign="top" width="251">
+					<span style="font-size: 12pt">Сколько из них в индексируемых 
+					в РИНЦ, входящих в список ВАК</td>
+					<td align="left" valign="top" width="10%">
+					&nbsp;</td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" width="30%">&nbsp;</td>
+					<td align="left" valign="top" width="10%">
+					&nbsp;</td>
+					<td align="left" valign="top" width="251">
+					&nbsp;</td>
+					<td align="left" valign="top" width="10%">
+					&nbsp;</td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" width="30%">Наличие 
+					рекомендации психолога к занятию ученика творческой 
+					деятельностью</td>
+					<td align="left" valign="top" width="10%">
+					&nbsp;</td>
+					<td align="left" valign="top" width="251">
+					логическое поле</td>
+					<td align="left" valign="top" width="10%">
+					&nbsp;</td>
+				</tr>
+				</table>
+			<p>&nbsp;</p>
+			<table border="1" width="80%" id="table3">
+				<tr>
+					<td align="center" valign="top" width="1239" colspan="2"><b>Сведения об 
+					организации, от которой пользователь работает в системе</b></td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" width="30%" bgcolor="#FFAE5E">Тип организации</td>
+					<td align="left" valign="top" width="70%">
+					<span style="font-size: 14pt; font-weight: 700; font-style: italic" id="organizationTypeName">00</span></td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" width="30%" bgcolor="#FFAE5E">Название 
+					организации</td>
+					<td align="left" valign="top" width="70%">
+					<span id="organizationName" style="font-size: 14pt; font-weight: 700; font-style: italic">01</span></td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" width="30%" bgcolor="#FFAE5E">Подразделение 
+					организации</td>
+					<td align="left" valign="top" width="70%">
+					<i><b><span id="subdivisionLevel1Name" style="font-size: 14pt">02</span></b></i></td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" width="30%" bgcolor="#FFAE5E">Статус в системе 
+					от этого подразделения</td>
+					<td align="left" valign="top" width="70%">
+					&nbsp;&nbsp;&nbsp; </td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" width="30%">&nbsp;</td>
+					<td align="left" valign="top" width="70%">
+					&nbsp;</td>
+				</tr>
+				</table>
+				<p>
+					<input type="button" value="Регистрация" name="B3" onclick="setUser();"></div>
+	</div>	
+	<div id="footer">
+		<div class="footerText">
+			<span>Copyright ПМиВТ</span>
+		</div>
+	</div>
+</div>
+
+
+</body>
+
+</html>

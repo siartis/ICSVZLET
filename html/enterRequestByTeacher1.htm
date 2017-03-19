@@ -1,0 +1,599 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1251">
+<title>Ввод информации об условно сложившемся исследовательском коллективе "ученик-учитель-консультант"</title>
+<link rel="stylesheet" href="style/style.css">
+<link rel="stylesheet" href="style/popupStyle.css">
+
+<script type="text/javascript" src="js/Ajax.js"></script>
+<script type="text/javascript" src="js/Base64.js"></script>
+<script type="text/javascript" src="js/remText.js"></script>
+
+<script>
+
+var user;
+var childCode = 0;
+function onLoad()
+{
+	//user = Ajax.runEval("/script/login.exe?user");
+	//Если учитель
+	/*if (eval(user.userStatusCode) == 3) {
+		document.getElementById("currentUser").innerHTML = "Вы вошли как " + user.userFIO + ", " + user.userStatusName;
+		document.getElementById("tutorName").innerHTML = user.userFIO;
+		getUniversity();
+		getScienceDirection();
+	}
+	else {
+		location.replace("/login?&/enterRequestByTeacher1.htm");
+	}*/
+	
+	var result = "Для ввода уже сложившихся коллективов используйте следующий способ: \n";
+	result += "консультант вводит предлагаемую тему проекта в систему \"ВЗЛЕТ\". Затем  в удобное время связывается по привычным каналам связи с известным ему учителем и просит его через систему \"ВЗЛЕТ\" отметить желание выполнения вместе со своим учеником этого проекта. "
+	alert(result);
+	
+	location.href="main.html";
+}
+
+
+function getUniversity()
+{
+	var university = Ajax.runEval("/script/entertheme.exe?getUniversity");
+	var universitys = document.getElementById("consultUniversity");
+
+	for(var i = 0; i < university.length; i++)
+	{
+		universitys.options[universitys.options.length] = new Option(university[i].universityName, university[i].universityCode);	
+	}
+}
+
+//Подгрузка списка консультантов по выбраному университету
+function univChange()
+{
+	var consultants = document.getElementById("consultantFIO");
+	consultants.options.length = 0;
+	
+	var university = document.getElementById("consultUniversity").value;
+	var consultant = Ajax.runEval("/script/entertheme.exe?getConsultant&" + university);
+	
+	consultants.options[consultants.options.length] = new Option("Укажите", 0);	
+	
+	for(var i = 0; i < consultant.length; i++)
+	{
+		consultants.options[consultants.options.length] = new Option(consultant[i].consultantFIO, consultant[i].consultantCode);	
+	}
+}
+
+function getScienceDirection()
+{
+	var scienceDirection = Ajax.runEval("/script/entertheme.exe?getScienceDirection");
+	var sections = Ajax.runEval("/script/entertheme.exe?getSection");
+	var priorityDirections = Ajax.runEval("/script/entertheme.exe?getPriorityDirection");
+	var scienceIndustrialSpheres = Ajax.runEval("/script/entertheme.exe?getScienceIndustrialSphere");
+
+	var sciDirection1 = document.getElementById("scienceDirection1");
+	var sciDirection2 = document.getElementById("scienceDirection2");
+	var sciDirection3 = document.getElementById("scienceDirection3");
+	
+	var section = document.getElementById("section");
+	var scienceIndustrialSphere = document.getElementById("scienceIndustrialSphere");
+	var priorityDirection = document.getElementById("priorityDirection");
+
+	//Научное направление 1
+	for(var i = 0; i < scienceDirection.length; i++)
+	{
+		sciDirection1.options[sciDirection1.options.length] = new Option(scienceDirection[i].scienceDirectionName, scienceDirection[i].scienceDirectionCode);	
+	}
+	
+	//Научное направление 2
+	for(var i = 0; i < scienceDirection.length; i++)
+	{
+		sciDirection2.options[sciDirection2.options.length] = new Option(scienceDirection[i].scienceDirectionName, scienceDirection[i].scienceDirectionCode);	
+	}
+	
+	//Научное направление 3
+	for(var i = 0; i < scienceDirection.length; i++)
+	{
+		sciDirection3.options[sciDirection3.options.length] = new Option(scienceDirection[i].scienceDirectionName, scienceDirection[i].scienceDirectionCode);	
+	}
+	
+	
+	//Приоритетное направление
+	for(var i = 0; i < priorityDirections.length; i++)
+	{
+		priorityDirection.options[priorityDirection.options.length] = new Option(priorityDirections[i].priorityDirectionName, priorityDirections[i].priorityDirectionCode);	
+	}
+	
+	//Секции
+	for(var i = 0; i < sections.length; i++)
+	{
+		section.options[section.options.length] = new Option(sections[i].sectionName, sections[i].sectionCode);	
+	}
+	
+	//Научно-техническая сфера
+	for(var i = 0; i < scienceIndustrialSpheres.length; i++)
+	{
+		scienceIndustrialSphere.options[scienceIndustrialSphere.options.length] = new Option(scienceIndustrialSpheres[i].scienceIndustrialSphereName, scienceIndustrialSpheres[i].scienceIndustrialSphereCode);	
+	}
+}
+
+
+function enterTheme()
+{
+	var university = document.getElementById("consultUniversity").value;
+	
+	//var childCode = document.getElementById("childCode").value;
+	var child = document.getElementById("child").value;
+	
+	var section = document.getElementById("section");
+	var themeName = document.getElementById("themeName");
+	
+	var consultant = document.getElementById("consultantFIO").value;
+
+	if (themeName.value == "") {
+		themeName.style.background = "red";
+		alert("Пожалуйста, введите тему проекта!");
+	}
+	else {
+		themeName.style.background = "white";
+			
+		if (child == "") {
+			alert("Вы не выбрали ученика!");
+		}
+		else {
+			//Проверка на число
+			/*if (isNaN(childCode)) {
+				alert("Проверьте правильность ввода кода ученика!");
+			}*/
+			//else {
+			
+				
+				if (eval(university) != 0) {
+					if (eval(consultant) != 0) {			
+						
+						document.getElementById("parent_popup_enter").style.visibility = "visible";
+						document.getElementById("parent_popup_enter").style.height = "1%";
+						document.getElementById("parent_popup_enter").style.display = "block";
+												
+						
+						var themeName = document.getElementById("themeName").value;
+						var comment = document.getElementById("comment").value;
+						var scienceDirection1 = document.getElementById("scienceDirection1");
+						var scienceDirection2 = document.getElementById("scienceDirection2");
+						var scienceDirection3 = document.getElementById("scienceDirection3");
+						
+						var priorityDirection = document.getElementById("priorityDirection");
+						var section = document.getElementById("section");
+						var scienceIndustrialSphere = document.getElementById("scienceIndustrialSphere");
+						
+						var infoAboutTutor = document.getElementById("tutorAbout").value;
+						var infoAboutChild = document.getElementById("childAbout").value;
+		
+		
+						if (window.confirm("Вы уверены?\nПосле ввода этой информации в систему внесение корректив возможно только через межвузовский центр (mvc@vzletsamara.ru). ")) {
+							
+							query = "/script/entertheme.exe?enterRequestByTeacher1&" + 
+							Base64.encode(themeName) + "&" + Base64.encode(T(comment)) + "&" +
+							String(priorityDirection.options[priorityDirection.selectedIndex].value) + "&" +
+							String(section.options[section.selectedIndex].value) + "&" +
+							String(scienceIndustrialSphere.options[scienceIndustrialSphere.selectedIndex].value) + "&" +	
+							String(scienceDirection1.options[scienceDirection1.selectedIndex].value) + "&" +
+							String(scienceDirection2.options[scienceDirection2.selectedIndex].value) + "&" +
+							String(scienceDirection3.options[scienceDirection3.selectedIndex].value) + "&" + String(childCode) + "&" + Base64.encode(T(infoAboutTutor)) + "&" + Base64.encode(T(infoAboutChild)) + "&" + consultant;
+							 
+							var result = Ajax.run(query);
+							if (result == "ok") {
+								document.getElementById("parent_popup_enter").style.visibility = "hidden";
+								document.getElementById("parent_popup_enter").style.height = "1%";
+								document.getElementById("parent_popup_enter").style.display = "block";
+								
+								alert("Информация о сложившемся коллективе успешно введена! ");
+								
+								location.href = "index.html";
+							}
+							else {
+								alert(result);
+							}
+						}
+					}
+					else {
+						alert("Вы не выбрали консультанта!");
+					}
+				}
+				else {
+					alert("Вы не выбрали университет консультанта!");
+				}
+			//}
+		}	
+	}
+}
+
+
+
+
+
+function getChildCode()
+{
+	document.getElementById("parent_popup").style.visibility = "visible";
+	document.getElementById("parent_popup").style.height = "100%";
+	document.getElementById("parent_popup").style.display = "block";	
+	
+	var preResult = "";
+	preResult += "	<div style=\"visibility: hidden;\" id=\"parent_popup_enter\">";
+	preResult += "<div id=\"popup_enter\">";
+    preResult += "<div id=\"placeHolderImage\">"
+	preResult += "<div style=\"padding: 20px; margin-left:100px; margin-right: 100px; font-family: Tahoma; font-size: 18;\">";
+	preResult += "<center><font color=\"#000000\"><span><i>Выполняется ввод информации в систему</i></span></font></center>";
+	preResult += "<center><font color=\"#000000\"><span><i id=\"countDownload\">Пожалуйста, подождите...</i></span></font></center>";
+	preResult += "<center><img src=\"img/univ_loader.gif\" /></center>";
+	preResult += "</div>";
+    preResult += "</div>";
+	preResult += "</div>";
+	preResult += "</div>";
+	
+	document.getElementById("placeHolderImage").innerHTML = preResult;
+	
+	var childs = "";
+	var xhr = new XMLHttpRequest();		
+//	xhr.open("GET", "/script/statistics.exe?getUsers&2&0", true);
+	xhr.open("GET", "/script/statistics.exe?getChildsForApplicationTheme", true);
+	xhr.send();
+	xhr.onreadystatechange = function() {
+	if (xhr.readyState != 4) return;
+	if (xhr.status != 200) {
+		alert("Error");
+	} 
+	else {
+		childs = JSON.parse(xhr.responseText);			
+		//Отрисовка таблицы
+		
+		var result = "<div align=\"center\">";
+		
+		result += "<p align=\"center\"><font face=\"Tahoma\"><b><span style=\"font-size: 14pt; color:black;\">Ученики - участники Программы</span></b></font></p>";
+		
+		result += "<table border=\"1\" width=\"80%\" id=\"childsTable\" style=\"background: white;\">";
+		result += "<tr>";
+		result += "<td align=\"left\" style=\"background: #FFAE5E;\" valign=\"top\">" + "№п/п" + "</td>";		
+		result += "<td align=\"left\" style=\"background: #FFAE5E;\" valign=\"top\">" + "Персональный код" + "</td>";
+		result += "<td align=\"left\" style=\"background: #FFAE5E;\" valign=\"top\">" + "ФИО ученика" + "</td>";		
+		result += "<td align=\"left\" style=\"background: #FFAE5E;\" valign=\"top\">" + "Образовательный округ" + "</td>";
+		result += "<td align=\"left\" style=\"background: #FFAE5E;\" valign=\"top\">" + "Название школы" + "</td>";
+		result += "</tr>";			
+		
+		for(var i = 0; i < childs.length; i++)
+		{
+			result += "<tr>";
+			result += "<td align=\"left\" valign=\"top\">" + String(i+1) + "</td>";
+			
+//			result += "<td align=\"left\" valign=\"top\">" + "<a href=\"javascript:setChildCode(" + childs[i].userCode + ", '" + childs[i].userFIO + "');\"</a>" + childs[i].userCode + "</td>";
+			result += "<td align=\"left\" valign=\"top\">" + childs[i].userCode + "</td>";
+			
+			result += "<td align=\"left\" valign=\"top\">" + "<a href=\"javascript:setChildCode(" + childs[i].userCode + ", '" + childs[i].userFIO + "');\"</a>" + childs[i].userFIO + "</td>";
+			
+//			result += "<td align=\"left\" valign=\"top\">" + childs[i].userFIO + "</td>";
+			result += "<td align=\"left\" valign=\"top\">" + childs[i].userOrganization + "</td>";
+			result += "<td align=\"left\" valign=\"top\">" + childs[i].userSubdivision + "</td>";
+			result += "</tr>";
+		}
+		
+		result += "</table>";
+		result += "</div>";
+		document.getElementById("placeHolderImage").innerHTML = result;
+		
+		TABLE_SORT(document.getElementById("childsTable"));
+	}
+}
+
+}
+
+
+function setChildCode(userCode, userFIO)
+{
+	childCode = eval(userCode);
+	document.getElementById("child").value = userFIO;
+	document.getElementById("parent_popup").style.visibility = "hidden";
+	alert("Вы выбрали ученика - " + userFIO);
+}
+
+
+
+
+
+</script>
+
+
+
+<style>
+#parent_popup {
+  background: #000;
+  /*height: 100%;*/
+  height: 0px;
+  opacity: 0.9;
+  position: fixed;
+  width: 100%;
+  z-index: 100;
+  top: 0;
+  left: 0;
+}
+
+#parent_popup_enter {
+  background: #000;
+  /*height: 100%;*/
+  height: 0px;
+  opacity: 0.9;
+  position: fixed;
+  width: 100%;
+  z-index: 100;
+  top: 0;
+  left: 0;
+}
+
+#exit {
+	width: 25px;
+	text-align: right;
+}
+
+#popup {
+  background-color: #ffffff;
+  /*height:0px;*/
+  height: 650px;
+  position: fixed;
+  top: 100px;
+  left: 13%;
+  color: #f00;
+  width: 1455px;
+}
+
+#popup_enter {
+  background-color: #ffffff;
+  /*height:0px;*/
+  height: 139px;
+  position: fixed;
+  top: 300px;
+  left: 39%;
+  color: #f00;
+  width: 500px;
+}
+
+</style>
+
+
+
+
+</head>
+
+<body onload="onLoad();">
+
+
+			<div style="visibility: hidden;" id="parent_popup">
+			  		<div id="popup" style="overflow: scroll;">
+			  			<p class="exit" align="right"><a style="cursor: pointer;" onclick="document.getElementById('parent_popup').style.display='none';">Закрыть</a></p>
+					    <div id="placeHolderImage">
+							<p align="center"><font face="Tahoma" color="#000000"><b><span id="participant" style="font-size: 14pt"></span></b></font></p>
+							<p align="center">
+							<img id="userInstruction" src-"" />
+					    </div>
+					</div>
+			</div>
+			
+			
+			
+				<div style="visibility: hidden;" id="parent_popup_enter">
+  		<div id="popup_enter">
+		    <div id="placeHolderImage1">
+		    	<div style="padding: 20px; margin-left:100px; margin-right: 100px; font-family: Tahoma; font-size: 18;">
+					<center><font color="#000000"><span><i>Выполняется обработка информации</i></span></font></center>
+					<center><font color="#000000"><span><i id="countDownload">Пожалуйста, подождите...</i></span></font></center>
+					<center><img src="img/univ_loader.gif" /></center>
+				</div>
+		    </div>
+		</div>
+	</div>
+
+
+
+<div id="wrapeall">
+	<div id="header">
+		<div class="logoText">
+			<span style="background-color: #FFFF00">hfghfghfghfghfg 
+			nvbnnvbnnvnvbnvnbnvnvbnfhfghfgh</span></div>
+	</div>
+		
+	<p></p>
+
+
+	<div class="headline">
+		<p style="text-align: right"><font color="#FFFFFF">
+		<span style="background-color: #0000FF" id="currentUser">0</span></font></p>
+		<p>Ввод информации об условно сложившемся исследовательском коллективе 
+		&quot;ученик-учитель-консультант&quot;
+		</p>
+		<p><span lang="ru">Уважаемый учитель!</span></p>
+		<p style="margin-top: 0; margin-bottom: 0">
+		<font size="3"><span style="font-weight: 400"><i>Этим режимом можно 
+		воспользоваться только если Вы знаете конкретного консультанта 
+		планируемого проекта, с которым поддерживаете связь. В этом случае Вам 
+		следует указать название темы, а также консультанта и ученика. В 
+		противном случае пройдите в раздел &quot;<a href="chooseTheme.htm">Выбор 
+		тематики и формирование коллективов</a>&quot; и выберите одну из близких по 
+		содержанию тем, которые уже предложены консультантами.</i></span></font></p>
+		<p style="margin-top: 0; margin-bottom: 0">
+		<span style="font-weight: 400; "><i><span lang="ru"><font size="3">
+		Укажите сведения об ученом вуза, с которым Вы уже вели (или условились) 
+		вести совместное руководство индивидуальным проектом школьника. После 
+		согласования консультантом (через нашу инфокоммуникационную систему) 
+		этого проекта, вы сможете приступить к его выполнению в рамках систему 
+		&quot;ВЗЛЕТ&quot;.</font></span></i></span></p></div>	
+
+
+	<div id="middlePartPage">
+		<div align="center">
+			<table border="1" width="66%" id="table1">
+				<tr>
+					<td align="left" valign="top" bgcolor="#FFAE5E">
+					Предполагаемое название темы
+					проекта
+					<font color="#FF0000"><span style="font-size: 16pt">*</span></font></td>
+					<td align="left" valign="top" width="547">
+					<p><textarea id="themeName" rows="4" name="S1" cols="54"></textarea></td>
+				</tr>
+				<tr>
+					<td align="left" valign="top">&nbsp;</td>
+					<td align="left" valign="top" width="547">&nbsp;</td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" bgcolor="#FFAE5E">
+					<span lang="ru">Укажите у</span>ниверситет 
+					консультанта
+					<font color="#FF0000" style="font-size: 16pt">*</font></td>
+					<td align="left" valign="top" width="547">
+					<select id="consultUniversity" size="1" name="D7" onchange="univChange();">
+					<option selected value="0">Укажите</option>
+					</select></td>
+				</tr>
+				<tr>
+					<td align="left" valign="top">&nbsp;</td>
+					<td align="left" valign="top" width="547">
+					&nbsp;</td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" bgcolor="#FFAE5E">
+					<span lang="ru">Укажите </span>ФИО 
+					консультанта
+					<font color="#FF0000" style="font-size: 16pt">*</font></td>
+					<td align="left" valign="top" width="547">
+					<select id="consultantFIO" size="1" name="D8"></select></td>
+				</tr>
+				<tr>
+					<td align="left" valign="top">&nbsp;</td>
+					<td align="left" valign="top" width="547">
+					&nbsp;</td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" bgcolor="#FFAE5E">Напомните 
+					консультанту о прежней совместной работе</td>
+					<td align="left" valign="top" width="547">
+					<p>
+					<input id="comment" name="T1" size="79"></td>
+				</tr>
+				<tr>
+					<td align="left" valign="top">&nbsp;</td>
+					<td align="left" valign="top" width="547">&nbsp;</td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" bgcolor="#FFAE5E">Приоритетное направление 
+					темы</td>
+					<td align="left" valign="top" width="547">
+					<select id="priorityDirection" size="1" style="width: 500px;" name="D4"></select></td>
+				</tr>
+				<tr>
+					<td align="left" valign="top">&nbsp;</td>
+					<td align="left" valign="top" width="547">
+					&nbsp;</td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" bgcolor="#FFAE5E">Секция
+					<span lang="ru">конкурса &quot;ВЗЛЕТ&quot;</span>
+					<font color="#FF0000" style="font-size: 16pt">*</font></td>
+					<td align="left" valign="top" width="547">
+					<select id="section" size="1" name="D5"></select></td>
+				</tr>
+				<tr>
+					<td align="left" valign="top">&nbsp;</td>
+					<td align="left" valign="top" width="547">&nbsp;</td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" bgcolor="#FFAE5E">Связь темы с предприятиями 
+					научно-промышленной сферы области</td>
+					<td align="left" valign="top" width="547">
+					<select id="scienceIndustrialSphere" size="1" style="width: 500px;" name="D6"></select></td>
+				</tr>
+				<tr>
+					<td align="left" valign="top">&nbsp;</td>
+					<td align="left" valign="top" width="547">&nbsp;</td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" bgcolor="#FFAE5E">Область 
+					науки</td>
+					<td align="left" valign="top" width="547">
+					<select id="scienceDirection1" size="1" name="D1"></select></td>
+				</tr>
+				<tr>
+					<td align="left" valign="top">&nbsp;</td>
+					<td align="left" valign="top" width="547">
+					&nbsp;</td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" bgcolor="#FFAE5E">Еще область 
+					науки (дополнительно)</td>
+					<td align="left" valign="top" width="547">
+					<select id="scienceDirection2" size="1" name="D2"></select></td>
+				</tr>
+				<tr>
+					<td align="left" valign="top">&nbsp;</td>
+					<td align="left" valign="top" width="547">
+					&nbsp;</td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" bgcolor="#FFAE5E">Область 
+					науки (дополнительно)</td>
+					<td align="left" valign="top" width="547">
+					<select id="scienceDirection3" size="1" name="D3"></select></td>
+				</tr>
+				<tr>
+					<td align="left" valign="top">&nbsp;</td>
+					<td align="left" valign="top" width="547">
+					&nbsp;</td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" width="47%" bgcolor="#FFAE5E">Учитель</td>
+					<td align="left" valign="top" width="52%"><i><b>
+					<span style="font-size: 14pt" id="tutorName">1</span></b></i></td>
+				</tr>
+				<tr>
+					<td align="left" width="47%" bgcolor="#FFAE5E">
+					Кратко о<span lang="ru">б учителе</span> </td>
+					<td align="left" valign="top" width="52%">
+					<textarea id="tutorAbout" rows="4" name="S2" cols="39"></textarea></td>
+					</tr>
+					<tr>
+					<td align="left" valign="top" width="47%" bgcolor="#FFAE5E">Укажите ученика
+					<span lang="ru" style="font-size: 12pt">(например, </span>
+					<span style="font-size: 12pt; text-decoration: underline" lang="ru">
+					<a href="javascript:getChildCode();">здесь)</a></span><span lang="ru"><font size="3" color="#FF0000">
+					</font></span><span style="font-size: 14pt">
+					<font color="#FF0000">*</font></span></td>
+					<td align="left" valign="top" width="52%">
+					<input type="text" id="child" name="T2" size="20"></td>
+					</tr>
+					<tr>
+					<td align="left" width="47%" bgcolor="#FFAE5E">
+					Кратко о<span lang="ru">б ученике</span></td>
+					<td align="left" valign="top" width="52%">
+					<textarea id="childAbout" rows="4" name="S3" cols="39"></textarea></td>
+						</tr>
+				<tr>
+					<td align="left" valign="top">&nbsp;</td>
+					<td align="left" valign="top" width="547">
+					&nbsp;</td>
+				</tr>
+				<tr>
+					<td align="left" valign="top">&nbsp;</td>
+					<td align="left" valign="top" width="547">
+					<p align="center">
+					<input type="button" value="Ввести" name="B3" onclick="enterTheme();"></td>
+				</tr>
+				</table>
+		</div>
+	</div>	
+	<div id="footer">
+		<div class="footerText">
+			<span>Copyright ПМиВТ</span>
+		</div>
+	</div>
+</div>
+
+
+</body>
+
+</html>

@@ -1,0 +1,301 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1251">
+<title>Регистрация пользователя</title>
+<link rel="stylesheet" href="style/style.css">
+
+<script type="text/javascript" src="js/Ajax.js"></script>
+<script type="text/javascript" src="js/Base64.js"></script>
+
+<script>
+
+function getOptions()
+{
+	var degree = document.getElementById("degree");
+	var degrees = Ajax.runEval("/script/regUser.exe?getDegree");
+	 
+	//Ученая степень
+	for(var i = 0; i < degrees.length; i++)
+	{
+		degree.options[degree.options.length] = new Option(degrees[i].degreeName, degrees[i].degreeCode);	
+	}
+	
+	
+	var academicDirection = document.getElementById("academicDirection");
+	var academicDirections = Ajax.runEval("/script/regUser.exe?getAcademicDirection");
+	
+	//Ученое звание
+	for(var i = 0; i < academicDirections.length; i++)
+	{
+		academicDirection.options[academicDirection.options.length] = new Option(academicDirections[i].academicDirectionName, academicDirections[i].academicDirectionCode);	
+	}
+	
+	
+	var organizationType = document.getElementById("organizationType");
+	var organizationTypes = Ajax.runEval("/script/regUser.exe?getOrganizationType");
+	
+	//Тип организации
+	for(var i = 0; i < organizationTypes.length; i++)
+	{
+		organizationType.options[organizationType.options.length] = new Option(organizationTypes[i].organizationTypeName, organizationTypes[i].organizationTypeCode);	
+	}
+	
+	
+	var status = document.getElementById("status");
+	var statuses = Ajax.runEval("/script/regUser.exe?getStatus");
+
+	//Статус в организации
+	for(var i = 0; i < statuses.length; i++)
+	{
+		status.options[status.options.length] = new Option(statuses[i].statusName, statuses[i].statusCode);	
+	}
+}
+
+
+//Подгрузка названий организаций по выбранному типу организации
+function organizationTypeChanged()
+{
+	var organizationTypeCode = document.getElementById("organizationType").value;
+	var organization = document.getElementById("organization");
+	
+	var organizations = Ajax.runEval("/script/regUser.exe?getOrganizationByOrganizationType&" + organizationTypeCode);
+	
+	organization.innerHTML = "";
+	
+	//Название организации
+	for(var i = 0; i < organizations.length; i++)
+	{
+		organization.options[organization.options.length] = new Option(organizations[i].organizationName, organizations[i].organizationCode);	
+	}
+	
+	
+		
+	var post = document.getElementById("post");
+	post.innerHTML = "";
+	var posts = Ajax.runEval("/script/regUser.exe?getPostByOrganizationType&" + organizationTypeCode);
+
+	//Должность в организации
+	for(var i = 0; i < posts.length; i++)
+	{
+		post.options[post.options.length] = new Option(posts[i].postName, posts[i].postCode);	
+	}
+		
+}
+
+
+//Подгрузка названий подразделений по выбранной организации
+function organizationChanged()
+{
+	var organizationCode = document.getElementById("organization").value;
+	var subdivisionLevel1 = document.getElementById("subdivisionLevel1");
+
+	subdivisionLevel1.innerHTML = "";
+	
+	var subdivisionsLevel1 = Ajax.runEval("/script/regUser.exe?getSubdivisionByOrganizationCode&" + organizationCode);
+
+	//Название организации
+	for(var i = 0; i < subdivisionsLevel1.length; i++)
+	{
+		subdivisionLevel1.options[subdivisionLevel1.options.length] = new Option(subdivisionsLevel1[i].subdivisionLevel1Name, subdivisionsLevel1[i].subdivisionLevel1Code);	
+	}
+}
+
+
+//Регистрация нового пользователя
+function setUser()
+{
+	var userFIO = document.getElementById("userFIO").value;
+	var userHonoraryTitle = document.getElementById("userHonoraryTitle").value;
+	var userPhone = document.getElementById("userPhone").value;
+	var userMobilePhone = document.getElementById("userMobilePhone").value;
+	var userEMail = document.getElementById("userEMail").value;
+	
+	var degree = document.getElementById("degree").value;
+	var academicDirection = document.getElementById("academicDirection").value;
+	var organizationType = document.getElementById("organizationType").value;
+	var organizationName = document.getElementById("organization").value;
+	var status = document.getElementById("status").value;
+
+	var subdivisionLevel1 = document.getElementById("subdivisionLevel1").value;
+
+	var post = document.getElementById("post").value;
+	
+	var userLogin = document.getElementById("userLogin").value;
+	var userPassword = document.getElementById("userPassword").value;
+	
+	
+	var query = "/script/regUser.exe?setUser&" + Base64.encode(userFIO) + "&" +
+	Base64.encode(userHonoraryTitle) + "&" + userPhone + "&" + userMobilePhone + "&" + Base64.encode(userEMail) + "&" + degree + "&" + academicDirection + "&" + organizationType + "&" + 
+	organizationName + "&" + status + "&" + subdivisionLevel1 + "&" + post + "&" + Base64.encode(userLogin) + "&" + Base64.encode(userPassword);
+	
+	alert(query);
+	
+	alert(Ajax.run(query));
+
+	//alert(degree);
+}
+
+
+
+
+</script>
+
+
+
+
+</head>
+
+<body onload="getOptions();">
+<div id="wrapeall">
+	<div id="header">
+		<div class="logoText">
+			<span style="background-color: #FFFF00">hfghfghfghfghfg 
+			nvbnnvbnnvnvbnvnbnvnvbnfhfghfgh</span></div>
+	</div>
+		
+	<p></p>
+
+
+	<div class="headline">
+		Регистрация пользователя</div>	
+
+
+	<div id="middlePartPage">
+		<div align="center">
+			<table border="1" width="1255" id="table1">
+				<tr>
+					<td align="left" valign="top" width="486">ФИО пользователя</td>
+					<td align="left" valign="top" width="753">
+					<input type="text" id="userFIO" name="T1" size="59"></td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" width="486">Ученая степень</td>
+					<td align="left" valign="top" width="753">
+					<select size="1" id="degree" name="D1"></select></td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" width="486">Ученое звание</td>
+					<td align="left" valign="top" width="753">
+					<select size="1" id="academicDirection" name="D2"></select></td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" width="486">Почетные звания</td>
+					<td align="left" valign="top" width="753">
+					<input type="text" id="userHonoraryTitle" name="T2" size="59"></td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" width="486">Номер телефона 
+					(стационарный, с кодом города)</td>
+					<td align="left" valign="top" width="753">
+					<input type="text" id="userPhone" name="T3" size="59"></td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" width="486">Номер телефона 
+					(мобильный)</td>
+					<td align="left" valign="top" width="753">
+					<input type="text" id="userMobilePhone" name="T4" size="59"></td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" width="486">Адрес электронной 
+					почты</td>
+					<td align="left" valign="top" width="753">
+					<input type="text" id="userEMail" name="T5" size="59"></td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" width="486">&nbsp;</td>
+					<td align="left" valign="top" width="753">
+					&nbsp;</td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" width="486">Сведения об 
+					организации, от которой пользователь работает в системе</td>
+					<td align="left" valign="top" width="753">&nbsp;</td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" width="486">Тип организации</td>
+					<td align="left" valign="top" width="753">
+					<select size="1" id="organizationType" name="D3" onchange="organizationTypeChanged();"></select></td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" width="486">Название 
+					организации</td>
+					<td align="left" valign="top" width="753">
+					<p>
+					<select size="1" id="organization" name="D4" onchange="organizationChanged();"></select></td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" width="486">Подразделение 
+					организации</td>
+					<td align="left" valign="top" width="753">
+					<select size="1" id="subdivisionLevel1" name="D5"></select></td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" width="486">Статус в системе 
+					от этого подразделения</td>
+					<td align="left" valign="top" width="753">
+					<select size="1" id="status" name="D7"></select>&nbsp;&nbsp;&nbsp; </td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" width="486">Должность в 
+					подразделении</td>
+					<td align="left" valign="top" width="753">
+					<select size="1" id="post" name="D6"></select></td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" width="486">&nbsp;</td>
+					<td align="left" valign="top" width="753">
+					&nbsp;</td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" width="486">
+					Придумайте логин и пароль</td>
+					<td align="left" valign="top" width="753">
+					&nbsp;</td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" width="486">
+					Логин</td>
+					<td align="left" valign="top" width="753">
+					<input type="text" id="userLogin" name="T6" size="59"></td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" width="486">Пароль</td>
+					<td align="left" valign="top" width="753">
+					<input type="text" id="userPassword" name="T7" size="59"></td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" width="486">Введите пароль еще 
+					раз для подтверждения</td>
+					<td align="left" valign="top" width="753">
+					<input type="text" id="userPasswordConfirm" name="T8" size="59"></td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" width="486">&nbsp;</td>
+					<td align="left" valign="top" width="753">
+					&nbsp;</td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" width="486">&nbsp;</td>
+					<td align="left" valign="top" width="753">
+					&nbsp;</td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" width="486">&nbsp;</td>
+					<td align="left" valign="top" width="753">
+					<input type="button" value="Регистрация" name="B3" onclick="setUser();"></td>
+				</tr>
+				</table>
+		</div>
+	</div>	
+	<div id="footer">
+		<div class="footerText">
+			<span>Copyright ПМиВТ</span>
+		</div>
+	</div>
+</div>
+
+
+</body>
+
+</html>

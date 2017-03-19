@@ -1,0 +1,682 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1251">
+<title id="titleID">Рецензия на проект</title>
+<link rel="stylesheet" href="style/style.css">
+<link rel="stylesheet" href="style/popupStyle.css">
+<link rel="stylesheet" href="style/reviewStyle.css">
+<link rel="stylesheet" href="style/tables.css">
+
+<script type="text/javascript" src="js/Ajax.js"></script>
+<script type="text/javascript" src="js/Base64.js"></script>
+<script type="text/javascript" src="js/script.js"></script>
+<script type="text/javascript" src="js/remText.js"></script>
+
+<script>
+
+var themeCode = param("themeCode");
+var userStatusCode = param("userStatusCode");
+var projectFile;
+var themeName;
+function onLoad()
+{	
+	user = Ajax.runEval("/script/login.exe?user");
+	//Если рецензент (первый или второй)
+	if (eval(user.userStatusCode) == 9 || eval(user.userStatusCode) == 18 || eval(user.userStatusCode) == 100) {
+		document.getElementById("criteriaTable").style.visibility = "visible";
+		
+		switch (eval(userStatusCode)) {
+			case 4:
+				document.getElementById("userStatusName").innerHTML = "научного консультанта";
+			break;
+			
+			case 3:
+				document.getElementById("userStatusName").innerHTML = "руководителя";
+			break;
+			
+			case 2:
+				document.getElementById("userStatusName").innerHTML = "ученика";
+			break;
+		}
+		
+			//Текущий пользователь
+			setCurrentUser();
+			getThemeName(); //Получить название проекта		
+			getUserReview(); //Получить рецензию участника	
+	}
+	else {
+		location.replace("/login?&/userReview.htm?themeCode=" + themeCode + "&userStatusCode=" + userStatusCode);		
+	}
+}
+
+//Получить название темы
+function getThemeName()
+{
+	themeName = Ajax.runEval("/script/review.exe?getThemeName&" + themeCode);
+	document.getElementById("themeName").innerHTML = "&quot;" + themeName.themeName + "&quot;";
+	document.getElementById("titleID").innerHTML = "Рецензия на проект " + "&quot;" + themeName.themeName + "&quot;";
+}
+
+function getUserReview()
+{
+	var criteria1 = document.getElementById("criteria1");
+	var criteria2 = document.getElementById("criteria2");
+	var criteria3 = document.getElementById("criteria3");
+	var criteria4 = document.getElementById("criteria4");
+	var criteria5 = document.getElementById("criteria5");
+	var criteria6 = document.getElementById("criteria6");
+	var criteria7 = document.getElementById("criteria7");
+	var criteria8 = document.getElementById("criteria8");
+	var criteria9 = document.getElementById("criteria9");
+	var criteria10 = document.getElementById("criteria10");
+	var criteria11 = document.getElementById("criteria11");
+	var criteria12 = document.getElementById("criteria12");
+	var criteria13 = document.getElementById("criteria13");
+	var criteria14 = document.getElementById("criteria14");
+	var criteria15 = document.getElementById("criteria15");
+	var criteria16 = document.getElementById("criteria16");
+	
+	var briefComment1 = document.getElementById("briefComment1");
+	var briefComment2 = document.getElementById("briefComment2");
+	var briefComment3 = document.getElementById("briefComment3");
+	var briefComment4 = document.getElementById("briefComment4");
+	var briefComment5 = document.getElementById("briefComment5");
+	var briefComment6 = document.getElementById("briefComment6");
+	var briefComment7 = document.getElementById("briefComment7");
+	var briefComment8 = document.getElementById("briefComment8");
+	var briefComment9 = document.getElementById("briefComment9");
+	var briefComment10 = document.getElementById("briefComment10");
+	var briefComment11 = document.getElementById("briefComment11");
+	var briefComment12 = document.getElementById("briefComment12");
+	var briefComment13 = document.getElementById("briefComment13");
+	var briefComment14 = document.getElementById("briefComment14");
+	var briefComment15 = document.getElementById("briefComment15");
+	var briefComment16 = document.getElementById("briefComment16");
+		
+	
+	var userReview = Ajax.runEval("/script/review.exe?getUserReview&" + themeCode + "&" + userStatusCode);
+	
+	criteria1.value = userReview.criteria0;
+	criteria2.value = userReview.criteria1;
+	criteria3.value = userReview.criteria2;
+	criteria4.value = userReview.criteria3;
+	criteria5.value = userReview.criteria4;
+	criteria6.value = userReview.criteria5;
+	criteria7.value = userReview.criteria6;
+	criteria8.value = userReview.criteria7;
+	criteria9.value = userReview.criteria8;
+	criteria10.value = userReview.criteria9;
+	criteria11.value = userReview.criteria10;
+	criteria12.value = userReview.criteria11;
+	criteria13.value = userReview.criteria12;
+	criteria14.value = userReview.criteria13;
+	criteria15.value = userReview.criteria14;
+	criteria16.value = userReview.criteria15;
+
+	for(var i = 1; i <= 16; i++) {
+		changeColor(document.getElementById("criteria" + String(i)));
+		document.getElementById("criteria" + String(i)).disabled = true;
+	}
+
+	briefComment1.value = userReview.briefComment0;
+	briefComment2.value = userReview.briefComment1;
+	briefComment3.value = userReview.briefComment2;
+	briefComment4.value = userReview.briefComment3;
+	briefComment5.value = userReview.briefComment4;
+	briefComment6.value = userReview.briefComment5;
+	briefComment7.value = userReview.briefComment6;
+	briefComment8.value = userReview.briefComment7;
+	briefComment9.value = userReview.briefComment8;
+	briefComment10.value = userReview.briefComment9;
+	briefComment11.value = userReview.briefComment10;
+	briefComment12.value = userReview.briefComment11;
+	briefComment13.value = userReview.briefComment12;
+	briefComment14.value = userReview.briefComment13;
+	briefComment15.value = userReview.briefComment14;
+	briefComment16.value = userReview.briefComment15;
+	
+	for(var i = 1; i <= 16; i++) {
+		document.getElementById("briefComment" + String(i)).style.color = "blue";
+		document.getElementById("briefComment" + String(i)).disabled = true;
+	}
+	
+	
+}
+
+//Определение параметра, переданного html странице
+function param(Name)
+{
+	var Params = location.search.substring(1).split("&");
+	var variable = "";
+	for (var i = 0; i < Params.length; i++)
+	{
+		if(Params[i].split("=")[0] == Name)
+	{
+	
+	if (Params[i].split("=").length > 1)
+	variable = Params[i].split("=")[1];
+	return variable;
+	}}
+	return "";
+}
+
+
+
+function changeColor(comb)
+{
+	switch (eval(comb.value)) {
+		case 0:
+			comb.style.background = "white";
+			comb.style.color = "#828080";
+		break;
+		
+		case 1:
+			comb.style.background = "#FF33CC";
+			comb.style.color = "white";
+		break;
+		
+		case 2:
+			comb.style.background = "#FFFF00";
+			comb.style.color = "#828080";
+		break;
+		
+		case 3:
+			comb.style.background = "#00FF00";
+			comb.style.color = "white";
+		break;
+		
+		case 4:
+			comb.style.background = "blue";
+			comb.style.color = "white";
+		break;
+	}
+}
+
+</script>
+
+</head>
+
+<body onload="onLoad();">
+
+<div style="visibility: hidden;" id="parent_popup_enter">
+  		<div id="popup_enter">
+		    <div id="placeHolderImage">
+		    	<div style="padding: 20px; margin-left:100px; margin-right: 100px; font-family: Tahoma; font-size: 18;">
+					<center><font color="#000000"><span><i>Выполняется ввод информации в систему</i></span></font></center>
+					<center><font color="#000000"><span><i id="countDownload">Пожалуйста, подождите...</i></span></font></center>
+					<center><img src="img/univ_loader.gif" /></center>
+				</div>
+		    </div>
+		</div>
+	</div>
+
+
+
+<div id="wrapeall">
+	<div id="header">
+		<div class="logoText">
+			<span style="background-color: #FFFF00"></span></div>
+	</div>
+		
+	<p></p>
+
+
+	<div class="headline">
+		<p style="margin-top: 0; margin-bottom: 0">
+		&nbsp;</p>
+		<p style="margin-top: 0; margin-bottom: 0">
+		<span style="font-size: 16pt">Рецензия <span id="userStatusName">1</span> на проект
+		</span>
+		</p>
+		<p style="margin-top: 0; margin-bottom: 0">
+		<span style="font-size: 14pt" id="themeName" lang="ru">&quot;0&quot;</span></p>
+		<div name="currentUser">
+					<p style="margin-left: 100px; margin-right: 100px; margin-top:0; margin-bottom:10px" align="right">
+					<font color="#FFFFFF"><b>
+					<span style="font-size: 12pt; background-color: #000080" id="currentUser">0</span></b></font><span style="font-size: 16pt">
+					</span>
+					
+					
+					<p style="margin-top: 0; margin-bottom: 0" align="right">&nbsp;</p>
+					
+					
+					<center>
+					<table class="simple-little-table" style="visibility:hidden" border="1" width="95%" id="criteriaTable" style="visibility: hidden;">
+						<tr>
+							<td align="center" valign="top" width="20%">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<center>
+							<span style="font-size: 16pt; font-weight: 700">Критерий</span></td></center>
+							<td align="center" valign="top" width="39%">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<span style="font-size: 16pt; font-weight: 700">
+							Вариант ответа</span></td>
+							<td align="center" valign="top" width="20%">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<span style="font-size: 16pt; font-weight: 700">
+							Краткий комментарий</span></td>
+						</tr>
+						<tr>
+							<td align="left" valign="top" width="20%">&nbsp;</td>
+							<td align="left" valign="top" width="39%">&nbsp;</td>
+							<td align="left" valign="top" width="20%">&nbsp;</td>
+						</tr>
+						<tr>
+							<td width="20%" height="58" style="text-align: left">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<font face="Tahoma">
+							<span style="font-size: 14pt; line-height: 115%">1 
+							Характер работы</span></font></td>
+							<td width="39%" height="58">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<select id="criteria1" class="criteria" size="1" name="D1" onchange="javascript:changeColor(this);">
+							<option selected value="0">0 - реферативный</option>
+							<option value="1">1 - исследовательский, т.е. в работе имеется результат, который был неочевиден до ее выполнения
+							</option>
+							<option value="2">2 - кроме 1, автор сопоставляет полученный результат с известными аналогичными результатами
+							</option>
+							</select></td>
+							<td valign="top" width="20%" height="58">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<textarea id="briefComment1" class="briefComment" rows="3" name="briefComment1" cols="30" maxlength="150"></textarea></td>
+						</tr>
+						<tr>
+							<td width="20%" style="text-align: left">&nbsp;</td>
+							<td width="39%">&nbsp;</td>
+							<td valign="top" width="20%">&nbsp;</td>
+						</tr>
+						<tr>
+							<td width="20%" style="text-align: left">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<font face="Tahoma">
+							<span style="font-size: 14pt; line-height: 115%">2 
+							Приоритетность научно-технического направления</span></font></td>
+							<td width="39%">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<select id="criteria2" class="criteria" size="1" name="D2" onchange="javascript:changeColor(this);">
+							<option selected value="0">0 - обычное</option>
+							<option value="1">1 – приоритетное в соответствии с Президентским перечнем 2011 года (Таблица А, см. ниже)
+							</option>
+							<option value="2">2 - приоритетное в соответствии с перечнем для Самарской области (Таблица Б, см. ниже)
+							</option>
+							</select></td>
+							<td valign="top" width="20%">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<textarea id="briefComment2"  class="briefComment" rows="3" name="briefComment2" cols="30" maxlength="150"></textarea></td>
+						</tr>
+						<tr>
+							<td width="20%" style="text-align: left">&nbsp;</td>
+							<td width="39%">&nbsp;</td>
+							<td valign="top" width="20%">&nbsp;</td>
+						</tr>
+						<tr>
+							<td width="20%" style="text-align: left">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<font face="Tahoma">
+							<span style="font-size: 14pt; line-height: 115%">3 
+							Связь работы с личными исследованиями научного 
+							консультанта</span></font></td>
+							<td width="39%">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<select id="criteria3" class="criteria" size="1" name="D3" onchange="javascript:changeColor(this);">
+							<option selected value="0">0 - отсутствует</option>
+							<option value="1">1 – имеется</option>
+							<option value="2">2 - результаты работы достойны использования научным консультантом в своих докладах и статьях
+							</option>
+							</select></td>
+							<td valign="top" width="20%">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<textarea id="briefComment3" class="briefComment" rows="3" name="briefComment3" cols="30" maxlength="150"></textarea></td>
+						</tr>
+						<tr>
+							<td width="20%" style="text-align: left">
+							<font face="Tahoma" style="font-size: 14pt"></li>
+								<liidth="20%">&nbsp;</font></td>
+							<td width="39%">&nbsp;</td>
+							<td valign="top" width="20%">&nbsp;</td>
+						</tr>
+						<tr>
+							<td width="20%" style="text-align: left">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<font face="Tahoma">
+							<span style="font-size: 14pt; line-height: 115%">4 
+							Связь работы с личными исследованиями руководителя</span></font></td>
+							<td width="39%">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<select id="criteria4" class="criteria" size="1" name="D4" onchange="javascript:changeColor(this);">
+							<option selected value="0">0 - отсутствует</option>
+							<option value="1">1 – имеется</option>
+							<option value="2">2 - результаты работы достойны использования руководителем  в своих в докладах и статьях
+							</option>
+							</select></td>
+							<td valign="top" width="20%">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<textarea id="briefComment4" class="briefComment" rows="3" name="briefComment4" cols="30" maxlength="150"></textarea></td>
+						</tr>
+						<tr>
+							<td width="20%" style="text-align: left">&nbsp;</td>
+							<td width="39%">&nbsp;</td>
+							<td valign="top" width="20%">&nbsp;</td>
+						</tr>
+						<tr>
+							<td width="20%" style="text-align: left">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<font face="Tahoma">
+							<span style="font-size: 14pt; line-height: 115%">5 
+							Связь с предприятиями и организациями</span></font></td>
+							<td width="39%">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<select id="criteria5" class="criteria" size="1" name="D5" onchange="javascript:changeColor(this);">
+							<option selected value="0">0 - работа не имеет практического значения
+							</option>
+							<option value="1">1 – результаты работы могут быть использованы конкретным предприятием (организацией) – есть справка
+							</option>
+							<option value="2">2 - результаты работы уже используются конкретным предприятием (организацией) – есть справка
+							</option>
+							</select></td>
+							<td valign="top" width="20%">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<textarea id="briefComment5" class="briefComment" rows="3" name="briefComment5" cols="30" maxlength="150"></textarea></td>
+						</tr>
+						<tr>
+							<td width="20%" style="text-align: left">&nbsp;</td>
+							<td width="39%">&nbsp;</td>
+							<td valign="top" width="20%">&nbsp;</td>
+						</tr>
+						<tr>
+							<td width="20%" style="text-align: left">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<font face="Tahoma">
+							<span style="font-size: 14pt; line-height: 115%">6 
+							Имеется обзор проблематики по научно-техническому 
+							направлению, в котором выполнена работа</span></font></td>
+							<td width="39%">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<select id="criteria6" class="criteria" size="1" name="D6" onchange="javascript:changeColor(this);">
+							<option selected value="0">0 - анализ отсутствует
+							</option>
+							<option value="1">1 – знает историю развития направления, его перспективы, ученых и названия их работ
+							</option>
+							<option value="2">2 – знает об отдельных научных школах в России и за рубежом, их отличиях
+							</option>
+							</select></td>
+							<td valign="top" width="20%">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<textarea id="briefComment6" class="briefComment" rows="3" name="briefComment6" cols="30" maxlength="150"></textarea></td>
+						</tr>
+						<tr>
+							<td width="20%" style="text-align: left">&nbsp;</td>
+							<td width="39%">&nbsp;</td>
+							<td valign="top" width="20%">&nbsp;</td>
+						</tr>
+						<tr>
+							<td width="20%" style="text-align: left">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<font face="Tahoma">
+							<span style="font-size: 14pt; line-height: 115%">7 
+							Имеется обзор литературы по теме работы</span></font></td>
+							<td width="39%">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<select id="criteria7" class="criteria" size="1" name="D7" onchange="javascript:changeColor(this);">
+							<option selected value="0">0 - отсутствует</option>
+							<option value="1">1 – имеется из одного – двух источников
+							</option>
+							<option value="2">2 - имеется из нескольких источников, увязан с темой работы
+							</option>
+							</select></td>
+							<td valign="top" width="20%">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<textarea id="briefComment7" class="briefComment" rows="3" name="briefComment7" cols="30" maxlength="150"></textarea></td>
+						</tr>
+						<tr>
+							<td width="20%" style="text-align: left">&nbsp;</td>
+							<td width="39%">&nbsp;</td>
+							<td valign="top" width="20%">&nbsp;</td>
+						</tr>
+						<tr>
+							<td width="20%" style="text-align: left">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<font face="Tahoma">
+							<span style="font-size: 14pt; line-height: 115%">8 
+							Освоены дополнительные знания, умения, навыки сверх 
+							школьной программы (с учетом возраста)</span></font></td>
+							<td width="39%">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<select id="criteria8" class="criteria" size="1" name="D8" onchange="javascript:changeColor(this);">
+							<option selected value="0">0 - нет</option>
+							<option value="1">1 - освоены достаточно простые, не требующие больших затрат времени, не носящие универсального характера
+							</option>
+							<option value="2">2 - освоены требующие достаточных затрат времени, универсального характера
+							</option>
+							</select></td>
+							<td valign="top" width="20%">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<textarea id="briefComment8" class="briefComment" rows="3" name="briefComment8" cols="30" maxlength="150"></textarea></td>
+						</tr>
+						<tr>
+							<td width="20%" style="text-align: left">&nbsp;</td>
+							<td width="39%">&nbsp;</td>
+							<td valign="top" width="20%">&nbsp;</td>
+						</tr>
+						<tr>
+							<td width="20%" style="text-align: left">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<font face="Tahoma">
+							<span style="font-size: 14pt; line-height: 115%">9 
+							Используются математические методы</span></font></td>
+							<td width="39%">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<select id="criteria9" class="criteria" size="1" name="D9" onchange="javascript:changeColor(this);">
+							<option selected value="0">0 - нет</option>
+							<option value="1">1 - используется традиционный, сравнительно несложный математический аппарат
+							</option>
+							<option value="2">2 – используется достаточно сложный для школьника математический аппарат
+							</option>
+							</select></td>
+							<td valign="top" width="20%">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<textarea id="briefComment9" class="briefComment" rows="3" name="briefComment9" cols="30" maxlength="150"></textarea></td>
+						</tr>
+						<tr>
+							<td width="20%" style="text-align: left">&nbsp;</td>
+							<td width="39%">&nbsp;</td>
+							<td valign="top" width="20%">&nbsp;</td>
+						</tr>
+						<tr>
+							<td width="20%" style="text-align: left">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<font face="Tahoma">
+							<span style="font-size: 14pt; line-height: 115%">10 
+							Используются экспериментальные методы</span></font></td>
+							<td width="39%">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<select id="criteria10" class="criteria" size="1" name="D10" onchange="javascript:changeColor(this);">
+							<option selected value="0">0 - нет</option>
+							<option value="1">1 – использовано обычное школьное оборудование
+							</option>
+							<option value="2">2 – результаты эксперимента статистически обработаны
+							</option>
+							<option value="3">3 - использовано оборудование, отличное от обычного школьного
+							</option>
+							<option value="4">4 – использовано сложное, уникальное оборудование
+							</option>
+							</select></td>
+							<td valign="top" width="20%">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<textarea id="briefComment10" class="briefComment" rows="3" name="briefComment10" cols="30" maxlength="150"></textarea></td>
+						</tr>
+						<tr>
+							<td width="20%" style="text-align: left">&nbsp;</td>
+							<td width="39%">&nbsp;</td>
+							<td valign="top" width="20%">&nbsp;</td>
+						</tr>
+						<tr>
+							<td width="20%" style="text-align: left">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<font face="Tahoma">
+							<span style="font-size: 14pt; line-height: 115%">11 
+							Разработаны специальные средства для выполнения 
+							работы (программы для ЭВМ, экспериментальные 
+							установки, модели, технические устройства)</span></font></td>
+							<td width="39%">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<select id="criteria11" class="criteria" size="1" name="D11" onchange="javascript:changeColor(this);">
+							<option selected value="0">0 - нет</option>
+							<option value="1">1 - разработаны достаточно простые средства, не требующие больших затрат времени, высокой квалификации
+							</option>
+							<option value="2">2 - разработаны средства, требующие достаточных затрат времени или высокой квалификации
+							</option>
+							</select></td>
+							<td valign="top" width="20%">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<textarea id="briefComment11" class="briefComment" rows="3" name="briefComment11" cols="30" maxlength="150"></textarea></td>
+						</tr>
+						<tr>
+							<td width="20%" style="text-align: left">&nbsp;</td>
+							<td width="39%">&nbsp;</td>
+							<td valign="top" width="20%">&nbsp;</td>
+						</tr>
+						<tr>
+							<td width="20%" style="text-align: left">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<font face="Tahoma">
+							<span style="font-size: 14pt; line-height: 115%">12 
+							Проводится многопараметрическое качественное 
+							исследование объекта (процесса)</span></font></td>
+							<td width="39%">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<select id="criteria12" class="criteria" size="1" name="D12" onchange="javascript:changeColor(this);">
+							<option selected value="0">0 - отсутствует</option>
+							<option value="1">1 - проводится по небольшому числу параметров с использованием простейших средств обработки данных
+							</option>
+							<option value="2">2 - проводится по большому числу параметров с использованием специальных методов и средств анализа данных
+							</option>
+							</select></td>
+							<td valign="top" width="20%">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<textarea id="briefComment12" class="briefComment" rows="3" name="briefComment12" cols="30" maxlength="150"></textarea></td>
+						</tr>
+						<tr>
+							<td width="20%" style="text-align: left">&nbsp;</td>
+							<td width="39%">&nbsp;</td>
+							<td valign="top" width="20%">&nbsp;</td>
+						</tr>
+						<tr>
+							<td width="20%" style="text-align: left">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<font face="Tahoma">
+							<span style="font-size: 14pt; line-height: 115%">13 
+							Получены новые научные результаты</span></font></td>
+							<td width="39%">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<select id="criteria13" class="criteria" size="1" name="D13" onchange="javascript:changeColor(this);">
+							<option selected value="0">0 - отсутствует</option>
+							<option value="1">1 – предположительно, принадлежат, в основном, научному руководителю
+							</option>
+							<option value="2">2 – предположительно, получены совместно с научным руководителем
+							</option>
+							<option value="3">3 – предположительно, получены, в основном, самим учащимся
+							</option>
+							</select></td>
+							<td valign="top" width="20%">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<textarea id="briefComment13" class="briefComment" rows="3" name="briefComment13" cols="30" maxlength="150"></textarea></td>
+						</tr>
+						<tr>
+							<td width="20%" style="text-align: left">&nbsp;</td>
+							<td width="39%">&nbsp;</td>
+							<td valign="top" width="20%">&nbsp;</td>
+						</tr>
+						<tr>
+							<td width="20%" style="text-align: left">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<font face="Tahoma">
+							<span style="font-size: 14pt; line-height: 115%">14 
+							Имеются оригинальные идеи </span></font></td>
+							<td width="39%">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<select id="criteria14" class="criteria" size="1" name="D14" onchange="javascript:changeColor(this);">
+							<option selected value="0">0 - оригинальные идеи отсутствуют
+							</option>
+							<option value="1">1 – использованы оказавшиеся эффективными непривычные, неожиданные приемы в оформлении/изложении результатов работы
+							</option>
+							<option value="2">2 – использованы идеи, приемы, методы из других областей науки, неожиданные в контексте выполненной работы, имеющие значение лишь для отдельных ее элементов
+							</option>
+							<option value="3">3 - использованы идеи, приемы, методы из других областей науки, неожиданные в контексте выполненной работы, имеющие существенное значение для работы в целом
+							</option>
+							</select></td>
+							<td valign="top" width="20%">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<textarea id="briefComment14" class="briefComment" rows="3" name="briefComment14" cols="30" maxlength="150"></textarea></td>
+						</tr>
+						<tr>
+							<td width="20%" style="text-align: left">&nbsp;</td>
+							<td width="39%">&nbsp;</td>
+							<td valign="top" width="20%">&nbsp;</td>
+						</tr>
+						<tr>
+							<td width="20%" style="text-align: left">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<font face="Tahoma">
+							<span style="font-size: 14pt; line-height: 115%">15 
+							Качество оформления работы</span></font></td>
+							<td width="39%">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<select id="criteria15" class="criteria" size="1" name="D15" onchange="javascript:changeColor(this);">
+							<option selected value="0">0 - неряшливое, неграмотное, непонятное описание работы
+							</option>
+							<option value="1">1 - работа оформлена аккуратно, описание четко, последовательно, понятно, грамотно
+							</option>
+							<option value="2">2 - работа оформлена аккуратно и изобретательно, описание четко, последовательно, понятно, грамотно
+							</option>
+							</select></td>
+							<td valign="top" width="20%">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<textarea id="briefComment15" class="briefComment" rows="3" name="briefComment15" cols="30" maxlength="150"></textarea></td>
+						</tr>
+						<tr>
+							<td width="20%" style="text-align: left">&nbsp;</td>
+							<td width="39%">&nbsp;</td>
+							<td valign="top" width="20%">&nbsp;</td>
+						</tr>
+						<tr>
+							<td width="20%" style="text-align: left">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<font face="Tahoma">
+							<span style="font-size: 14pt; line-height: 115%">16 
+							Глубина самооценки проекта его участниками<span lang="en-us">
+							</span>(<b>заполняется только экспертом Жюри</b>)</span></font></td>
+							<td width="39%">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<select id="criteria16" class="criteria" size="1" name="D16" onchange="javascript:changeColor(this);">
+							<option selected value="0">0 – листы самооценки отсутствуют
+							</option>
+							<option value="1">1 – представлены листы самооценки не всеми участниками
+							</option>
+							<option value="2">2 – адекватная оценка проекта участниками
+							</option>
+							</select></td>
+							<td valign="top" width="20%">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<textarea id="briefComment16" class="briefComment" rows="3" name="briefComment16" cols="30" maxlength="150"></textarea></td>
+						</tr>
+						</table>
+					</center>
+					<p style="margin-left: 100px; margin-right: 100px" align="right">
+					<span style="font-size: 16pt">
+		</div>
+		
+		
+		</div>	
+	<div id="footer">
+		<div class="footerText">
+			<span>Copyright ПМиВТ</span>
+		</div>
+	</div>
+</div>
+
+
+</body>
+
+</html>

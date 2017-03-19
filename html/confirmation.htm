@@ -1,0 +1,138 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1251">
+<title>Страница подтверждения на обработку персональных данных</title>
+<link rel="stylesheet" href="style/style.css">
+<link rel="stylesheet" href="style/popupStyle.css">
+
+<script type="text/javascript" src="js/Ajax.js"></script>
+<script type="text/javascript" src="js/Base64.js"></script>
+<script type="text/javascript" src="js/script.js"></script>
+<script type="text/javascript" src="js/remText.js"></script>
+
+<script>
+
+var user;
+var organizationCode, subdivisionLevel1Code, organizationTypeCode = 0; //Коды организации, подразделения и типа организации
+function onLoad()
+{
+	user = Ajax.runEval("/script/login.exe?user");
+
+	//Если неподтвержденный пользователь или Администратор
+	if ((eval(user.userStatusCode) == 19) || (eval(user.userStatusCode) == 20) || (eval(user.userStatusCode) == 21) || (eval(user.userStatusCode) == 22) || (eval(user.userStatusCode) == 23) || (eval(user.userStatusCode) == 100)) {	
+
+		document.getElementById("confirmTable").style.visibility = "visible";
+
+		//Текущий пользователь
+		setCurrentUser();
+	}
+	else {
+		if ((eval(user.userStatusCode) == 2) || (eval(user.userStatusCode) == 3) || (eval(user.userStatusCode) == 4) || (eval(user.userStatusCode) == 6)) {	
+			alert("Вы уже ранее подтвердили свое согласие на обработку персональных данных. Ваша учетная запись в системе полноценная! ");
+			location.href = "main.html";	
+		}
+		else {
+			location.replace("/login?&/confirmation.htm");
+		}
+
+		
+	}
+}
+
+function setConfirm()
+{
+	var query = "/script/regUser.exe?setConfirm";
+	var result = Ajax.run(query);
+	alert(result);
+	location.href = "main.html";
+}
+
+function setRefuse() 
+{
+	if (window.confirm("При отказе подтвердить свое согласие на обработку персональных данных вы не сможете в дальнейшем работать с системой. \nЕсли вы действительно решили отказаться от подтверждения согласия на обработку персональных данных, то нажмите \"OK\" (В этом случае, изменив свое решение, вы сможете вернуться сюда позже). \n")) {
+		location.href = "index.html";	
+	}
+}
+
+</script>
+</head>
+
+<body onload="onLoad();">
+
+<div id="wrapeall">
+	<div id="header">
+		<div class="logoText">
+			<span style="background-color: #FFFF00"></span></div>
+	</div>
+		
+	<p></p>
+
+
+	<div class="headline">
+		
+		<div name="currentUser">
+					<p style="margin-left: 100px; margin-right: 100px" align="right">
+					<font color="#FFFFFF"><b>
+					<span style="font-size: 12pt; background-color: #000080" id="currentUser">0</span></b></font><span style="font-size: 16pt">
+		</div>
+		
+		<p>Подтверждение согласия на обработку персональных данных</div>	
+
+
+	<div id="middlePartPage">
+		<div align="center">
+			<table border="1" width="80%" id="confirmTable" style="visibility: hidden;" height="65%">
+				<!--<tr>
+					<td align="left" valign="top" width="486" bgcolor="#FFAE5E">
+					Тип</td>
+					<td align="left" valign="top" width="753">
+					<span style="font-size: 14pt; font-weight: 700; font-style: italic" id="organizationTypeName">00</span></td>
+				</tr>-->
+				<tr>
+					<td align="left" valign="top" width="100%" bgcolor="#FFAE5E" colspan="3" height="15%">
+					<p style="margin-top: 0; margin-bottom: 0" align="center">
+					<span style="font-size: 16pt; font-weight: 700">Уважаемый 
+					пользователь! </span></p>
+					<p style="margin-top: 0; margin-bottom: 0" align="center">
+					<span style="font-size: 14pt; font-weight: 700">Просим внимательно ознакомиться с положением о 
+					работе с персональными данными в системе &quot;ВЗЛЕТ&quot; </span></p>
+					<p style="margin-top: 0; margin-bottom: 0" align="center">
+					<span style="font-size: 14pt; font-weight: 700">и 
+					подтвердить свое согласие на их обработку. </span></p>
+					<p align="center" style="margin-top: 0; margin-bottom: 0">
+					<span style="font-size: 14pt; font-weight: 700">При 
+					неподтверждении вы в дальнейшем не сможете работать с 
+					системой.</span></td>
+					</tr>
+					<tr>
+					<td align="left" valign="top" width="100%" colspan="3" height="45%">
+					<iframe name="I1" src="confirmPosition.htm" height="100%" width="100%">
+					Ваш обозреватель не поддерживает встроенные рамки или он не настроен на их отображение.
+					</iframe>&nbsp;<!--<frameset rows="50%">
+					   <frame src="confirmPosition.htm" name="topFrame">
+					 </frameset>--></td>
+					</tr>
+				<tr>
+					<td align="left" valign="top" width="60%">&nbsp;</td>
+					<td align="center" width="10%" height="5%">
+					<b><font size="5"><a href="javascript:setConfirm();">
+					Подтвердить</a></font></b></td>
+					<td align="center" width="10%">
+					<b><font size="5"><a href="javascript:setRefuse();">
+					Отказаться</a></font></b></td>
+				</tr>
+				</table>
+		</div>
+	</div>	
+	<div id="footer">
+		<div class="footerText">
+			<span>Copyright ИРОСТ</span>
+		</div>
+	</div>
+</div>
+
+
+</body>
+
+</html>

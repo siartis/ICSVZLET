@@ -1,0 +1,186 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1251">
+<title>Выбор темы проекта</title>
+<link rel="stylesheet" href="style/style.css">
+
+<script type="text/javascript" src="js/Ajax.js"></script>
+<script type="text/javascript" src="js/Base64.js"></script>
+
+<script>
+
+function onLoad()
+{
+	getScienceDirection();
+	getOrganization();
+	getStatusTheme();
+}
+
+function getScienceDirection()
+{
+	var scienceDirection = Ajax.runEval("/script/chooseTheme.exe?getScienceDirection");
+	var sciDirection = document.getElementById("scienceDirection");
+
+	//Научное направление 1
+	for(var i = 0; i < scienceDirection.length; i++)
+	{
+		sciDirection.options[sciDirection.options.length] = new Option(scienceDirection[i].scienceDirectionName, scienceDirection[i].scienceDirectionCode);	
+	}
+}
+
+function getOrganization()
+{
+	var organizations = Ajax.runEval("/script/chooseTheme.exe?getOrganization");
+	var organization = document.getElementById("organization");
+
+	//Организации
+	for(var i = 0; i < organizations.length; i++)
+	{
+		organization.options[organization.options.length] = new Option(organizations[i].organizationName, organizations[i].organizationCode);	
+	}
+}
+
+//Получить статус темы
+function getStatusTheme()
+{
+	var statusThemes = Ajax.runEval("/script/chooseTheme.exe?getStatusTheme");
+	var statusTheme = document.getElementById("statusTheme");
+
+	//Статус темы
+	for(var i = 0; i < statusThemes.length; i++)
+	{
+		statusTheme.options[statusTheme.options.length] = new Option(statusThemes[i].statusThemeName, statusThemes[i].statusThemeCode);	
+	}
+}
+
+
+function chooseTheme()
+{
+	document.getElementById("themes").innerHTML = "";
+	//alert(document.getElementById("scienceDirection").value);
+	var scienceDirectionCode = document.getElementById("scienceDirection").value;
+	var organizationCode = document.getElementById("organization").value;
+	var statusThemeCode = document.getElementById("statusTheme").value;
+	
+	
+	var themes = Ajax.runEval("/script/chooseTheme.exe?chooseTheme&" + scienceDirectionCode + "&" + organizationCode + "&" + statusThemeCode);
+	
+	var result = "<div align=\"center\">";
+	result += "<table border=\"1\" width=\"80%\">";
+	result += "<tr>";
+	result += "<td align=\"left\" valign=\"top\">" + "№п/п" + "</td>";
+	result += "<td align=\"left\" valign=\"top\">" + "Название темы" + "</td>";
+	result += "<td align=\"left\" valign=\"top\">" + "Код темы" + "</td>";
+	result += "<td align=\"left\" valign=\"top\">" + "Ожидаемые/полученные новые результаты" + "</td>";
+	result += "<td align=\"left\" valign=\"top\">" + "Дата ввода темы" + "</td>";
+	
+	result += "<td align=\"left\" valign=\"top\">" + "научное направление 1" + "</td>";
+	result += "<td align=\"left\" valign=\"top\">" + "Научное направление 2" + "</td>";
+	result += "<td align=\"left\" valign=\"top\">" + "Научное направление 3" + "</td>";
+	result += "<td align=\"left\" valign=\"top\">" + "Статус темы" + "</td>";
+
+	result += "</tr>";
+	
+	for(var i = 0; i < themes.length; i++) {
+		result += "<tr>";
+		result += "<td align=\"left\" valign=\"top\">" + String(i+1) + "</td>";
+//		result += "<td align=\"left\" valign=\"top\">" + themes[i].themeName + "</td>";
+		
+		result += "<td align=\"left\" valign=\"top\"><a href=\"javascript:selectChosenTheme();\">" + themes[i].themeName + "</a></td>";
+		
+		
+		
+		
+		result += "<td align=\"left\" valign=\"top\">" + themes[i].themeCode + "</td>";
+		result += "<td align=\"left\" valign=\"top\">" + themes[i].themeComment + "</td>";
+		result += "<td align=\"left\" valign=\"top\">" + themes[i].themeDate + "</td>";
+		result += "<td align=\"left\" valign=\"top\">" + themes[i].themeScienceDirectionName1 + "</td>";
+		result += "<td align=\"left\" valign=\"top\">" + themes[i].themeScienceDirectionName2 + "</td>";
+		result += "<td align=\"left\" valign=\"top\">" + themes[i].themeScienceDirectionName3 + "</td>";
+		result += "<td align=\"left\" valign=\"top\">" + themes[i].themeStatusThemeName + "</td>";
+		result += "</tr>";
+	}
+	
+	result += "</table>";
+	result += "</div>";
+	
+	document.getElementById("themes").innerHTML = result;	
+}
+
+
+
+function selectChosenTheme()
+{
+	location.href = "users.htm";
+}
+
+
+
+
+</script>
+
+
+
+
+</head>
+
+<body onload="onLoad();">
+<div id="wrapeall">
+	<div id="header">
+		<div class="logoText">
+			<span style="background-color: #FFFF00">hfghfghfghfghfg 
+			nvbnnvbnnvnvbnvnbnvnvbnfhfghfgh</span></div>
+	</div>
+		
+	<p></p>
+
+
+	<div class="headline">
+		<span lang="ru">Просмотр тем проектов</span><p><span lang="ru"><font size="3"><span style="font-weight: 400">
+		Пользователь системы должен иметь в системе зарегистрированный статус. 
+		Если вы еще не зарегистрированы, <a href="regUser.htm">зарегистрируйтесь</a>.</span></font></span></p>
+		<p><font size="3"><span style="font-weight: 400">Дальнейшую работу 
+		осуществляйте через ссылку &quot;<a href="users.htm">Пользователи</a>&quot; на 
+		главной странице системы.</span></font></p>
+		<div align="center">
+			<table border="1" width="1255" id="table1">
+				<tr>
+					<td align="left" valign="top" width="363">
+					<p align="center"><span lang="ru">Отрасль науки</span></td>
+					<td align="left" valign="top" width="178">
+					<p align="center">Статус темы</td>
+					<td align="left" valign="top" width="323">
+					<p align="center">Организация</td>
+					<td align="left" valign="top" width="363">&nbsp;</td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" width="363">
+					<p align="center">
+					<select id="scienceDirection" size="1" name="D1">
+					<option selected value="0">Все</option></select></td>
+					<td align="left" valign="top" width="178">
+					<p align="center">
+					<select id="statusTheme" size="1" name="D3">
+					<option selected value="0">Все</option></select></td>
+					<td align="left" valign="top" width="323">
+					<p align="center">
+					<select id="organization" size="1" name="D2">
+					<option selected value="0">Все</option></select></td>
+					<td align="left" valign="top" width="363">
+					<input type="button" value="Показать" name="B3" onclick="chooseTheme();" style="float: right"></td>
+				</tr>
+			</table>
+			<p><span id="themes">1</span></div>
+	</div>	
+	<div id="footer">
+		<div class="footerText">
+			<span>Copyright ПМиВТ</span>
+		</div>
+	</div>
+</div>
+
+
+</body>
+
+</html>

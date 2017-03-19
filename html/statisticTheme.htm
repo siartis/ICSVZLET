@@ -1,0 +1,549 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1251">
+<title>Ход выполнения отдельных проектов</title>
+<link rel="stylesheet" href="style/style.css">
+
+<script type="text/javascript" src="js/Ajax.js"></script>
+<script type="text/javascript" src="js/Base64.js"></script>
+<script type="text/javascript" src="js/table_sort.js"></script>
+<script type="text/javascript" src="js/script.js"></script>
+
+<script>
+
+//var user;
+function onLoad()
+{
+	user = Ajax.runEval("/script/login.exe?user");
+	//Если аналитик или научный руководитель или Администратор
+	//if ((eval(user.userStatusCode) == 14) || (eval(user.userStatusCode) == 5) || (eval(user.userStatusCode) == 100)) {
+	//Если Администратор
+	//if (eval(user.userStatusCode) == 100 || (eval(user.userStatusCode) == 14)) {
+		
+		//Текущая дата
+		getCurrentDate();
+		
+		//Текущий пользователь
+		setCurrentUser();
+		
+		getScienceDirection();
+		getOrganization();
+		getStatusTheme();
+		getStageExecute();
+		getSection();
+		getChildGrade();
+	/*}
+	else {
+		location.replace("/login?&/statisticTheme.htm");
+	}*/
+}
+
+function getScienceDirection()
+{
+	var scienceDirection = Ajax.runEval("/script/chooseTheme.exe?getScienceDirection");
+	var sciDirection = document.getElementById("scienceDirection");
+
+	//Научное направление 1
+	for(var i = 0; i < scienceDirection.length; i++)
+	{
+		sciDirection.options[sciDirection.options.length] = new Option(scienceDirection[i].scienceDirectionName, scienceDirection[i].scienceDirectionCode);	
+	}
+}
+
+function getOrganization()
+{
+	var organizations = Ajax.runEval("/script/chooseTheme.exe?getOrganization");
+	var organization = document.getElementById("organization");
+
+	//Организации
+	for(var i = 0; i < organizations.length; i++)
+	{
+		organization.options[organization.options.length] = new Option(organizations[i].organizationName, organizations[i].organizationCode);	
+	}
+}
+
+//Получить статус темы
+function getStatusTheme()
+{
+	var statusThemes = Ajax.runEval("/script/chooseTheme.exe?getStatusTheme");
+	var statusTheme = document.getElementById("statusTheme");
+
+	//Статус темы
+	for(var i = 0; i < statusThemes.length; i++)
+	{
+		statusTheme.options[statusTheme.options.length] = new Option(statusThemes[i].statusThemeName, statusThemes[i].statusThemeCode);	
+	}
+}
+
+//Получить стадии выполнения проекта
+function getStageExecute()
+{
+	var stageExecutes = Ajax.runEval("/script/statistics.exe?getStageExecute");
+	var stageExecute = document.getElementById("stageExecute");
+
+	//Статус темы
+	for(var i = 0; i < stageExecutes.length; i++)
+	{
+		stageExecute.options[stageExecute.options.length] = new Option(stageExecutes[i].stageExecuteName, stageExecutes[i].stageExecuteCode);	
+	}
+}
+
+//Получить названия секций
+function getSection()
+{
+	var sections = Ajax.runEval("/script/chooseTheme.exe?getSection");
+	var section = document.getElementById("section");
+
+	//Секция
+	for(var i = 0; i < sections.length; i++)
+	{
+		section.options[section.options.length] = new Option(sections[i].sectionName, sections[i].sectionCode);	
+	}
+}
+
+//Получить названия классов
+function getChildGrade()
+{
+	var categories = Ajax.runEval("/script/chooseTheme.exe?getChildGrade");
+	var category = document.getElementById("childGrade");
+
+	//Класс
+	for(var i = 0; i < categories.length; i++)
+	{
+		category.options[category.options.length] = new Option(categories[i].childGradeName, categories[i].childGradeCode);	
+	}
+}
+
+
+function chooseTheme()
+{
+	document.getElementById("themes").innerHTML = "";
+	var scienceDirectionCode = document.getElementById("scienceDirection").value;
+	var organizationCode = document.getElementById("organization").value;
+	var statusThemeCode = document.getElementById("statusTheme").value;
+	var section = document.getElementById("section").value;
+	var childGrade = document.getElementById("childGrade").value;
+	var stageExecute = document.getElementById("stageExecute").value;
+
+	var xhr = new XMLHttpRequest();		
+	xhr.open("GET", "/script/statistics.exe?getIndividualMonitoring1&" + scienceDirectionCode + "&" + organizationCode + "&" + statusThemeCode + "&" + section + "&" + childGrade + "&" + stageExecute, true);
+	xhr.send();
+	xhr.onreadystatechange = function() {
+		if (xhr.readyState != 4) return;
+		if (xhr.status != 200) {
+			alert("Error");
+		} 
+		else {
+			var s = eval(xhr.responseText);
+			onChooseTheme(s);
+		}
+	}	
+}
+
+
+function onChooseTheme(themes)
+{
+	var c_stage = "";
+	var result = "<div align=\"center\">";
+	result += "<table border=\"1\" width=\"80%\" style=\"background: white;\" id=\"resultTable\">";
+	result += "<tr>";
+	result += "<td align=\"left\" style=\"background: #FFAE5E;\" valign=\"top\">" + "№п/п" + "</td>";
+	result += "<td align=\"left\" style=\"background: #FFAE5E;\" valign=\"top\">" + "Название темы" + "</td>";
+	
+	result += "<td align=\"left\" style=\"background: #FFAE5E;\" valign=\"top\">" + "ФИО ученика" + "</td>";
+	result += "<td align=\"left\" style=\"background: #FFAE5E;\" valign=\"top\">" + "Класс ученика" + "</td>";
+	result += "<td align=\"left\" style=\"background: #FFAE5E;\" valign=\"top\">" + "Организация ученика" + "</td>";
+	
+	result += "<td align=\"left\" style=\"background: #FFAE5E;\" valign=\"top\">" + "ФИО руководителя" + "</td>";
+	result += "<td align=\"left\" style=\"background: #FFAE5E;\" valign=\"top\">" + "Организация руководителя" + "</td>";
+	
+	result += "<td align=\"left\" style=\"background: #FFAE5E;\" valign=\"top\">" + "ФИО научного консультанта" + "</td>";
+	result += "<td align=\"left\" style=\"background: #FFAE5E;\" valign=\"top\">" + "Ученая степень консультанта" + "</td>";
+	result += "<td align=\"left\" style=\"background: #FFAE5E;\" valign=\"top\">" + "Ученое звание консультанта" + "</td>";
+	result += "<td align=\"left\" style=\"background: #FFAE5E;\" valign=\"top\">" + "Организация научного консультанта" + "</td>";
+	result += "<td align=\"left\" style=\"background: #FFAE5E;\" valign=\"top\">" + "Кафедра консультанта" + "</td>";
+
+	result += "<td align=\"left\" style=\"background: #FFAE5E;\" valign=\"top\">" + "Код темы" + "</td>";
+	result += "<td align=\"left\" style=\"background: #FFAE5E;\" valign=\"top\">" + "Текущий этап работы над темой (оценка руководителя)" + "</td>";
+	//result += "<td align=\"left\" style=\"background: #FFAE5E;\" valign=\"top\">" + "Уровень взаимодействия в коллективе (оценка консультанта)" + "</td>";
+	
+	result += "<td align=\"left\" style=\"background: #FFAE5E;\" valign=\"top\">" + "Секция конкурса ВЗЛЕТ" + "</td>";
+	
+	result += "<td align=\"left\" style=\"background: #FFAE5E;\" valign=\"top\">" + "Научные направления" + "</td>";
+	
+	result += "<td align=\"left\" style=\"background: #FFAE5E;\" valign=\"top\">" + "Статус темы" + "</td>";
+	
+	//result += "<td align=\"left\" style=\"background: #FFAE5E;\" valign=\"top\">" + "Рецензия ученика (автора проекта)" + "</td>";
+	//result += "<td align=\"left\" style=\"background: #FFAE5E;\" valign=\"top\">" + "Рецензия учителя (руководителя проекта)" + "</td>";
+	//result += "<td align=\"left\" style=\"background: #FFAE5E;\" valign=\"top\">" + "Рецензия научного консультанта" + "</td>";
+	
+	//result += "<td align=\"left\" style=\"background: #FFAE5E;\" valign=\"top\">" + "Рецензия эксперта 1" + "</td>";
+	//result += "<td align=\"left\" style=\"background: #FFAE5E;\" valign=\"top\">" + "Рецензия эксперта 2" + "</td>";
+	
+
+	//result += "<td align=\"left\" style=\"background: #FFAE5E;\" valign=\"top\">" + "Допущен на очный этап" + "</td>";
+	//result += "<td align=\"left\" style=\"background: #FFAE5E;\" valign=\"top\">" + "Рейтинг очного этапа" + "</td>";
+	
+	
+//	result += "<td align=\"left\" style=\"background: #FFAE5E;\" valign=\"top\">" + "Научное направление 2" + "</td>";
+//	result += "<td align=\"left\" style=\"background: #FFAE5E;\" valign=\"top\">" + "Научное направление 3" + "</td>";
+	
+
+	result += "</tr>";
+	
+	for(var i = 0; i < themes.length; i++) {
+		result += "<tr>";
+		result += "<td align=\"left\" valign=\"top\">" + String(i+1) + "</td>";
+		
+//		result += "<td align=\"left\" valign=\"top\"><a href=\"javascript:setThemeIntramuralRating(" + themes[i].themeCode + ", " + (i+1) + ", '" + themes[i].themeName + "');\">" + themes[i].themeName + "</a>" + "</td>";
+		result += "<td align=\"left\" valign=\"top\">" + themes[i].themeName + "</td>";
+		
+		result += "<td align=\"left\" valign=\"top\">" + themes[i].themeChildFIO + "</td>";
+		result += "<td align=\"left\" valign=\"top\">" + themes[i].themeChildGradeName + "</td>";
+		result += "<td align=\"left\" valign=\"top\">" + themes[i].themeChildSubdivision + "</td>";
+		
+		result += "<td align=\"left\" valign=\"top\">" + themes[i].themeTeacherFIO + "</td>";
+		result += "<td align=\"left\" valign=\"top\">" + themes[i].themeTeacherSubdivision + "</td>";
+		
+		result += "<td align=\"left\" valign=\"top\">" + themes[i].themeConsultantFIO + "</td>";
+		result += "<td align=\"left\" valign=\"top\">" + themes[i].themeConsultantDegree + "</td>";
+		result += "<td align=\"left\" valign=\"top\">" + themes[i].themeConsultantAcademicDirection + "</td>";
+		result += "<td align=\"left\" valign=\"top\">" + themes[i].themeConsultantOrganization + "</td>";
+		result += "<td align=\"left\" valign=\"top\">" + themes[i].themeConsultantSubdivision + "</td>";
+		
+		result += "<td align=\"left\" valign=\"top\">" + themes[i].themeCode + "</td>";
+		
+		c_stage = "";
+		//Покраска
+		switch (eval(themes[i].themeStageExecuteCode)) {
+			case  1: c_stage="background: #FCFEA9;"; break;
+			case  2: c_stage="background: #FFFF00;"; break;
+			case  3: c_stage="background: #AAFFFF;"; break;
+			case  4: c_stage="background: #0099FF;"; break;
+			case  5: c_stage="background: #4e4eff;"; break;
+			case  6: c_stage="background: #99FF66;"; break;
+			case  7: c_stage="background: #00FF00;"; break;
+			case  8: c_stage="background: #00CC00;"; break;
+			case  9: c_stage="background: #006600;"; break;
+			case  10: c_stage="background: #FFCCCC;"; break;
+			case  11: c_stage="background: #FFE9BB;"; break;
+			case  12: c_stage="background: #CC9900;"; break;
+			case  13: c_stage="background: #996600;"; break;
+			case  14: c_stage="background: #663300;"; break;
+			case  15: c_stage="background: #FFCEFF;"; break;
+			case  16: c_stage="background: #FF0000;"; break;
+			case  17: c_stage="background: #FF3399;"; break;
+			case  18: c_stage="background: #FF66FF;"; break;
+			case  19: c_stage="background: #FF9900;"; break;					
+		}
+		
+		result += "<td align=\"left\" valign=\"top\" style=\"" + c_stage + "\">" + themes[i].themeStageExecuteName + "</td>";
+		
+		//result += "<td align=\"left\" valign=\"top\">" + themes[i].themeDateTime + "</td>";
+		
+		result += "<td align=\"left\" valign=\"top\">" + themes[i].themeSectionName + "</td>";
+		
+		result += "<td align=\"left\" valign=\"top\">" + themes[i].themeScienceDirectionName1 + ", " + themes[i].themeScienceDirectionName2 + ", " + themes[i].themeScienceDirectionName3 + "</td>";
+		//result += "<td align=\"left\" valign=\"top\">" + themes[i].themeScienceDirectionName2 + "</td>";
+		//result += "<td align=\"left\" valign=\"top\">" + themes[i].themeScienceDirectionName3 + "</td>";
+		result += "<td align=\"left\" valign=\"top\">" + themes[i].themeStatusThemeName + "</td>";
+		
+		
+		/*if (eval(themes[i].themeRatingChild) != 0) {
+			result += "<td align=\"center\" valign=\"top\">" + themes[i].themeRatingChild + "</td>";
+		}
+		else {
+			result += "<td>"  + "<font color=\"#FFFFFF\"><span style=\"background-color: #FFFFFF\">" + "0</span></font></td>";
+		}
+		
+		if (eval(themes[i].themeRatingTeacher) != 0) {
+			result += "<td align=\"center\" valign=\"top\">" + themes[i].themeRatingTeacher + "</td>";
+		}
+		else {
+			result += "<td>"  + "<font color=\"#FFFFFF\"><span style=\"background-color: #FFFFFF\">" + "0</span></font></td>";
+		}
+		
+		if (eval(themes[i].themeRatingConsultant) != 0) {
+			result += "<td align=\"center\" valign=\"top\">" + themes[i].themeRatingConsultant + "</td>";
+		}
+		else {
+			result += "<td>"  + "<font color=\"#FFFFFF\"><span style=\"background-color: #FFFFFF\">" + "0</span></font></td>";
+		}*/
+
+		
+		
+		/*if (eval(themes[i].themeRatingReviewer1) != 0) {
+			result += "<td align=\"center\" valign=\"top\">" + themes[i].themeRatingReviewer1 + "</td>";
+		}
+		else {
+			result += "<td>"  + "<font color=\"#FFFFFF\"><span style=\"background-color: #FFFFFF\">" + "0</span></font></td>";
+		}
+		
+		if (eval(themes[i].themeRatingReviewer2) != 0) {
+			result += "<td align=\"center\" valign=\"top\">" + themes[i].themeRatingReviewer2 + "</td>";
+		}
+		else {
+			result += "<td>"  + "<font color=\"#FFFFFF\"><span style=\"background-color: #FFFFFF\">" + "0</span></font></td>";
+		}*/
+	
+	
+		/*if (eval(themes[i].themeAdmissionStage) != 0) {
+			result += "<td align=\"center\" valign=\"center\">" + "+" + "</td>";
+		}
+		else {
+			result += "<td align=\"center\" valign=\"center\">" + "" + "</td>";
+		}	
+		
+		
+		if (eval(themes[i].themeRatingAdmission) != 0) {
+			result += "<td align=\"center\" valign=\"center\">" + themes[i].themeRatingAdmission + "</td>";
+		}
+		else {
+			result += "<td align=\"center\" valign=\"center\">" + "" + "</td>";
+		}	*/
+	
+	
+	
+	
+		result += "</tr>";
+	}
+	
+	result += "</table>";
+	result += "</div>";
+	
+	document.getElementById("themes").innerHTML = result;	
+	TABLE_SORT(document.getElementById("resultTable"));
+	//TABLESORT(document.getElementById("resultTable"));
+}
+
+
+
+function selectChosenTheme()
+{
+	location.href = "users.htm";
+}
+
+
+function setThemeIntramuralRating(themeCode, rowIndex, themeName)
+{
+	var themeRating = 0;
+	themeRating = window.prompt("Введите рейтинг очного этапа Конкурса по теме \"" + themeName + "\" ");
+	
+	if (themeRating != null) {
+		var table = document.getElementById("resultTable");
+		var result = Ajax.runEval("/script/enterTheme.exe?setThemeIntramuralRating&" + themeCode + "&" + eval(themeRating));
+		
+		switch (eval(result.resultCode)) {
+			case 1:
+				table.rows[rowIndex].cells[23].innerHTML = String(themeRating);
+				alert("Успех! ");
+			break;
+			
+			case 2:
+				alert("Ошибка переданных параметров! ");
+			break;
+			
+			case 3:
+				alert("Ошибка выполнения запроса! ");
+			break;
+		}
+	}
+}
+
+
+
+</script>
+
+
+
+
+</head>
+
+<body onload="onLoad();" style="background-size: 100% auto; text-align:center" bgcolor="#DCF7FF">
+
+
+<p align="center" style="margin-top: 0; margin-bottom: 0">&nbsp;</p>
+<div align="center">
+	<table border="0" width="1844" id="table2">
+		<tr>
+			<td align="right" valign="top" width="191">&nbsp;</td>
+			<td align="left" width="149">
+			<p style="margin-top: 0; margin-bottom: 0">
+			<img border="0" src="img/coat_of_arms_SO.gif" width="149" height="148"></td>
+			<td align="left" valign="top" width="1490">
+			<p align="center" style="margin-top: 0; margin-bottom: 0"><b>
+			<font style="font-size: 23pt">Самарская 
+			научно-образовательная программа 
+			<span style="font-size: 23pt">«ВЗЛЕТ»</span></font></b></p>
+			<p align="center" style="margin-top: 0; margin-bottom: 0"><b>
+			<font style="font-size: 23pt">конкурсного отбора школьников в
+			<span style="font-size: 23pt">
+			Губернаторский реестр</span></font></b></p>
+			<p align="center" style="margin-top: 0; margin-bottom: 0"><b>
+			<font style="font-size: 23pt"><span style="font-size: 23pt">
+			творчески одаренной молодежи</span></font></b></p>
+			<p align="center" style="margin-top: 0; margin-bottom: 0"><b>
+			<font style="font-size: 23pt">
+			<span style="font-size: 23pt">в сфере науки и техники&nbsp; </span>
+			</font></b></p>
+			<p style="margin-top: 0; margin-bottom: 0">&nbsp;</td>
+		</tr>
+	</table>
+</div>
+				<p align="center" style="margin-top: 0; margin-bottom: 0">&nbsp;</p>
+
+<table width="84%" id="table9" border="0" cellpadding="0" align="center">
+	<tr>
+		<!--<td align="center" style="font-size: 150%"><a href="conf/2014/index.htm">Международная научно-практическая конференция "ТВОРЧЕСКИЙ ПОТЕНЦИАЛ-2014"</a></td> -->
+		<!--<td align="center" style="font-size: 150%"><a href="regionalConferences.htm">Региональная коференция "ТВОРЧЕСКИЙ ПОТЕНЦИАЛ-2014" ИСТ СГАСУ</a></td> -->		
+		<!-- <td align="center" style="font-size: 150%"><a href="#">Архив исследовательской проектов школьников и студентов - участников АСВ (в разработке)</a></td> -->
+		<td align="center" style="font-size: 150%" width="1%">
+		<div align="center">
+		<table width="100%" id="table13" border="0" cellpadding="0">
+	<tr>
+ 		<!--<td align="center" style="font-size: 150%"><a href="conf/2014/index.htm">Международная научно-практическая конференция "ТВОРЧЕСКИЙ ПОТЕНЦИАЛ-2014"</a></td> -->
+		<!--<td align="center" style="font-size: 150%"><a href="regionalConferences.htm">Региональная коференция "ТВОРЧЕСКИЙ ПОТЕНЦИАЛ-2014" ИСТ СГАСУ</a></td> -->		
+		<!-- <td align="center" style="font-size: 150%"><a href="#">Архив исследовательской проектов школьников и студентов - участников АСВ (в разработке)</a></td> -->
+		<td align="center" style="font-size: 150%" width="1%">
+
+<table width="84%" id="table14" border="0" cellpadding="0" align="center">
+	<tr>
+ 		<!--<td align="center" style="font-size: 150%"><a href="conf/2014/index.htm">Международная научно-практическая конференция "ТВОРЧЕСКИЙ ПОТЕНЦИАЛ-2014"</a></td> -->
+		<!--<td align="center" style="font-size: 150%"><a href="regionalConferences.htm">Региональная коференция "ТВОРЧЕСКИЙ ПОТЕНЦИАЛ-2014" ИСТ СГАСУ</a></td> -->		
+		<!-- <td align="center" style="font-size: 150%"><a href="#">Архив исследовательской проектов школьников и студентов - участников АСВ (в разработке)</a></td> -->
+		<td align="center" style="font-size: 150%" width="1%">
+		<span style="font-size: 16pt">
+		<div align="center">
+			<table border="0" width="100%" id="table15">
+				<tr>
+					<td align="center">
+					<p style="margin-top: 0; margin-bottom: 0"><b>
+					<a href="index.html">Главная</a></b></td>
+					<!--<td align="center">
+					<p style="margin-top: 0; margin-bottom: 0"><b>
+					<a href="about.html">О программе &quot;ВЗЛЕТ&quot;</a></b></td>-->
+					<td align="center">
+					<p style="margin-top: 0; margin-bottom: 0"><b>
+					<a href="allUsers.htm">Участники программы</a></b></td>
+					<td align="center">
+					<a href="enterInfo.htm"><p style="margin-top: 0; margin-bottom: 0"><b>
+					Ввод тематики<span lang="ru">,</span> запросов<span lang="ru">,</span> 
+					коллективов</b></a></td>
+					<td align="center">
+					<p style="margin-top: 0; margin-bottom: 0"><b>
+					<a href="chooseTheme.htm">Выбор тематики и&nbsp;формирование 
+					коллективов</a></b></td>
+					<td align="center">
+					<p style="margin-top: 0; margin-bottom: 0">
+					<span lang="ru">
+					<a href="viewEnter.htm"><b>Просмотр 
+					и ввод информации о ходе исследования</b></a></td>
+					<td align="center">
+					<span style="font-size: 12pt">
+					<p style="margin-top: 0; margin-bottom: 0"><b>
+					<a href="events.htm">Запишись и участвуй</a></b></td>
+					<td align="center" bgcolor="#FFFF00">
+					<p style="margin-top: 0; margin-bottom: 0"><b>
+					<a href="monitoringThemes.htm">Мониторинг хода&nbsp;исследований</a></b></td>
+					<td align="center">
+					<p style="margin-top: 0; margin-bottom: 0"><b>
+					<a href="contest.html">Региональный конкурс &quot;ВЗЛЕТ&quot;</a></b></td>
+					<td align="center">
+					<p style="margin-top: 0; margin-bottom: 0">
+					<span style="font-size: 12pt">
+					<b>
+					<a href="enterInfo1.htm">Достижения в других 
+					конкурсах/конференциях</a></b></td>
+				</tr>
+			</table>
+		</div>
+		</td>
+	</tr>
+</table>
+		</td>
+	</tr>
+</table>
+		</div>
+		</td>
+	</tr>
+</table>
+
+				<div class="currentUser">
+					<p style="margin-left: 100px; margin-right: 100px" align="right">
+					<font color="#FFFFFF"><b>
+					<span style="font-size: 12pt; background-color: #000080" id="currentUser">0</span></b></font><span style="font-size: 16pt">
+				</div>
+
+		
+		
+		<p style="text-align: right; margin-left: 100px; margin-right: 100px"><font color="#FFFFFF"><span id="currentDate" style="font-weight: 700; font-style: italic; background-color: #0000FF">
+		0</span></font></p>		
+		
+		<p align="center">
+		<span style="font-size: 16pt; font-weight: 700">Ход выполнения отдельных проектов </span>
+			<span style="font-size: 14pt; font-weight:400">
+			(для научного руководителя Программы ВЗЛЕТ и аналитика)</span></p>
+		<p align="center"><span lang="ru"><font size="3"><span style="font-weight: 400">
+		Пользователь системы должен иметь в системе зарегистрированный статус. 
+		Если вы еще не зарегистрированы, <a href="regUser.htm">
+		зарегистрируйтесь</a>.</span></font></span></p>
+		<p align="center"><font size="3"><span style="font-weight: 400">
+		Дальнейшую работу 
+		осуществляйте через ссылку &quot;<a href="users.htm">Пользователи</a>&quot; на 
+		главной странице системы.</span></font></p>
+<p align="center"><font color="#FF0000"><b><span lang="ru">ФИЛЬТР НЕ РАБОТАЕТ 
+ПРИ ОБРАЩЕНИИ К САЙТУ ИЗ БРАУЗЕРА </span>INTERNET EXPLORER</b></font></p>
+		<div align="center">
+			<p align="center"><font color="#FF0000"><b>Чтобы уменьшить время 
+			ответа, воспользуйтесь фильтром, уменьшая объем выборки</b></font></p>
+			<table border="1" width="60%" id="table1" style="background: #FFAE5E;">
+				<tr>
+					<td align="center" width="363">
+					<p align="center">Секция</td>
+					<td align="center" width="363">
+					<p align="center"><span lang="ru">Отрасль науки</span></td>
+					<td align="center" width="178">
+					<p align="center">Статус темы</td>
+					<td align="center" width="178">
+					Стадия выполнения проекта</td>
+					<td align="center" width="323">
+					<p align="center">Класс</td>
+					<td align="center" width="323">
+					<p align="center">Организация</td>
+					<td align="left" valign="top" width="363">&nbsp;</td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" width="363">
+					<p align="center">
+					<select id="section" size="1" name="D4">
+					<option selected value="0">Все</option></select></td>
+					<td align="left" valign="top" width="363">
+					<p align="center">
+					<select id="scienceDirection" size="1" name="D1">
+					<option selected value="0">Все</option></select></td>
+					<td align="left" valign="top" width="178">
+					<p align="center">
+					<select id="statusTheme" size="1" name="D3">
+					<option selected value="0">Все</option></select></td>
+					<td align="left" valign="top" width="178">
+					<p align="center"><span style="font-size: 16pt">
+					<select id="stageExecute" size="1" name="D6">
+					<option selected value="0">Все</option></select></td>
+					<td align="left" valign="top" width="323">
+					<p align="center"><span style="font-size: 16pt">
+					<select id="childGrade" size="1" name="D5">
+					<option selected value="0">Все</option></select></td>
+					<td align="left" valign="top" width="323">
+					<p align="center">
+					<select id="organization" size="1" name="D2">
+					<option selected value="0">Все</option></select></td>
+					<td align="left" valign="top" width="363">
+					<input type="button" value="Показать" name="B3" onclick="chooseTheme();" style="float: right"></td>
+				</tr>
+			</table>
+			<p><span id="themes">1</span></div>
+
+</body>
+
+</html>

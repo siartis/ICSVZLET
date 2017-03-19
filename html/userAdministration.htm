@@ -1,0 +1,384 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1251">
+<title>Администрирование пользователей системы</title>
+<link rel="stylesheet" href="style/style.css">
+
+<script type="text/javascript" src="js/Ajax.js"></script>
+<script type="text/javascript" src="js/Base64.js"></script>
+<script type="text/javascript" src="js/script.js"></script>
+<script type="text/javascript" src="js/remText.js"></script>
+
+<script>
+
+
+var currentUser;
+function onLoad() 
+{
+	currentUser=Ajax.runEval("/logstat");
+	if(currentUser.table!="adm") {
+		alert("Вы не имеете права работы с данным режимом! ");
+		location.replace("/login?&/userAdministration.htm");
+	}
+	else {
+		//Текущая дата
+		getCurrentDate();
+	
+		//Текущий пользователь
+		setCurrentUser();
+	
+		getOrganization();
+		getStatus();
+	
+		getUsersTable(0,0);
+	}
+}
+
+
+function getStatus()
+{
+	var statuses = Ajax.runEval("/script/admin.exe?getStatus");
+	var status = document.getElementById("status");
+
+	//Организации
+	for(var i = 0; i < statuses.length; i++)
+	{
+		status.options[status.options.length] = new Option(statuses[i].statusName, statuses[i].statusCode);	
+	}
+}
+
+function getOrganization()
+{
+	var organizations = Ajax.runEval("/script/admin.exe?getOrganization");
+	var organization = document.getElementById("organization");
+
+	//Организации
+	for(var i = 0; i < organizations.length; i++)
+	{
+		organization.options[organization.options.length] = new Option(organizations[i].organizationName, organizations[i].organizationCode);	
+	}
+}
+
+function getTableUser()
+{
+	var organization = document.getElementById("organization").value;
+	var status = document.getElementById("status").value;
+	getUsersTable(organization, status);
+}
+
+function getUsersTable(organization, status)
+{
+	document.getElementById("generalStatistics").innerHTML = "";
+	
+	var result = Ajax.runEval("/script/admin.exe?getUsersTable&" + organization + "&" + status);
+	
+	
+	var table = "<table border=\"1\" id=\"resultTable\" width=\"80%\" style=\"background: white;\">";
+	
+	table += "<tr>";
+	table += "<td align=\"left\" style=\"background: #FFAE5E;\" valign=\"top\">№п/п</td>";
+    table += "<td align=\"left\" style=\"background: #FFAE5E;\" valign=\"top\">ФИО</td>";
+    table += "<td align=\"left\" style=\"background: #FFAE5E;\" valign=\"top\">Организация</td>";
+    table += "<td align=\"left\" style=\"background: #FFAE5E;\" valign=\"top\">Подразделение</td>";
+    table += "<td align=\"left\" style=\"background: #FFAE5E;\" valign=\"top\">Статус</td>";
+    table += "<td align=\"left\" style=\"background: #FFAE5E;\" valign=\"top\">Номер телефона</td>";
+    table += "<td align=\"left\" style=\"background: #FFAE5E;\" valign=\"top\">Номер мобильного телефона</td>";
+    table += "<td align=\"left\" style=\"background: #FFAE5E;\" valign=\"top\">E-Mail</td>";
+    table += "<td align=\"left\" style=\"background: #FFAE5E;\" valign=\"top\">Логин</td>";
+    table += "<td align=\"left\" style=\"background: #FFAE5E;\" valign=\"top\">Пароль</td>";
+    table += "<td align=\"left\" style=\"background: #FFAE5E;\" valign=\"top\">Дата/время регистрации в системе</td>";
+
+    table += "<td align=\"left\" style=\"background: #FFAE5E;\" valign=\"top\">Удаление</td>";
+    table += "</tr>";
+	
+	for(var i = 0; i < result.length; i++) {
+		table += "<tr>";
+		
+		table += "<td>" + String(i+1) + "</td>";
+		
+		table += "<td><a href=\"javascript:changeUserFIO(" + result[i].userCode + ", " + "'" + result[i].userFIO + "'" + ");\">" + result[i].userFIO + "</a></td>";
+		table += "<td>" + result[i].userOrganization + "</td>";
+		table += "<td>" + result[i].userSubdivision + "</td>";
+		table += "<td>" + result[i].userStatus + "</td>";
+		
+		if (String(result[i].userPhoneNumber) == "" || String(result[i].userPhoneNumber) == null || String(result[i].userPhoneNumber) == " ") {
+			table += "<td><a href=\"javascript:changeUserPhone(" + result[i].userCode + ", " + "'" + " - " + "'" + ");\">" + " - " + "</a></td>";
+		}
+		else {
+			table += "<td><a href=\"javascript:changeUserPhone(" + result[i].userCode + ", " + "'" + result[i].userPhoneNumber + "'" + ");\">" + result[i].userPhoneNumber + "</a></td>";	
+		}
+		
+		//table += "<td>" + result[i].userPhoneNumber + "</td>";
+		//table += "<td>" + result[i].userMobilePhoneNumber + "</td>";
+		
+		
+		if (String(result[i].userMobilePhoneNumber) == "" || String(result[i].userMobilePhoneNumber) == null || String(result[i].userMobilePhoneNumber) == " " ) {
+			table += "<td><a href=\"javascript:changeUserMobilePhone(" + result[i].userCode + ", " + "'" + " - " + "'" + ");\">" + " - " + "</a></td>";
+		}
+		else {
+			table += "<td><a href=\"javascript:changeUserMobilePhone(" + result[i].userCode + ", " + "'" + result[i].userMobilePhoneNumber + "'" + ");\">" + result[i].userMobilePhoneNumber + "</a></td>";	
+		}
+		
+		
+		//table += "<td>" + result[i].userEMail + "</td>";
+		
+		
+		if (String(result[i].userEMail) == "" || String(result[i].userEMail) == null || String(result[i].userEMail) == " " ) {
+			table += "<td><a href=\"javascript:changeUserEMail(" + result[i].userCode + ", " + "'" + " - " + "'" + ");\">" + " - " + "</a></td>";	
+		}
+		else {
+			table += "<td><a href=\"javascript:changeUserEMail(" + result[i].userCode + ", " + "'" + result[i].userEMail + "'" + ");\">" + result[i].userEMail + "</a></td>";
+		}
+		
+		
+		table += "<td>" + result[i].userLogin + "</td>";
+		table += "<td>" + result[i].userPassword + "</td>";
+		table += "<td>" + result[i].userDateTime + "</td>";
+		
+		table += "<td><a href=\"javascript:removeUser(" + result[i].userCode + ", '" + result[i].userFIO + "');\">" + "Удалить" + "</a></td>";
+		
+		table += "</tr>";
+	}
+	
+	
+	
+	document.getElementById("generalStatistics").innerHTML = table;
+	TABLE_SORT(document.getElementById("resultTable"));	
+}
+
+function changeUserFIO(userCode, userFIO)
+{
+	var result = window.prompt("Введите ФИО", userFIO);
+	if (result != "" && result != null) {
+		document.getElementById("parent_popup_enter").style.visibility = "visible";
+		document.getElementById("parent_popup_enter").style.height = "1%";
+		document.getElementById("parent_popup_enter").style.display = "block";
+		
+		alert(Ajax.run("/script/admin.exe?changeUserFIO&" + userCode + "&" + Base64.encode(T(result))));
+		
+		document.getElementById("parent_popup_enter").style.visibility = "hidden";
+		document.getElementById("parent_popup_enter").style.height = "1%";
+		document.getElementById("parent_popup_enter").style.display = "block";
+	}
+}
+
+function changeUserPhone(userCode, userPhone)
+{
+	var result = window.prompt("Введите номер телефона", userPhone);
+	if (result != "" && result != null) {
+		document.getElementById("parent_popup_enter").style.visibility = "visible";
+		document.getElementById("parent_popup_enter").style.height = "1%";
+		document.getElementById("parent_popup_enter").style.display = "block";
+		
+		alert(Ajax.run("/script/admin.exe?changeUserPhone&" + userCode + "&" + Base64.encode(T(result))));
+		
+		document.getElementById("parent_popup_enter").style.visibility = "hidden";
+		document.getElementById("parent_popup_enter").style.height = "1%";
+		document.getElementById("parent_popup_enter").style.display = "block";
+	}
+}
+
+function changeUserMobilePhone(userCode, userMobilePhone)
+{
+	var result = window.prompt("Введите номер мобильного телефона", userMobilePhone);
+	if (result != "" && result != null) {
+		document.getElementById("parent_popup_enter").style.visibility = "visible";
+		document.getElementById("parent_popup_enter").style.height = "1%";
+		document.getElementById("parent_popup_enter").style.display = "block";
+		
+		alert(Ajax.run("/script/admin.exe?changeUserMobilePhone&" + userCode + "&" + Base64.encode(T(result))));
+		
+		document.getElementById("parent_popup_enter").style.visibility = "hidden";
+		document.getElementById("parent_popup_enter").style.height = "1%";
+		document.getElementById("parent_popup_enter").style.display = "block";
+	}
+}
+
+function changeUserEMail(userCode, userEMail)
+{
+	var result = window.prompt("Введите номер адрес электронной почты", userEMail);
+	if (result != "" && result != null) {
+		document.getElementById("parent_popup_enter").style.visibility = "visible";
+		document.getElementById("parent_popup_enter").style.height = "1%";
+		document.getElementById("parent_popup_enter").style.display = "block";
+		
+		alert(Ajax.run("/script/admin.exe?changeUserEMail&" + userCode + "&" + Base64.encode(T(result.replace(" ", "")))));
+		
+		document.getElementById("parent_popup_enter").style.visibility = "hidden";
+		document.getElementById("parent_popup_enter").style.height = "1%";
+		document.getElementById("parent_popup_enter").style.display = "block";
+	}
+}
+
+
+function removeUser(userCode, userFIO)
+{
+	if (window.confirm("Вы действительно хотите удалить пользователя " + userFIO)) {
+		document.getElementById("parent_popup_enter").style.visibility = "visible";
+		document.getElementById("parent_popup_enter").style.height = "1%";
+		document.getElementById("parent_popup_enter").style.display = "block";
+		
+		alert(Ajax.run("/script/admin.exe?removeUser&" + userCode));
+		
+		document.getElementById("parent_popup_enter").style.visibility = "hidden";
+		document.getElementById("parent_popup_enter").style.height = "1%";
+		document.getElementById("parent_popup_enter").style.display = "block";
+		
+		location.reload();
+	}
+}
+
+</script>
+</head>
+
+<body onload="onLoad();" style="background-size: 100% auto; text-align:center" bgcolor="#DCF7FF">
+
+
+	<div style="visibility: hidden;" id="parent_popup_enter">
+  		<div id="popup_enter">
+		    <div id="placeHolderImage">
+		    	<div style="padding: 20px; margin-left:100px; margin-right: 100px; font-family: Tahoma; font-size: 18;">
+					<center><font color="#000000"><span><i>Выполняется ввод информации в систему</i></span></font></center>
+					<center><font color="#000000"><span><i id="countDownload">Пожалуйста, подождите...</i></span></font></center>
+					<center><img src="img/univ_loader.gif" /></center>
+				</div>
+		    </div>
+		</div>
+	</div>
+
+
+<p align="center">&nbsp;</p>
+<div align="center">
+	<table border="0" width="1844" id="table4">
+		<tr>
+			<td align="right" valign="top" width="191">&nbsp;</td>
+			<td align="left" width="149">
+			<img border="0" src="img/coat_of_arms_SO.gif" width="149" height="148"></td>
+			<td align="left" valign="top" width="1490">
+			<p align="center" style="margin-top: 0; margin-bottom: 0"><b>
+			<font style="font-size: 23pt">Самарская 
+			научно-образовательная программа 
+			<span style="font-size: 23pt">«ВЗЛЕТ»</span></font></b></p>
+			<p align="center" style="margin-top: 0; margin-bottom: 0"><b>
+			<font style="font-size: 23pt">конкурсного отбора школьников в
+			<span style="font-size: 23pt">
+			Губернаторский реестр</span></font></b></p>
+			<p align="center" style="margin-top: 0; margin-bottom: 0"><b>
+			<font style="font-size: 23pt"><span style="font-size: 23pt">
+			творчески одаренной молодежи</span></font></b></p>
+			<p align="center" style="margin-top: 0; margin-bottom: 0"><b>
+			<font style="font-size: 23pt">
+			<span style="font-size: 23pt">в сфере науки и техники&nbsp; </span>
+			</font></b></p>
+			<p>&nbsp;</td>
+		</tr>
+	</table>
+</div>
+		<div align="center">
+
+&nbsp;</div>
+
+<table width="84%" id="table13" border="0" cellpadding="0" align="center">
+	<tr>
+ 		<!--<td align="center" style="font-size: 150%"><a href="conf/2014/index.htm">Международная научно-практическая конференция "ТВОРЧЕСКИЙ ПОТЕНЦИАЛ-2014"</a></td> -->
+		<!--<td align="center" style="font-size: 150%"><a href="regionalConferences.htm">Региональная коференция "ТВОРЧЕСКИЙ ПОТЕНЦИАЛ-2014" ИСТ СГАСУ</a></td> -->		
+		<!-- <td align="center" style="font-size: 150%"><a href="#">Архив исследовательской проектов школьников и студентов - участников АСВ (в разработке)</a></td> -->
+		<td align="center" style="font-size: 150%" width="1%">
+
+<span style="font-size: 16pt">
+		<div align="center">
+			<table border="0" width="100%" id="table14">
+				<tr>
+					<td align="center">
+					<p style="margin-top: 0; margin-bottom: 0"><b>
+					<a href="index.html">Главная</a></b></td>
+					<!--<td align="center">
+					<p style="margin-top: 0; margin-bottom: 0"><b>
+					<a href="about.html">О программе &quot;ВЗЛЕТ&quot;</a></b></td>-->
+					<td align="center">
+					<p style="margin-top: 0; margin-bottom: 0"><b>
+					<a href="allUsers.htm">Участники программы</a></b></td>
+					<td align="center">
+					<a href="enterInfo.htm"><p style="margin-top: 0; margin-bottom: 0"><b>
+					Ввод тематики<span lang="ru">,</span> запросов<span lang="ru">,</span> 
+					коллективов</b></a></td>
+					<td align="center">
+					<p style="margin-top: 0; margin-bottom: 0"><b>
+					<a href="chooseTheme.htm">Выбор тематики и&nbsp;формирование 
+					коллективов</a></b></td>
+					<td align="center">
+					<p style="margin-top: 0; margin-bottom: 0">
+					<span lang="ru">
+					<a href="viewEnter.htm"><b>Просмотр 
+					и ввод информации о ходе исследования</b></a></td>
+					<td align="center">
+					<span style="font-size: 12pt">
+					<p style="margin-top: 0; margin-bottom: 0"><b>
+					<a href="events.htm">Запишись и участвуй</a></b></td>
+					<td align="center">
+					<p style="margin-top: 0; margin-bottom: 0"><b>
+					<a href="monitoringThemes.htm">Мониторинг хода&nbsp;исследований</a></b></td>
+					<td align="center">
+					<p style="margin-top: 0; margin-bottom: 0"><b>
+					<a href="contest.html">Региональный конкурс &quot;ВЗЛЕТ&quot;</a></b></td>
+					<td align="center">
+					<p style="margin-top: 0; margin-bottom: 0"><b>
+					<a href="enterInfo1.htm">Достижения и<span lang="en">&nbsp;</span>поощрения 
+					участников</a></b></td>
+				</tr>
+			</table>
+		</div>
+		</td>
+	</tr>
+</table>
+
+
+				<div class="currentUser">
+					<p style="margin-left: 100px; margin-right: 100px" align="right">
+					<font color="#FFFFFF"><b>
+					<span style="font-size: 12pt; background-color: #000080" id="currentUser">0</span></b></font><span style="font-size: 16pt">
+				</div>
+
+
+		<p style="text-align: right; margin-left: 100px; margin-right: 100px"><font color="#FFFFFF"><span id="currentDate" style="font-weight: 700; font-style: italic; background-color: #0000FF">
+		0</span></font></p>		
+		<p align="center"><b>
+		Администрирование<span lang="ru"> пользователей системы</span></b></p>
+		<div align="center">
+		<table border="1" width="45%" id="table15" bgcolor="#FFAE5E">
+			<tr>
+				<td align="left" valign="top" width="363">
+				<p align="center">Организация</td>
+				<td align="left" valign="top" width="178">
+				<p align="center" style="margin-top: 0; margin-bottom: 0">Статус 
+				участника</td>
+				<td align="left" valign="top" width="363">&nbsp;</td>
+			</tr>
+			<tr>
+				<td align="left" valign="top" width="363">
+				<p align="center">
+				<span style="font-size: 16pt">
+				<select id="organization" size="1" name="D2">
+				<option selected value="0">Все</option></select></td>
+				<td align="left" valign="top" width="178">
+				<p align="center">
+				<select id="status" size="1" name="D3">
+				<option selected value="0">Все</option></select></td>
+				<td align="left" valign="top" width="363">
+				<input type="button" value="Показать" name="B3" onclick="getTableUser();" style="float: right"></td>
+			</tr>
+		</table>
+					</div>
+<div align="center">
+					<p>&nbsp;</div>
+<div align="center">
+					<p><span id="generalStatistics">1</span></div>
+
+
+
+
+
+</body>
+
+</html>

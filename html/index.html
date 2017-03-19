@@ -1,0 +1,608 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1251">
+<title>Главная</title>
+<link rel="stylesheet" href="style/style.css">
+<link rel="stylesheet" href="style/popupStyle.css">
+
+<script type="text/javascript" src="js/Ajax.js"></script>
+<script type="text/javascript" src="js/AjaxAsynx.js"></script>
+<script type="text/javascript" src="js/Base64.js"></script>
+<script type="text/javascript" src="js/script.js"></script>
+<script type="text/javascript" src="js/remText.js"></script>
+
+<script>
+
+var user;
+function onLoad()
+{
+	if (document.referrer == "http://vzletsamara.ru/main.html") {
+		location.href = "main.html";
+	}
+	
+	/*document.getElementById("parent_popup").style.visibility = "visible";
+	document.getElementById("advertisment").innerHTML = Ajax.run("files/advertisment.htm");
+	document.getElementById("parent_popup").style.height = "100%";
+	document.getElementById("parent_popup").style.display = "block";*/
+	
+	
+	
+	user = Ajax.runEval("/script/login.exe?user");
+	
+	//Текущий пользователь
+	setCurrentUser();
+}
+
+function userEnter()
+{
+	if (user.userStatusCode != 0) {
+		location.href = "main.html";
+	}
+	else {
+		location.href = "/login?&/main.html";	
+	}
+}
+
+function register()
+{
+	//Если координатор от кафедры
+	if (eval(user.userStatusCode) == 6) {
+		location.href = "regUser.htm";
+	}
+	//Если координатор от школы
+	if (eval(user.userStatusCode) == 16) {
+	location.href = "regMember.htm";			
+	}
+	
+	if (eval(user.userStatusCode) == 0) {
+		location.href = "regUser.htm";	
+	}
+}
+
+function errorMessage()
+{
+	alert("В настоящий момент ведутся технические работы по организации доступа к версии системы 2015/16 учебного года! ");
+}
+
+function getUserInstructions(imgFlag, partText)
+{
+	document.getElementById("participant").innerHTML = partText;
+	document.getElementById("userInstruction").src = "/img/instructions/" + imgFlag + ".png";
+	document.getElementById("parent_popup").style.visibility = "visible";
+	document.getElementById("parent_popup").style.height = "100%";
+	document.getElementById("parent_popup").style.display = "block";	
+}
+
+
+function recoveryAccessCodes()
+{
+	var userEMail = window.prompt("Введите адрес электронной почты, который вы указали при регистрации");
+	if (userEMail != "" && userEMail != null) {
+		
+		document.getElementById("parent_popup_enter").style.visibility = "visible";
+		document.getElementById("parent_popup_enter").style.height = "1%";
+		document.getElementById("parent_popup_enter").style.display = "block";
+		
+		var result = Ajax.run("/script/regUser.exe?recoveryPassword&" + Base64.encode(T(userEMail.trim()))); 
+		alert(result);
+		
+		document.getElementById("parent_popup_enter").style.visibility = "hidden";
+		document.getElementById("parent_popup_enter").style.height = "1%";
+		document.getElementById("parent_popup_enter").style.display = "block";
+	}
+}
+
+function regFinished()
+{
+	alert("В текущем цикле работы Программы \"ВЗЛЕТ\" регистрация завершена! ");
+}
+
+
+</script>
+
+
+
+</head>
+<link rel="stylesheet" href="style/indexstyle/style.css">
+
+<style>
+#parent_popup {
+  background: #000;
+  /*height: 100%;*/
+  height: 0px;
+  opacity: 0.9;
+  position: fixed;
+  width: 100%;
+  z-index: 100;
+  top: 0;
+  left: 0;
+}
+
+#parent_popup_enter {
+  background: #000;
+  /*height: 100%;*/
+  height: 0px;
+  opacity: 0.9;
+  position: fixed;
+  width: 100%;
+  z-index: 100;
+  top: 0;
+  left: 0;
+}
+
+#exit {
+	width: 25px;
+	text-align: right;
+}
+
+#popup {
+  background-color: #ffffff;
+  /*height:0px;*/
+  height: 650px;
+  position: fixed;
+  top: 100px;
+  left: 13%;
+  color: #f00;
+  width: 1455px;
+}
+
+#popup_enter {
+  background-color: #ffffff;
+  /*height:0px;*/
+  height: 139px;
+  position: fixed;
+  top: 300px;
+  left: 39%;
+  color: #f00;
+  width: 500px;
+}
+
+ table.MsoNormalTable
+	{mso-style-parent:"";
+	font-size:10.0pt;
+	font-family:"Times New Roman";
+	}
+h1
+	{margin-right:0cm;
+	margin-left:0cm;
+	font-size:24.0pt;
+	font-family:"Times New Roman"}
+</style>
+
+
+
+
+
+<body onload="javascript:onLoad();" style="background-size: 100% auto" bgcolor="#DCF7FF">
+
+		<div style="visibility: hidden;" id="parent_popup_enter">
+	  		<div id="popup_enter">
+			    <div id="placeHolderImage">
+			    	<div style="padding: 20px; margin-left:100px; margin-right: 100px; font-family: Tahoma; font-size: 18;">
+						<center><font color="#000000"><span><i>Выполняется обработка информации</i></span></font></center>
+						<center><font color="#000000"><span><i id="countDownload">Пожалуйста, подождите...</i></span></font></center>
+						<center><img src="img/univ_loader.gif" /></center>
+					</div>
+			    </div>
+			</div>
+		</div>
+
+
+
+	<div style="visibility: hidden;" id="parent_popup">
+  		<div id="popup">
+  			<p class="exit" align="right"></p>
+		      <div id="placeHolderImage">
+				<p align="center"><font face="Tahoma" color="#000000"><b><span id="participant" style="font-size: 14pt"></span></b></font></p>
+				<p align="center">
+				<img id="userInstruction" src-"" />
+				<div id="advertisment"></div>
+		    </div>
+		</div>
+	</div> 
+
+
+
+<div align="center">
+	<p align="center" style="margin:0 30px; ">
+			&nbsp;</p>
+	<p align="center" style="margin:0 30px; ">
+			&nbsp;</p>
+	<p align="center" style="margin:0 30px; ">
+			&nbsp;</p>
+	<p align="center" style="margin:0 30px; ">
+			<span style="font-size: 23pt" lang="ru"><b>Инфокоммуникационная 
+			система </b></span></p>
+			<p align="center" style="margin:0 30px; ">
+			<span style="font-size: 23pt" lang="ru"><b>для организации и 
+			проведения научно-исследовательских работ </b></span></p>
+			<p align="center" style="margin:0 30px; ">
+			<span style="font-size: 23pt" lang="ru"><b>творчески одаренной 
+			молодежью </b></span></p>
+			<p align="center" style="margin:0 30px; ">
+			<span style="font-size: 23pt" lang="ru"><b>в сфере науки и техники</b></span></p>
+			<p align="center" style="margin:0 30px; ">&nbsp;</p>
+			<p align="center" style="margin:0 30px; "><b>
+			<font style="font-size: 23pt">Самарская 
+			научно-образовательная программа «ВЗЛЕТ»</font></b></p>
+			<p align="center" style="margin:0 30px; "><b>
+			<font style="font-size: 23pt">конкурсного отбора школьников в
+			Губернаторский реестр</font></b></p>
+			<p align="center" style="margin:0 30px; "><b>
+			<font style="font-size: 23pt">творчески одаренной молодежи</font></b></p>
+			<p align="center" style="margin:0 30px; "><b>
+			<font style="font-size: 23pt">
+			в сфере науки и техники&nbsp;</font></b></p>
+</div>
+<p align="center" style="margin-top: 0; margin-bottom: 0">&nbsp;</p>
+	<p align="center" style="margin-top: 0; margin-bottom: 0">&nbsp;</p>
+	<p align="center" style="margin-top: 0; margin-bottom: 0">&nbsp;</p>
+	<p align="center" style="margin-top: 0; margin-bottom: 0">
+	<span style="font-size: 18pt">Система оптимизирована под бесплатный браузер
+	<span lang="en-us">Google Chrome</span>. 
+Скачать можно, например, <b>
+	<a href="https://www.google.ru/chrome/browser/desktop/"><u>здесь</u></a></b>.</span></p>
+	<p align="center" style="margin-top: 0; margin-bottom: 0">Оргвопросы -<b><a href="mailto:mvc@vzletsamara.ru"> <u> 
+	mvc@vzletsamara.ru</u></a></b></p>
+	<p align="center" style="margin-top: 0; margin-bottom: 0">Техподдержка - <b><span lang="en-us">
+	<a href="mailto:admin@vzletsamara.ru"><u>admin@vzletsamara.ru</u></a></span></b></p>
+<p align="center" style="margin-top: 0; margin-bottom: 0">&nbsp;</p>
+		<p align="right" style="margin:0 100px; ">
+					<font color="#FFFFFF"><b>
+					<span style="font-size: 12pt; background-color: #000080" id="currentUser">0</span></b></font></p>
+		<p align="right" style="margin:0 100px; ">&nbsp;</p>
+<span style="font-size: 16pt">
+				<div align="center">
+<table border="1" width="90%" id="table8">
+	<tr>
+		<td width="60%" align="left" valign="top">
+		<p class="MsoNormal" style="text-align: center; text-indent: 35.4pt; margin: 0 30px">&nbsp;</p>
+		<p class="MsoNormal" style="text-align: center; text-indent: 35.4pt; margin: 0 30px">
+		<font color="#FF0000" style="font-size: 20pt"><i><b>ВНИМАНИЕ!!!</b></i></font></p>
+		<p class="MsoNormal" style="text-align: center; text-indent: 35.4pt; margin: 0 30px">
+		<font color="#FF0000"><span style="font-size: 20pt"><b><i>
+		<u><a href="participantRegistry/participantRegistry.html"><font color="#FF0000">
+		<u>Присылайте 
+		эссе, зарабатывайте баллы</u></font></a></u></i></b></span></font></p>
+		<p class="MsoNormal" style="text-align: center; text-indent: 35.4pt; margin: 0 30px">
+		<span style="font-size: 14pt"><i>(срок - до 15 декабря 2016г.)</i></span></p>
+		<p class="MsoNormal" style="text-align: center; text-indent: 35.4pt; margin: 0 30px">
+		&nbsp;</p>
+		<p class="MsoNormal" style="text-align: center; text-indent: 35.4pt; margin: 0 30px">
+		<font color="#FF0000"><span style="font-size: 20pt"><b><i>
+		<a href="participantRegistry/education.html"><font color="#FF0000"><u>Научим легко и 
+		бесплатно!</u></font></a></i></b></span></font></p>
+		<p class="MsoNormal" style="text-align: center; text-indent: 35.4pt; margin: 0 30px">
+		&nbsp;</p>
+		<p class="MsoNormal" style="text-align: center; text-indent: 35.4pt; margin: 0 30px">
+		&nbsp;</p>
+		</span>
+		<p style="margin: 0 50px; " align="center">
+		<span style="font-size: 16pt; font-style: italic; font-weight: 700">
+		Дистанционные совещания Программы &quot;ВЗЛЕТ&quot;</span></p>
+<span style="font-size: 16pt">
+		<div align="center">
+			<table border="0" width="70%" id="table10">
+				<tr>
+					<td colspan="3">
+					<p align="center" style="margin-top: 0; margin-bottom: 0"><span style="font-size: 16pt">
+					Коды доступа </span></p>
+					<p align="center" style="margin-top: 0; margin-bottom: 0">
+					<span style="font-size: 16pt">
+					для участия </span></p>
+					<p align="center" style="margin-top: 0; margin-bottom: 0">
+					<span style="font-size: 16pt">
+					в дистанционных совещаниях</span></td>
+				</tr>
+				<tr>
+					<td align="right"><b>Логин</b></td>
+					<td>&nbsp;</td>
+					<td><span lang="en-us">seminar</span></td>
+				</tr>
+				<tr>
+					<td align="right"><b>Пароль</b></td>
+					<td>&nbsp;</td>
+					<td>334455</td>
+				</tr>
+				<tr>
+					<td align="right">&nbsp;</td>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+				</tr>
+				<tr>
+					<td align="right" colspan="3">
+<span style="font-size: 16pt">
+					<p align="center" style="margin-top: 0; margin-bottom: 0">
+					Дистанционное совещание вузов АСВ и опорных вузов регионов 
+					состоится <u><i><b><span>15 ноября в 13:00</span></b></i></u><p align="center" style="margin-top: 0; margin-bottom: 0">
+					&nbsp;<p align="center" style="margin-top: 0; margin-bottom: 0">
+					Дистанционное совещание образовательных организаций и вузов 
+					Самарской области состоится <u><i><b><span>15 ноября в 15:00</span></b></i></u></span></td>
+				</tr>
+			</table>
+<p align="left" style="margin:0 50px; ">
+&nbsp;</p>
+			<p align="left" style="margin:0 50px; ">
+<span style="font-size: 16pt; ">
+Инструкция для 
+участия в дистанционных совещаниях Программы &quot;ВЗЛЕТ&quot;</span><span lang="ru" style="font-size: 16pt">
+</span><u>
+<span lang="ru" style="font-size: 16pt; font-style: italic; font-weight: 700">
+<a href="files/instructions/shortInstructionSeminars.pdf"><u>здесь</u></a></span></u></p>
+		<p align="left" style="margin:0 50px; ">
+&nbsp;</p>
+<p align="left" style="margin:0 50px; ">
+<span style="font-size: 14pt">Материалы совещания <span lang="ru">8 сентября 
+2016г. </span><b><i>
+<a href="files/documents/MaterialsWebMeeting_08_09_2016.pdf"><u>здесь</u></a></i></b></span></p>
+		<p align="left" style="margin:0 50px; ">
+<span style="font-size: 14pt">Материалы совещания 16<span lang="ru"> сентября 
+2016г. </span><b><i>
+<a href="files/documents/MaterialsWebMeeting_16_09_2016.pdf"><u>здесь</u></a></i></b></span></p>
+		<p align="left" style="margin:0 50px; ">
+<span style="font-size: 14pt">Материалы совещания 19<span lang="ru"> сентября 
+2016г. </span><b><i>
+<a href="files/documents/MaterialsWebMeeting_19_09_2016.pdf"><u>здесь</u></a></i></b></span></p>
+		<p align="left" style="margin:0 50px; ">
+<span style="font-size: 14pt">Материалы совещания 20<span lang="ru"> сентября 
+2016г. </span><b><i>
+<a href="files/documents/MaterialsWebMeeting_20_09_2016.pdf"><u>здесь</u></a></i></b></span></p>
+		<p align="left" style="margin:0 50px; ">
+<span style="font-size: 14pt">Материалы совещания (для Координаторов вузов) 28<span lang="ru"> сентября 
+2016г. </span><b><i>
+<a href="files/documents/MaterialsWebMeeting_28_09_2016_1.pdf"><u>здесь</u></a></i></b></span></p>
+		<p align="left" style="margin:0 50px; ">
+<span style="font-size: 14pt">Материалы совещания (для Координаторов школ) 28<span lang="ru"> сентября 
+2016г. </span><b><i>
+<a href="files/documents/MaterialsWebMeeting_28_09_2016_2.pdf"><u>здесь</u></a></i></b></span></p>
+			<p>&nbsp;</p>
+			<p>
+			<span style="font-size: 16pt; font-style: italic; text-decoration: underline; font-weight: 700" lang="ru">
+			Текущие <a href="advertisement.html"><u>объявления</u></a></span></div>
+</span>
+		<p class="MsoNormal" style="margin: 0 30px; text-indent:45px" align="center">
+		&nbsp;</p>
+		<p class="MsoNormal" style="margin: 0 30px; text-indent:45px" align="center">
+		&nbsp;</p>
+		<p class="MsoNormal" style="margin: 0 30px; text-indent:45px" align="center">
+		&nbsp;</p>
+		<p class="MsoNormal" style="margin: 0 30px; text-indent:45px" align="center">
+		<span style="font-size: 16pt; font-weight: 700"><font color="#FF0000">
+		<span>Уважаемые коллеги и юные друзья - участники Программы!</span></font></span></p>
+		<p class="MsoNormal" style="margin: 0 30px; text-indent:45px" align="right">
+		&nbsp;</p><span style="font-size: 16pt">
+				<p align="left" style="margin:0 50px; ">
+	<span style="font-size: 16pt" lang="ru">Во исполнение федерального закона о 
+	защите персональных данных </span></p>
+<p align="left" style="margin:0 50px; "><span style="font-size: 16pt" lang="ru">работа с системой доступна только для 
+	зарегистрированных пользователей, </span></p>
+<p align="left" style="margin:0 50px; "><span style="font-size: 16pt" lang="ru">
+давших согласие на обработку в системе своих персональных данных</span></p>
+<p align="left" style="margin:0 50px; ">&nbsp;</p>
+<p align="left" style="margin:0 50px; "><span style="font-size: 16pt" lang="ru">
+Регистрацию пользователей осуществляет Координатор Программы &quot;ВЗЛЕТ&quot;, </span></p>
+<p align="left" style="margin:0 50px; "><span style="font-size: 16pt" lang="ru">
+находящийся в организации, в которой учится/работает пользователь</span></p>
+<p align="left" style="margin:0 50px; ">&nbsp;</p>
+<p align="left" style="margin:0 50px; "><span style="font-size: 18pt" lang="ru">
+<a href="confirmation.htm"><i><b><u>Подтвердить согласие на обработку в системе своих персональных данных можно 
+</u></b><u> <b>
+здесь</b></u></i></a></span></p>
+<p align="left" style="margin:0 50px; ">&nbsp;</p>
+<p align="left" style="margin:0 50px; "><span style="font-size: 18pt" lang="ru">
+<i><b><a href="javascript:userEnter();"><u>Вход пользователя</u></a></b></i> в 
+2016/17 учебном году </span></span>
+<span style="font-size: 14pt" lang="ru">(если вы однажды вошли в систему и не 
+можете выйти, чтобы войти в качестве другого пользователя, нажмите <i><b>
+<a href="/login?&/main.html"><u>здесь</u></a></b></i></span><span style="font-size: 14pt">).</span></span></p>
+<span style="font-size: 16pt">
+			<p style="margin:0 50px; ">
+			&nbsp;</p>
+		<p style="margin:0 50px; ">
+			<span lang="ru"><u><b><a href="javascript:recoveryAccessCodes();">
+			<u>Забыли пароль?</u></a></b></u></span></p>
+			<p align="left" style="margin:0 50px; ">&nbsp;</p>
+</span>
+<span style="font-size: 16pt">
+<p align="left" style="margin:0 50px; "><span style="font-size: 14pt">Вход в 
+систему 2015/16 учебного года</span><b><i><span style="font-size: 14pt"><a href="http://85.113.47.54:8085/login?&/main.html">
+<u>здесь</u></a></span></i></b></p>
+		<p align="left" style="margin:0 50px; ">&nbsp;</p>
+		</td>
+		<td align="left" valign="top" width="40%">
+		<table border="0" width="100%" id="table9">
+			<tr>
+				<td align="center">
+				<span style="font-size: 16pt">
+		<p align="center" style="margin-top: 0; margin-bottom: 0">
+		<span style="font-weight: 700; font-size: 21pt" lang="ru">Информационные&nbsp; 
+		материалы</span></p></td>
+			</tr>
+			<tr>
+				<td align="left">
+				<span lang="ru" style="font-size: 16pt; font-weight: 700; font-style: italic">
+				Списки членов Губернаторского реестра</span><span style="font-size: 16pt; font-weight: 700; font-style: italic">:</span></td>
+			</tr>
+			<tr>
+				<td align="left">
+				<p style="margin-left: 50px; margin-right: 10px">
+				<span style="font-size: 14pt">
+				<u><span lang="ru">
+				<a href="files/documents/governorRegister/desicion_26_09_2016.pdf">
+				<u>№1 от 26.09.2016г.</u></a></span></u></td>
+			</tr>
+</span>
+			<tr>
+				<td align="left">
+				<p style="margin-left: 50px; margin-right: 10px">
+<span style="font-size: 14pt"><a href="mainDocuments_1516.htm"><u>Список&nbsp; победителей конкурса &quot;ВЗЛЕТ&quot;</u><span lang="ru"><u> 
+2015/16 учебного года</u></span></a></span></td>
+			</tr>
+			<tr>
+				<td align="left">
+				&nbsp;</td>
+			</tr>
+			<tr>
+				<span style="font-size: 16pt">
+				<td align="left">
+				<span style="font-style: italic; font-weight: 700; font-size: 16pt">
+				Великолепная двадцатка</span><span style="font-size: 16pt; font-weight: 700; font-style: italic"> 
+				по текущему сводному рейтингу:</span></td>
+			</tr>
+			<tr>
+				<span style="font-size: 16pt">
+				<td align="left">
+				<p style="margin-left: 50px; margin-right: 10px">
+				<u><span style="font-size: 14pt">
+				<a href="files/magnificentTwenty/novemberPart1.pdf"><u>на первую половину ноября 2016г.</u></a></span></u></td>
+			</tr>
+			<tr>
+				<span style="font-size: 16pt">
+				<td align="left">
+				<span style="font-size: 16pt">
+				<p style="margin-left: 50px; margin-right: 10px">
+				<u><span style="font-size: 14pt">
+				<a href="#"><u>на вторую половину ноября 2016г.</u></a></span></u></td>
+			</tr>
+			<tr>
+				<td align="left">
+				&nbsp;</td>
+			</tr>
+			<tr>
+				<td align="left">
+<span style="font-size: 16pt"><b><i>
+<a href="files/vzletContest/VZLETresults.pdf"><u>Распоряжение МОН СО &quot;Об итогах 
+проведения областного конкурса &quot;Взлет&quot; в 2016 году</u></a></i></b></span></td>
+			</tr>
+			<tr>
+				<td align="left">
+				&nbsp;</td>
+			</tr>
+			<tr>
+				<td align="left">
+				<a href="files/documents/governorRegister/desicion_4_10_2016.pdf">
+<span style="font-size: 15pt; font-weight:700; font-style:italic; text-decoration:underline">
+				Благодарность МОН Самарской области консультантам Программы 
+				&quot;ВЗЛЕТ&quot;</span></a></td>
+			</tr>
+<span style="font-size: 16pt">
+			<tr>
+				<td align="left">
+<span style="font-size: 16pt">
+		<p class="MsoNormal" style="margin: 0 30px; text-indent:45px" align="justify">
+		<span style="font-size: 14pt">
+		<a href="files/documents/governorRegister/oneSession.pdf">I сессия областной научно-образовательной 
+		программы &quot;Взлет&quot; для школьников - членов Губернаторского реестра 
+		творчески одаренной молодежи в сфере науки, техники и технологий 
+		состоится <i><b>(22 октября 2016 года</b></i>.) </a> </span></p>
+</span>
+				<p>&nbsp;</td>
+			</tr>
+			<tr>
+				<td align="left">
+				&nbsp;</td>
+			</tr>
+			<tr>
+				<td align="left">
+				<span style="font-size: 16pt">
+				<p style="margin: 0 10px">
+				<a href="mainDocuments.htm"><u><span lang="ru">
+				Документы и новости</span></u></a></p></td>
+			</tr>
+			<tr>
+				<td align="left">
+				<span style="font-size: 16pt">
+				<p style="margin: 0 10px"><u>
+				<a href="themeExample.htm"><u>Примеры тематики ранее выполненных 
+				проектов исследовательской направленности</u></a></p></td>
+			</tr>
+			<tr>
+				<td align="left">
+				<p style="margin: 0 10px">
+				<span style="font-size: 16pt; font-weight:700; font-style:italic">
+				<span lang="ru">Рекомендации</span>:</td>
+			</tr>
+			<tr>
+				<td align="left">
+				<span style="font-size: 14pt">
+				<p style="margin-top: 0; margin-bottom: 0; margin-left:50px; margin-right:10px">
+				<a href="files/instructions/forChild.pdf"><u>автору проекта (ученику)</u></a></td>
+			</tr>
+			<tr>
+				<td align="left">
+				<p style="margin-left: 50px; margin-right: 10px; margin-top: 0; margin-bottom: 0">
+			<span style="font-size: 14pt">
+				<a href="/files/instructions/forTutor.pdf"><span lang="ru"><u>р</u></span><u>уководител<span lang="ru">ю</span> проекта (учител<span lang="ru">ю</span>)</u></a></td>
+			</tr>
+			<span style="font-size: 16pt">
+			<tr>
+				<td align="left">
+				<p style="margin-top: 0; margin-bottom: 0; margin-left:50px; margin-right:10px">
+				<a href="/files/instructions/forConsultant.pdf"><span lang="ru">
+				<u><font style="font-size: 14pt">к</font></u></span><u><span style="font-size: 14pt">онсультант</span><span style="font-size: 14pt" lang="ru">у</span><span style="font-size: 14pt"> 
+				проекта (учен<span lang="ru">ому</span>)</span></u></a></span></p></td>
+			</tr>
+			<tr>
+				<td align="center">
+				<p style="margin-top: 0; margin-bottom: 0">
+				&nbsp;</td>
+			</tr>
+			<tr>
+				<td align="center">
+				<span style="font-size: 16pt">
+				<p style="margin: 0 10px" align="left">
+				<span style="font-size: 16pt; font-weight:700; font-style:italic">
+				<span lang="ru">Рекомендации координатору Программы</span>:</td>
+			</tr>
+			<tr>
+				<td align="left">
+				<p style="margin-left: 50px; margin-right: 10px; margin-top: 0; margin-bottom: 0">
+				<span style="font-size: 14pt">
+				<a href="/files/instructions/forUnivCoord.pdf"><u>от университета</u></a></span></td>
+				</tr>
+			<tr>
+				<td align="left">
+				<p style="margin-top: 0; margin-bottom: 0; margin-left:50px; margin-right:10px">
+				<span style="font-size: 14pt">
+				<a href="files/instructions/forEdDistCoord.pdf"><u>от территориального 
+				управления</u></a></span></p></td>
+				</tr>
+			<tr>
+				<td align="left">
+				<p style="margin-left: 50px; margin-right: 10px; margin-top: 0; margin-bottom: 0">
+				<span style="font-size: 14pt">
+				<a href="/files/instructions/forDepCoord.pdf"><u>от кафедры</u></a></span></td>
+			</tr>
+			<tr>
+				<td align="left">
+				<p style="margin-left: 50px; margin-right: 10px; margin-top: 0; margin-bottom: 0">
+				<span style="font-size: 14pt">
+				<a href="files/instructions/forSchoolCoord.pdf"><u>от школы</u></a></span></td>
+			</tr>
+			<tr>
+				<td align="left">
+				<p style="margin: 0 50px">
+				<span style="font-size: 14pt">
+				<a href="files/instructions/forCoordPartnerOrganization.pdf"><u>от 
+				организации-партнера</u></a></span></td>
+			</tr>
+			<tr>
+				<td align="left">
+				&nbsp;</td>
+			</tr>
+			</table>
+		</td>
+	</tr>
+</table>
+</div>
+</span>
+<p align="center">
+<span style="font-size: 14pt; font-weight: 700; font-style: italic; text-decoration: underline">
+Сайт разработан Ассоциацией вузов «Самарский региональный научно-образовательный 
+комплекс»<br>
+и введен в опытную эксплуатацию в 2015 году</span></p>
+<p align="center">&nbsp;</p>
+	</body>
+
+</html>

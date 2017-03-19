@@ -1,0 +1,123 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1251">
+<title>Режим рецензента</title>
+<link rel="stylesheet" href="style/style.css">
+
+<script type="text/javascript" src="js/Ajax.js"></script>
+<script type="text/javascript" src="js/Base64.js"></script>
+<script type="text/javascript" src="js/script.js"></script>
+
+<script>
+
+var statusThemeCode;
+
+var T=0;
+
+function onLoad()
+{
+//	alert(T+1);
+	
+	user = Ajax.runEval("/script/login.exe?user");
+//	alert(user.userStatusCode);
+	if (user.userStatusCode == 9 ) {
+		
+		//Текущий пользователь
+		setCurrentUser();
+		getReviewTheme();		
+	}
+	else {
+		//location.href="http://3:545@127.0.0.1/reviewer.htm";
+			
+//		location.replace("/login?&/reviewer.htm");
+//alert(2);
+//		location.href="http://777:232@127.0.0.1/login?&/reviewer.htm";
+//		location.href="777:232@/login?&/reviewer.htm";
+	}
+	
+	//alert(eval(user.userStatusCode) + " - " +user.userStatusCode);
+	//Если рецензент
+	if (eval(user.userStatusCode) == 9 || eval(user.userStatusCode) == 18) {
+		
+		//Текущий пользователь
+		setCurrentUser();
+		getReviewTheme();		
+	}
+	else {
+		location.replace("/login?&/reviewer.htm");
+//alert(2);
+		//location.href="777:232@/reviewer.htm";
+//		location.href="777:232@/login?&/reviewer.htm";
+	}
+	
+}
+
+
+function getReviewTheme()
+{
+	var themes = Ajax.runEval("/script/review.exe?getThemeReview");
+	var result = "";
+	
+	result = "<ol class=\"square\">";	
+	
+	for(var i = 0; i < themes.length; i++)
+	{
+		if (eval(themes[i].themeReview) == 1) {
+			result += "<li id=\"theme" + themes[i].themeCode + "\" style=\"background: #389F70;\">" + "<span>" + themes[i].themeName + "</span>" + "<i><b><font> (Отрецензирована)</font></b></i>" + "</li>";		
+		}
+		else {
+			result += "<li id=\"theme" + themes[i].themeCode + "\">" + "<a href=\"review1.htm?themeCode=" + themes[i].themeCode + "\">" + themes[i].themeName + "</a>" + "<i><b><font> (Ожидает рецензии)</font></b></i>" + "</li>";		
+		}
+	}
+	
+	result += "</ol>";
+	
+	document.getElementById("themeReview").innerHTML = result;
+	result = "";
+}
+
+
+</script>
+
+</head>
+
+<body onload="onLoad();">
+<div id="wrapeall">
+	<div id="header">
+		<div class="logoText">
+			<span style="background-color: #FFFF00"></span></div>
+	</div>
+		
+	<p></p>
+
+
+	<div class="headline">
+		Режим рецензента<span> </span>
+		
+		<div name="currentUser">
+					<p style="margin-left: 100px; margin-right: 100px" align="right">
+					<font color="#FFFFFF"><b>
+					<span style="font-size: 12pt; background-color: #000080" id="currentUser">0</span></b></font><span style="font-size: 16pt">
+		</div>
+		
+		
+		<p><span style="font-weight: 400">Список проектов для рецензирования</span><p>
+		<span id="themeReview" style="font-weight: 400">0</span></div>	
+
+
+	<div id="middlePartPage">
+		<div align="center">
+			<p>&nbsp;</div>
+	</div>	
+	<div id="footer">
+		<div class="footerText">
+			<span>Copyright ПМиВТ</span>
+		</div>
+	</div>
+</div>
+
+
+</body>
+
+</html>

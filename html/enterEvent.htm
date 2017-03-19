@@ -1,0 +1,368 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1251">
+<title>Ввод нового мероприятия</title>
+<link rel="stylesheet" href="style/style.css">
+<link rel="stylesheet" href="style/popupStyle.css">
+<link rel="stylesheet" type="text/css" href="style/tcal.css">
+
+<script type="text/javascript" src="js/Ajax.js"></script>
+<script type="text/javascript" src="js/Base64.js"></script>
+<script type="text/javascript" src="js/remText.js"></script>
+<script type="text/javascript" src="js/tcal.js"></script>
+
+<script>
+
+var user;
+function onLoad()
+{
+	user = Ajax.runEval("/script/login.exe?user");
+
+	//Если Координатор от организации-партнера
+	if (eval(user.userStatusCode) == 17) {
+		document.getElementById("currentUser").innerHTML = "Вы вошли как " + user.userFIO + ", " + user.userStatusName;
+		getScienceDirection();
+	}
+	else {
+		location.replace("/login?&/enterEvent.htm");
+	}
+}
+
+function getScienceDirection()
+{
+	var scienceDirection = Ajax.runEval("/script/enterEvent.exe?getScienceDirection");
+	//var sections = Ajax.runEval("/script/entertheme.exe?getSection");
+	var priorityDirections = Ajax.runEval("/script/enterEvent.exe?getPriorityDirection");
+	var scienceIndustrialSpheres = Ajax.runEval("/script/enterEvent.exe?getScienceIndustrialSphere");
+
+	var sciDirection1 = document.getElementById("scienceDirection1");
+	var sciDirection2 = document.getElementById("scienceDirection2");
+	var sciDirection3 = document.getElementById("scienceDirection3");
+	
+	var section = document.getElementById("section");
+	var scienceIndustrialSphere = document.getElementById("scienceIndustrialSphere");
+	var priorityDirection = document.getElementById("priorityDirection");
+
+
+	var eventLocation = document.getElementById("eventLocation");	
+	var eventLocations = Ajax.runEval("/script/enterEvent.exe?getEventLocation");
+	
+	//Местоположение проведения мероприятия
+	for(var i = 0; i < eventLocations.length; i++)
+	{
+		eventLocation.options[eventLocation.options.length] = new Option(eventLocations[i].eventLocationName, eventLocations[i].eventLocationCode);	
+	}
+
+
+	//Научное направление 1
+	for(var i = 0; i < scienceDirection.length; i++)
+	{
+		sciDirection1.options[sciDirection1.options.length] = new Option(scienceDirection[i].scienceDirectionName, scienceDirection[i].scienceDirectionCode);	
+	}
+	
+	//Научное направление 2
+	for(var i = 0; i < scienceDirection.length; i++)
+	{
+		sciDirection2.options[sciDirection2.options.length] = new Option(scienceDirection[i].scienceDirectionName, scienceDirection[i].scienceDirectionCode);	
+	}
+	
+	//Научное направление 3
+	for(var i = 0; i < scienceDirection.length; i++)
+	{
+		sciDirection3.options[sciDirection3.options.length] = new Option(scienceDirection[i].scienceDirectionName, scienceDirection[i].scienceDirectionCode);	
+	}
+	
+	
+	//Приоритетное направление
+	for(var i = 0; i < priorityDirections.length; i++)
+	{
+		priorityDirection.options[priorityDirection.options.length] = new Option(priorityDirections[i].priorityDirectionName, priorityDirections[i].priorityDirectionCode);	
+	}
+	
+	//Научно-техническая сфера
+	for(var i = 0; i < scienceIndustrialSpheres.length; i++)
+	{
+		scienceIndustrialSphere.options[scienceIndustrialSphere.options.length] = new Option(scienceIndustrialSpheres[i].scienceIndustrialSphereName, scienceIndustrialSpheres[i].scienceIndustrialSphereCode);	
+	}
+}
+
+
+function enterEvent()
+{
+	var eventName = document.getElementById("eventName");
+	var eventRemotely = document.getElementById("eventRemotely");
+	var eventRemote = 0;
+	var dateEvent = document.getElementById("dateEvent");
+	
+	if (eventRemotely.checked == true) {
+		eventRemote = 1;
+	}	
+
+
+	if (eventName.value == "") {
+		eventName.style.background = "red";
+		alert("Пожалуйста, введите тему мероприятия!");
+	}
+	else {
+		eventName.style.background = "white";
+		var eventLocation = document.getElementById("eventLocation");
+		if (eval(eventLocation.value) == 0) {
+			eventLocation.style.background = "red";
+			alert("Пожалуйста, укажите город проведения мероприятия! ");
+		}
+		else {
+			
+			if (dateEvent.value == "") {
+				dateEvent.style.background="red";
+				alert("Пожалуйста, укажите дату проведения мероприятия!");
+			}
+			else {
+			
+				dateEvent.style.background = "white";
+				eventLocation.style.background = "white";
+		
+				var comment = document.getElementById("comment").value;
+				var scienceDirection1 = document.getElementById("scienceDirection1");
+				var scienceDirection2 = document.getElementById("scienceDirection2");
+				var scienceDirection3 = document.getElementById("scienceDirection3");
+				
+				var priorityDirection = document.getElementById("priorityDirection");
+				var scienceIndustrialSphere = document.getElementById("scienceIndustrialSphere");
+				
+				var textToEMail = document.getElementById("textToEMail");
+				
+				if (textToEMail.value == "") {
+					textToEMail.style.background="red";
+					alert("Пожалуйста, введите текст для отправки записавшемуся участнику! ");
+				}
+				else {
+					document.getElementById("parent_popup_enter").style.visibility = "visible";
+					document.getElementById("parent_popup_enter").style.height = "1%";
+					document.getElementById("parent_popup_enter").style.display = "block";
+				
+					if (window.confirm("Вы уверены?\nПосле ввода этой информации в систему внесение корректив возможно только через межвузовский центр (mvc@vzletsamara.ru). ")) {
+						query = "/script/enterEvent.exe?enterEvent&" + 
+						Base64.encode(eventName.value) + "&" + Base64.encode(T(comment)) + "&" +
+						String(priorityDirection.options[priorityDirection.selectedIndex].value) + "&" +
+						String(scienceIndustrialSphere.options[scienceIndustrialSphere.selectedIndex].value) + "&" +	
+						String(scienceDirection1.options[scienceDirection1.selectedIndex].value) + "&" +
+						String(scienceDirection2.options[scienceDirection2.selectedIndex].value) + "&" +
+						String(scienceDirection3.options[scienceDirection3.selectedIndex].value) + "&" + 
+						String(eventLocation.options[eventLocation.selectedIndex].value) + "&" + String(eventRemote) + "&" + Base64.encode(dateEvent.value) + "&" + Base64.encode(textToEMail.value);
+						
+						alert(Ajax.run(query));
+						
+						document.getElementById("parent_popup_enter").style.visibility = "hidden";
+						document.getElementById("parent_popup_enter").style.height = "1%";
+						document.getElementById("parent_popup_enter").style.display = "block";
+						
+						//location.href = "index.html";
+					}	
+				}		
+			}
+		}		
+	}
+}
+
+
+function sectionChanged()
+{
+	var section = document.getElementById("section");
+	if (eval(section.value) == 1) {
+		section.style.background = "red";	
+	}
+	else {
+		section.style.background = "white";
+	}
+}
+
+
+
+</script>
+
+
+
+
+</head>
+
+<body onload="onLoad();">
+
+
+
+	<div style="visibility: hidden;" id="parent_popup_enter">
+  		<div id="popup_enter">
+		    <div id="placeHolderImage">
+		    	<div style="padding: 20px; margin-left:100px; margin-right: 100px; font-family: Tahoma; font-size: 18;">
+					<center><font color="#000000"><span><i>Выполняется ввод информации в систему</i></span></font></center>
+					<center><font color="#000000"><span><i id="countDownload">Пожалуйста, подождите...</i></span></font></center>
+					<center><img src="img/univ_loader.gif" /></center>
+				</div>
+		    </div>
+		</div>
+	</div>
+
+
+
+<div id="wrapeall">
+	<div id="header">
+		<div class="logoText">
+			<span style="background-color: #FFFF00"></span></div>
+	</div>
+		
+	<p></p>
+
+
+	<div class="headline">
+		<p style="text-align: right"><font color="#FFFFFF">
+		<span style="background-color: #0000FF" id="currentUser">0</span></font><span style="font-weight: 400"><i>
+		</i></span></p>
+		<p>Ввод нового мероприятия<span> </span>
+	</div>	
+
+
+	<div id="middlePartPage">
+		<div align="center">
+			<table border="1" width="66%" id="table1">
+				<tr>
+					<td align="left" valign="top" bgcolor="#FFAE5E">Название и
+					<span lang="ru">место проведения</span> 
+					мероприятия
+					<font color="#FF0000" style="font-size: 16pt; font-weight: 700">
+					*</font></td>
+					<td align="left" valign="top" width="547">
+					<p>
+					<textarea id="eventName" maxlength="250" rows="4" name="S1" cols="60" ></textarea></td>
+				</tr>
+				<tr>
+					<td align="left" valign="top">&nbsp;</td>
+					<td align="left" valign="top" width="547">&nbsp;</td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" bgcolor="#FFAE5E" height="27">Дата 
+					проведения или завершения мероприятия</td>
+					<td align="left" valign="top" width="547" height="27">
+						<input id="dateEvent" type="text" name="date" class="tcal" value="" />
+					</td>
+				</tr>
+				<tr>
+					<td align="left" valign="top">&nbsp;</td>
+					<td align="left" valign="top" width="547">&nbsp;</td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" bgcolor="#FFAE5E">
+					Краткое описание мероприятия</td>
+					<td align="left" valign="top" width="547">
+					<textarea id="comment" maxlength="250" rows="4" name="S2" cols="60" ></textarea></tr>
+				<tr>
+					<td align="left" valign="top">
+					&nbsp;</td>
+					<td align="left" valign="top" width="547">
+					&nbsp;</tr>
+				<tr>
+					<td align="left" valign="top" bgcolor="#FFAE5E">
+					Текст для отправки записавшемуся участнику мероприятия <font color="#FF0000" style="font-size: 16pt; font-weight: 700">*</font></td>
+					<td align="left" valign="top" width="547">
+					<textarea id="textToEMail" rows="4" name="S3" cols="60" ></textarea></tr>
+				<tr>
+					<td align="left" valign="top">
+					&nbsp;</td>
+					<td align="left" valign="top" width="547">
+					&nbsp;</tr>
+				<tr>
+					<td align="left" valign="top" bgcolor="#FFAE5E">
+					<span lang="ru">Город</span> проведения мероприятия <font color="#FF0000" style="font-size: 16pt; font-weight: 700">*</font></td>
+					<td align="left" valign="top" width="547">
+					<select id="eventLocation" style="width: 500px;" size="1" name="D7">
+					<option selected value="0">Укажите</option>
+					</select></tr>
+				<tr>
+					<td align="left" valign="top">&nbsp;</td>
+					<td align="left" valign="top" width="547">&nbsp;</td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" bgcolor="#FFAE5E">
+					&nbsp;</td>
+					<td align="left" valign="top" width="547">
+					<font face="Tahoma">
+					<input type="checkbox" id="eventRemotely" name="C1" value="ON"></font> Мероприятие 
+					проводится дистанционно</td>
+				</tr>
+				<tr>
+					<td align="left" valign="top">&nbsp;</td>
+					<td align="left" valign="top" width="547">
+					&nbsp;</td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" bgcolor="#FFAE5E">Возможно, связь с 
+					приоритетными направлениями науки и техники</td>
+					<td align="left" valign="top" width="547">
+					<select id="priorityDirection" size="1" style="width: 500px;" name="D4"></select></td>
+				</tr>
+				<tr>
+					<td align="left" valign="top">&nbsp;</td>
+					<td align="left" valign="top" width="547">&nbsp;</td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" bgcolor="#FFAE5E">Возможно, связь с 
+					ведущими предприятиями Самарской области</td>
+					<td align="left" valign="top" width="547">
+					<select id="scienceIndustrialSphere" size="1" style="width: 500px;" name="D6"></select></td>
+				</tr>
+				<tr>
+					<td align="left" valign="top">&nbsp;</td>
+					<td align="left" valign="top" width="547">&nbsp;</td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" bgcolor="#FFAE5E">Научное 
+					направление</td>
+					<td align="left" valign="top" width="547">
+					<select id="scienceDirection1" size="1" name="D1"></select></td>
+				</tr>
+				<tr>
+					<td align="left" valign="top">&nbsp;</td>
+					<td align="left" valign="top" width="547">
+					&nbsp;</td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" bgcolor="#FFAE5E">Если нужно, 
+					добавьте научное направление</td>
+					<td align="left" valign="top" width="547">
+					<select id="scienceDirection2" size="1" name="D2"></select></td>
+				</tr>
+				<tr>
+					<td align="left" valign="top">&nbsp;</td>
+					<td align="left" valign="top" width="547">
+					&nbsp;</td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" bgcolor="#FFAE5E">Если нужно, 
+					добавьте научное направление</td>
+					<td align="left" valign="top" width="547">
+					<select id="scienceDirection3" size="1" name="D3"></select></td>
+				</tr>
+				<tr>
+					<td align="left" valign="top">&nbsp;</td>
+					<td align="left" valign="top" width="547">
+					&nbsp;</td>
+				</tr>
+				<tr>
+					<td align="left" valign="top">&nbsp;</td>
+					<td align="left" valign="top" width="547">
+					<p align="center">
+					<input type="button" value="Ввести" name="B3" onclick="enterEvent();"></td>
+				</tr>
+				</table>
+		</div>
+	</div>	
+	<div id="footer">
+		<div class="footerText">
+			<span>Copyright ПМиВТ</span>
+		</div>
+	</div>
+</div>
+
+
+</body>
+
+</html>

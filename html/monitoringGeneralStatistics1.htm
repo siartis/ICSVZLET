@@ -1,0 +1,207 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1251">
+<title>Общая статистика по подразделениям, университетам и школам</title>
+<link rel="stylesheet" href="style/style.css">
+
+<script type="text/javascript" src="js/Ajax.js"></script>
+<script type="text/javascript" src="js/Base64.js"></script>
+
+<script>
+
+
+function onLoad()
+{
+	var organizationType = document.getElementById("organizationType");
+	var organization = document.getElementById("organization");
+	
+	var organizationTypes = Ajax.runEval("/script/statistics.exe?getOrganizationType");
+	
+	//Тип организации
+	for(var i = 0; i < organizationTypes.length; i++)
+	{
+		organizationType.options[organizationType.options.length] = new Option(organizationTypes[i].organizationTypeName, organizationTypes[i].organizationTypeCode);	
+	}
+}
+
+
+function organizationTypeChanged()
+{
+	var organizationTypeCode = document.getElementById("organizationType").value;
+	var organization = document.getElementById("organization");
+	
+	var organizations = Ajax.runEval("/script/statistics.exe?getOrganizationByOrganizationType&" + organizationTypeCode);
+	
+	organization.innerHTML = "";
+	
+	//Название организации
+	for(var i = 0; i < organizations.length; i++)
+	{
+		organization.options[organization.options.length] = new Option(organizations[i].organizationName, organizations[i].organizationCode);	
+	}
+}
+
+
+function getGeneralStatistics()
+{
+	document.getElementById("generalStatistics").innerHTML = "";
+	
+	var organizationCode = document.getElementById("organization").value;
+	var generalStatistics = Ajax.runEval("/script/statistics.exe?getQWERTY2&" + organizationCode);
+	
+	var result = "<div align=\"center\">";
+	result += "<table border=\"1\" width=\"80%\" style=\"background: white;\">";
+	result += "<tr>";
+	result += "<td align=\"left\" valign=\"top\">" + "№п/п" + "</td>";
+	result += "<td align=\"left\" valign=\"top\">" + "Подразделение" + "</td>";
+	result += "<td align=\"left\" valign=\"top\">" + "Количество зарегистрированных сотрудников" + "</td>";
+	result += "<td align=\"left\" valign=\"top\">" + "Из них количество консультантов" + "</td>";
+	result += "<td align=\"left\" valign=\"top\">" + "Из них количество учителей" + "</td>";
+	result += "<td align=\"left\" valign=\"top\">" + "Из них количество учеников" + "</td>";
+	
+	
+	//20 этапов выполнения работы
+	result += "<td align=\"left\" valign=\"top\">" + "тема введена как предлагаемая" + "</td>";
+	result += "<td align=\"left\" valign=\"top\">" + "проект активизирован" + "</td>";
+	result += "<td align=\"left\" valign=\"top\">" + "составлен обзор литературы" + "</td>";
+	result += "<td align=\"left\" valign=\"top\">" + "сформулирована рабочая гипотеза" + "</td>";
+	result += "<td align=\"left\" valign=\"top\">" + "составлен план выполнения проекта" + "</td>";
+	result += "<td align=\"left\" valign=\"top\">" + "выполнена теоретическая часть" + "</td>";
+	result += "<td align=\"left\" valign=\"top\">" + "выполнена экспериментальная часть" + "</td>";
+	result += "<td align=\"left\" valign=\"top\">" + "проведено исследование" + "</td>";
+	result += "<td align=\"left\" valign=\"top\">" + "сделаны предварительные выводы" + "</td>";
+	result += "<td align=\"left\" valign=\"top\">" + "оформлен предварительный вариант проекта" + "</td>";
+	result += "<td align=\"left\" valign=\"top\">" + "получены замечания тьютора от университета" + "</td>";
+	result += "<td align=\"left\" valign=\"top\">" + "учтены замечания тьютора" + "</td>";
+	result += "<td align=\"left\" valign=\"top\">" + "подготовлена презентация к докладу по проекту" + "</td>";
+	result += "<td align=\"left\" valign=\"top\">" + "окончательно оформлена пояснительная записка к проекту" + "</td>";
+	result += "<td align=\"left\" valign=\"top\">" + "проект направлен на региональный конкурс Взлет" + "</td>";
+	result += "<td align=\"left\" valign=\"top\">" + "занял 1 место на региональном конкурсе Взлет" + "</td>";
+	result += "<td align=\"left\" valign=\"top\">" + "занял 2 место на региональном конкурсе Взлет" + "</td>";
+	result += "<td align=\"left\" valign=\"top\">" + "занял 3 место на региональном конкурсе Взлет" + "</td>";
+	result += "<td align=\"left\" valign=\"top\">" + "проект стал лауреатом регионального конкурса Взлет" + "</td>";
+	
+	
+	
+	result += "</tr>";
+	
+	for(var i = 0; i < generalStatistics.length; i++) {
+		result += "<tr>";
+		result += "<td align=\"left\" valign=\"top\">" + String(i+1) + "</td>";
+
+		result += "<td align=\"left\" valign=\"top\">" + generalStatistics[i].subdivisionName + "</td>";
+		result += "<td align=\"left\" valign=\"top\">" + generalStatistics[i].countAll + "</td>";
+		result += "<td align=\"left\" valign=\"top\">" + generalStatistics[i].countConsultants + "</td>";
+		result += "<td align=\"left\" valign=\"top\">" + generalStatistics[i].countTutors + "</td>";
+		result += "<td align=\"left\" valign=\"top\">" + generalStatistics[i].countChilds + "</td>";
+		
+		//20 этапов выполнения работы
+		result += "<td align=\"left\" valign=\"top\">" + generalStatistics[i].countStageExecute1 + "</td>";
+		result += "<td align=\"left\" valign=\"top\">" + generalStatistics[i].countStageExecute2 + "</td>";
+		result += "<td align=\"left\" valign=\"top\">" + generalStatistics[i].countStageExecute3 + "</td>";
+		result += "<td align=\"left\" valign=\"top\">" + generalStatistics[i].countStageExecute4 + "</td>";
+		result += "<td align=\"left\" valign=\"top\">" + generalStatistics[i].countStageExecute5 + "</td>";
+		result += "<td align=\"left\" valign=\"top\">" + generalStatistics[i].countStageExecute6 + "</td>";
+		result += "<td align=\"left\" valign=\"top\">" + generalStatistics[i].countStageExecute7 + "</td>";
+		result += "<td align=\"left\" valign=\"top\">" + generalStatistics[i].countStageExecute8 + "</td>";
+		result += "<td align=\"left\" valign=\"top\">" + generalStatistics[i].countStageExecute9 + "</td>";
+		result += "<td align=\"left\" valign=\"top\">" + generalStatistics[i].countStageExecute10 + "</td>";
+		result += "<td align=\"left\" valign=\"top\">" + generalStatistics[i].countStageExecute11 + "</td>";
+		result += "<td align=\"left\" valign=\"top\">" + generalStatistics[i].countStageExecute12 + "</td>";
+		result += "<td align=\"left\" valign=\"top\">" + generalStatistics[i].countStageExecute14 + "</td>";
+		result += "<td align=\"left\" valign=\"top\">" + generalStatistics[i].countStageExecute15 + "</td>";
+		result += "<td align=\"left\" valign=\"top\">" + generalStatistics[i].countStageExecute16 + "</td>";
+		result += "<td align=\"left\" valign=\"top\">" + generalStatistics[i].countStageExecute17 + "</td>";
+		result += "<td align=\"left\" valign=\"top\">" + generalStatistics[i].countStageExecute18 + "</td>";
+		result += "<td align=\"left\" valign=\"top\">" + generalStatistics[i].countStageExecute19 + "</td>";
+		result += "<td align=\"left\" valign=\"top\">" + generalStatistics[i].countStageExecute20 + "</td>";
+		
+		result += "</tr>";
+	}
+		
+	
+	result += "</table>";
+	result += "</div>";
+	
+	document.getElementById("generalStatistics").innerHTML = result;	
+}
+
+
+</script>
+
+
+
+
+</head>
+
+<body onload="javascript:onLoad();" background="img/background1.jpg" style="background-attachment: fixed; background-size: 100% auto;">
+
+		<p align="center">&nbsp;</p>
+		<p align="center"><b><font color="#FF8000" style="font-size: 27pt">САМАРСКАЯ 
+ОБЛАСТНАЯ НАУЧНО-ОБРАЗОВАТЕЛЬНАЯ ПРОГРАММА «ВЗЛЕТ»</font></b></p>
+		<div align="center">
+
+<table width="80%" id="table1">
+	<tr>
+		<td align="center" style="font-size: 150%" width="225">
+		<p style="margin-top: 0; margin-bottom: 0"><font color="#FFFFFF">
+		<a href="index.html">
+		<span style="font-size: 15pt; text-decoration: underline">
+		<font color="#FFFFFF">Главная</font></span></a></font></td>		
+		<td align="center" style="font-size: 150%" width="4">&nbsp;</td>		
+		<td align="center" style="font-size: 150%" width="293">
+		<p style="margin-top: 0; margin-bottom: 0">
+		<a href="users.htm">
+		<span style="font-size: 15pt; text-decoration: underline" lang="ru">
+		<font color="#FFFFFF">Участники Программы</font></span></a></td>		
+		<td align="center" style="font-size: 150%" width="4">&nbsp;</td>		
+		<td align="center" style="font-size: 150%">
+		<p style="margin-top: 0; margin-bottom: 0"><a href="chooseTheme.htm">
+		<span style="font-size: 15pt; text-decoration: underline">
+		<font color="#FFFFFF">Тематика исследований</font></span></a><font color="#FFFFFF"><span style="font-size: 15pt; text-decoration: underline">
+		</span></font></td>		
+		<td align="center" style="font-size: 150%" width="4">
+		&nbsp;</td>
+		<td align="center" style="font-size: 150%" width="556">
+		<p style="margin-top: 0; margin-bottom: 0">
+		<a href="monitoringThemes.htm">
+		<span style="font-size: 15pt; text-decoration: underline">
+		<font color="#FFFFFF">Мониторинг хода исследований</font></span></a></td>		
+		<!--<td align="center" style="font-size: 150%"><a href="conf/2014/index.htm">Международная научно-практическая конференция "ТВОРЧЕСКИЙ ПОТЕНЦИАЛ-2014"</a></td> -->
+		<!--<td align="center" style="font-size: 150%"><a href="regionalConferences.htm">Региональная коференция "ТВОРЧЕСКИЙ ПОТЕНЦИАЛ-2014" ИСТ СГАСУ</a></td> -->		
+		<!-- <td align="center" style="font-size: 150%"><a href="#">Архив исследовательской проектов школьников и студентов - участников АСВ (в разработке)</a></td> -->
+		<td align="center" style="font-size: 150%" width="5">&nbsp;</td>
+	</tr>
+</table>
+		</div>
+
+		&nbsp;<p align="center"><font color="#FFFFFF"><b><span style="font-size: 16pt">Общая статистика 
+		<span lang="ru">по подразделениям, университетам и школам</span></span></b></font></p>
+		<div align="center">
+			<table border="1" width="70%" id="table2">
+				<tr>
+					<td align="center"><font color="#FFFFFF">Тип организации</font></td>
+					<td align="center"><font color="#FFFFFF">Организация</font></td>
+					<td>&nbsp;</td>
+				</tr>
+				<tr>
+					<td><select id="organizationType" size="1" name="D1" onchange="organizationTypeChanged();"></select></td>
+					<td><select id="organization" size="1" name="D2"></select></td>
+					<td>
+					<p align="center">
+					<a href="javascript:getGeneralStatistics();">
+					<font color="#FFFFFF">Показать</font></a></td>
+				</tr>
+			</table>
+		</div>
+		<div align="center">
+					<p><span id="generalStatistics">1</span></div>
+
+
+
+
+
+</body>
+
+</html>

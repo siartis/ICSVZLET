@@ -1,0 +1,214 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1251">
+<title>Статистика предлагаемой активными консультантами&nbsp; и выполняемой 
+тематики по секциям, представленным в существующей базе данных</title>
+<link rel="stylesheet" href="style/style.css">
+
+<script type="text/javascript" src="js/Ajax.js"></script>
+<script type="text/javascript" src="js/Base64.js"></script>
+<script type="text/javascript" src="js/script.js"></script>
+
+<script>
+
+
+function onLoad() 
+{
+	//Текущая дата
+	getCurrentDate();
+	
+	//Текущий пользователь
+	setCurrentUser();
+	
+	var xhr = new XMLHttpRequest();		
+	xhr.open("GET", "/script/statistics.exe?getMonitoringStatisticsSection", true);
+	xhr.send();
+	xhr.onreadystatechange = function() {
+		if (xhr.readyState != 4) return;
+		if (xhr.status != 200) {
+			alert("Error");
+		} 
+		else {
+			var s = eval(xhr.responseText);
+			getGeneralStatistics(s);
+		}
+	}	
+}
+
+function showUniversityFullName(rowTable, universityFullName)
+{
+	document.getElementById("univ" + rowTable).title = universityFullName;
+}
+
+function getGeneralStatistics(generalStatistics)
+{
+	var countOfferedThemesAll = 0;
+	var countPerformedThemesAll = 0;
+	
+	var result = "<div align=\"center\">";
+	result += "<table border=\"1\" id=\"resultTable\" width=\"35%\" style=\"background: white;\">";
+	result += "<tr>";
+	result += "<td align=\"left\" style=\"background: #FFAE5E;\" valign=\"top\">" + "№п/п" + "</td>";
+	result += "<td align=\"left\" style=\"background: #FFAE5E;\" valign=\"top\">" + "Название секции" + "</td>";	
+	result += "<td align=\"left\" style=\"background: #FFAE5E;\" valign=\"top\">" + "Общее количество свободно-предлагаемых тем" + "</td>";
+	result += "<td align=\"left\" style=\"background: #FFAE5E;\" valign=\"top\">" + "Общее количество выполняемых тем" + "</td>";
+
+	result += "</tr>";
+	
+	for(var i = 0; i < generalStatistics.length; i++) {
+		result += "<tr>";
+		result += "<td align=\"left\" valign=\"top\">" + String(i+1) + "</td>";
+		result += "<td align=\"left\" valign=\"top\">" + generalStatistics[i].sectionName + "</td>";
+		result += "<td align=\"left\" valign=\"top\">" + generalStatistics[i].countOfferedThemes + "</td>";
+		result += "<td align=\"left\" valign=\"top\">" + generalStatistics[i].countPerformedThemes + "</td>";
+		result += "</tr>";
+		
+		countOfferedThemesAll += eval(generalStatistics[i].countOfferedThemes);
+		countPerformedThemesAll += eval(generalStatistics[i].countPerformedThemes);
+	}
+
+	result += "<tr>";
+	result += "<td></td>";
+	result += "<td><p align=\"right\"><b>Всего</b></td>";
+	result += "<td>" + countOfferedThemesAll + "</td>";
+	result += "<td>" + countPerformedThemesAll + "</td>";
+	result += "</tr>";
+
+	result += "</table>";
+	result += "</div>";
+	
+	document.getElementById("generalStatistics").innerHTML = result;
+	TABLE_SORT(document.getElementById("resultTable"));	
+}
+
+
+</script>
+
+
+
+
+</head>
+
+<body onload="onLoad();" style="background-size: 100% auto; text-align:center" bgcolor="#DCF7FF">
+
+<p align="center">&nbsp;</p>
+<div align="center">
+	<table border="0" width="1844" id="table4">
+		<tr>
+			<td align="right" valign="top" width="191">&nbsp;</td>
+			<td align="left" width="149">
+			<img border="0" src="img/coat_of_arms_SO.gif" width="149" height="148"></td>
+			<td align="left" valign="top" width="1490">
+			<p align="center" style="margin-top: 0; margin-bottom: 0"><b>
+			<font style="font-size: 23pt">Самарская 
+			научно-образовательная программа 
+			<span style="font-size: 23pt">«ВЗЛЕТ»</span></font></b></p>
+			<p align="center" style="margin-top: 0; margin-bottom: 0"><b>
+			<font style="font-size: 23pt">конкурсного отбора школьников в
+			<span style="font-size: 23pt">
+			Губернаторский реестр</span></font></b></p>
+			<p align="center" style="margin-top: 0; margin-bottom: 0"><b>
+			<font style="font-size: 23pt"><span style="font-size: 23pt">
+			творчески одаренной молодежи</span></font></b></p>
+			<p align="center" style="margin-top: 0; margin-bottom: 0"><b>
+			<font style="font-size: 23pt">
+			<span style="font-size: 23pt">в сфере науки и техники&nbsp; </span>
+			</font></b></p>
+			<p>&nbsp;</td>
+		</tr>
+	</table>
+</div>
+		<div align="center">
+
+&nbsp;</div>
+
+<table width="84%" id="table13" border="0" cellpadding="0" align="center">
+	<tr>
+ 		<!--<td align="center" style="font-size: 150%"><a href="conf/2014/index.htm">Международная научно-практическая конференция "ТВОРЧЕСКИЙ ПОТЕНЦИАЛ-2014"</a></td> -->
+		<!--<td align="center" style="font-size: 150%"><a href="regionalConferences.htm">Региональная коференция "ТВОРЧЕСКИЙ ПОТЕНЦИАЛ-2014" ИСТ СГАСУ</a></td> -->		
+		<!-- <td align="center" style="font-size: 150%"><a href="#">Архив исследовательской проектов школьников и студентов - участников АСВ (в разработке)</a></td> -->
+		<td align="center" style="font-size: 150%" width="1%">
+
+<table width="84%" id="table14" border="0" cellpadding="0" align="center">
+	<tr>
+ 		<!--<td align="center" style="font-size: 150%"><a href="conf/2014/index.htm">Международная научно-практическая конференция "ТВОРЧЕСКИЙ ПОТЕНЦИАЛ-2014"</a></td> -->
+		<!--<td align="center" style="font-size: 150%"><a href="regionalConferences.htm">Региональная коференция "ТВОРЧЕСКИЙ ПОТЕНЦИАЛ-2014" ИСТ СГАСУ</a></td> -->		
+		<!-- <td align="center" style="font-size: 150%"><a href="#">Архив исследовательской проектов школьников и студентов - участников АСВ (в разработке)</a></td> -->
+		<td align="center" style="font-size: 150%" width="1%">
+		<span style="font-size: 16pt">
+		<div align="center">
+			<table border="0" width="100%" id="table15">
+				<tr>
+					<td align="center">
+					<p style="margin-top: 0; margin-bottom: 0"><b>
+					<a href="index.html">Главная</a></b></td>
+					<!--<td align="center">
+					<p style="margin-top: 0; margin-bottom: 0"><b>
+					<a href="about.html">О программе &quot;ВЗЛЕТ&quot;</a></b></td>-->
+					<td align="center">
+					<p style="margin-top: 0; margin-bottom: 0"><b>
+					<a href="allUsers.htm">Участники программы</a></b></td>
+					<td align="center">
+					<a href="enterInfo.htm"><p style="margin-top: 0; margin-bottom: 0"><b>
+					Ввод тематики<span lang="ru">,</span> запросов<span lang="ru">,</span> 
+					коллективов</b></a></td>
+					<td align="center">
+					<p style="margin-top: 0; margin-bottom: 0"><b>
+					<a href="chooseTheme.htm">Выбор тематики и&nbsp;формирование 
+					коллективов</a></b></td>
+					<td align="center">
+					<p style="margin-top: 0; margin-bottom: 0">
+					<span lang="ru">
+					<a href="viewEnter.htm"><b>Просмотр 
+					и ввод информации о ходе исследования</b></a></td>
+					<td align="center">
+					<span style="font-size: 12pt">
+					<p style="margin-top: 0; margin-bottom: 0"><b>
+					<a href="events.htm">Запишись и участвуй</a></b></td>
+					<td align="center" bgcolor="#FFFF00">
+					<p style="margin-top: 0; margin-bottom: 0"><b>
+					<a href="monitoringThemes.htm">Мониторинг хода&nbsp;исследований</a></b></td>
+					<td align="center">
+					<p style="margin-top: 0; margin-bottom: 0"><b>
+					<a href="contest.html">Региональный конкурс &quot;ВЗЛЕТ&quot;</a></b></td>
+					<td align="center">
+					<p style="margin-top: 0; margin-bottom: 0">
+					<span style="font-size: 12pt">
+					<b>
+					<a href="enterInfo1.htm">Достижения в других 
+					конкурсах/конференциях</a></b></td>
+				</tr>
+			</table>
+		</div>
+		</td>
+	</tr>
+</table>
+		</td>
+	</tr>
+</table>
+
+		
+				<div class="currentUser">
+					<p style="margin-left: 100px; margin-right: 100px" align="right">
+					<font color="#FFFFFF"><b>
+					<span style="font-size: 12pt; background-color: #000080" id="currentUser">0</span></b></font><span style="font-size: 16pt">
+				</div>
+
+
+
+	<p style="text-align: right; margin-left: 100px; margin-right: 100px"><font color="#FFFFFF"><span id="currentDate" style="font-weight: 700; font-style: italic; background-color: #0000FF">0</span></font></p>	
+		
+		<p align="center"><span lang="ru"><b>С</b></span><b>татистика 
+		предлагаемой активными консультантами и выполняемой тематики по секциям, представленным в 
+		существующей базе данных</b></p>
+		<div align="center">
+					<p><span id="generalStatistics">1</span></div>
+
+
+
+
+
+</body>
+
+</html>

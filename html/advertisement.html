@@ -1,0 +1,464 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1251">
+<title>Объявления</title>
+<link rel="stylesheet" href="style/style.css">
+<link rel="stylesheet" href="style/popupStyle.css">
+
+
+</head>
+<link rel="stylesheet" href="style/indexstyle/style.css">
+
+<style>
+#parent_popup {
+  background: #000;
+  /*height: 100%;*/
+  height: 0px;
+  opacity: 0.9;
+  position: fixed;
+  width: 100%;
+  z-index: 100;
+  top: 0;
+  left: 0;
+}
+
+#parent_popup_enter {
+  background: #000;
+  /*height: 100%;*/
+  height: 0px;
+  opacity: 0.9;
+  position: fixed;
+  width: 100%;
+  z-index: 100;
+  top: 0;
+  left: 0;
+}
+
+#exit {
+	width: 25px;
+	text-align: right;
+}
+
+#popup {
+  background-color: #ffffff;
+  /*height:0px;*/
+  height: 650px;
+  position: fixed;
+  top: 100px;
+  left: 13%;
+  color: #f00;
+  width: 1455px;
+}
+
+#popup_enter {
+  background-color: #ffffff;
+  /*height:0px;*/
+  height: 139px;
+  position: fixed;
+  top: 300px;
+  left: 39%;
+  color: #f00;
+  width: 500px;
+}
+
+ table.MsoNormalTable
+	{mso-style-parent:"";
+	font-size:10.0pt;
+	font-family:"Times New Roman";
+	}
+h1
+	{margin-right:0cm;
+	margin-left:0cm;
+	font-size:24.0pt;
+	font-family:"Times New Roman"}
+ p.MsoNormal
+	{mso-style-parent:"";
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	margin-left:0cm; margin-right:0cm; margin-top:0cm}
+ li.MsoNormal
+	{mso-style-parent:"";
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	margin-left:0cm; margin-right:0cm; margin-top:0cm}
+span.apple-converted-space
+	{}
+span.grame
+	{}
+span.spelle
+	{}
+</style>
+
+
+
+
+
+<body onload="javascript:onLoad();" style="background-size: 100% auto" bgcolor="#DCF7FF">
+
+
+	<p class="MsoNormal" align="center" style="text-align:center">&nbsp;</p>
+	<p class="MsoNormal" align="center" style="text-align: left; margin-left: 30px; margin-right: 30px">
+	<i><font size="5"><b>12.09.2016г.</b></font></i></p>
+	<p class="MsoNormal" align="center" style="text-align:center"><b>
+	<font size="5">СОГЛАСИЕ НА ОБРАБОТКУ ПЕРСОНАЛЬНЫХ ДАННЫХ</font></b></p>
+	<p class="MsoNormal" style="text-align:justify">&nbsp;</p>
+	<p class="MsoNormal" style="text-align: justify; text-indent: 50px; margin-left: 30px; margin-right: 30px; margin-bottom: 0">
+	<span style="font-size: 16pt">В соответствии п. 4 ст. 9 Федерального закона 
+	от 27.07.2006 г. № 152-ФЗ «О персональных данных», даю согласие оператору <i>
+	&quot;Рабочая группа координационного совета по работе с одаренной молодежью в 
+	сфере науки и техники&quot;, юридический адрес оператора - 443001, г. Самара, ул. 
+	Молодогвардейская, д.194, ауд. 512</i> на обработку моих персональных данных 
+	с целью создания необходимых условий для реализации мероприятий <i>
+	Научно-образовательной Программы конкурсного отбора школьников Самарской 
+	области в Губернаторский реестр творчески одаренной&nbsp; молодежи в сфере 
+	науки, техники и технологий (программы &quot;ВЗЛЕТ&quot;), утвержденной Председателем 
+	Координационного совета при Администрации Губернатора Самарской области по 
+	работе с одаренной молодежью в сфере науки и техники, вице-губернатором - 
+	руководителем Администрации Губернатора Самарской области Д.Е. Овчинниковым 
+	3.11.2015г.</i> и иных целей, связанных с деятельностью оператора.</span></p>
+	<p class="MsoNormal" style="text-align: justify; text-indent: 50px; margin-left: 30px; margin-right: 30px; margin-bottom: 0">
+	<span style="font-size: 16pt">Мои персональные данные, в отношении которых 
+	дается данное согласие, включают: <u><i><b>фамилию, имя, отчество;&nbsp; 
+	контактный телефон; адрес электронной почты; сведения о творческих 
+	достижениях, ходе выполнения исследовательских работ, участие в мероприятиях 
+	в рамках Программы &quot;ВЗЛЕТ&quot;; информация об образовании (наименование 
+	образовательной организации, наименование и номер класса); информация о 
+	трудовой деятельности (место работы, должность, ученая степень, ученое 
+	звание, почетное звание)</b></i></u>.</span></p>
+	<p class="MsoNormal" style="text-align: justify; text-indent: 50px; margin-left: 30px; margin-right: 30px; margin-bottom: 0">
+	<span style="font-size: 16pt">Действия с моими персональными данными 
+	включают в себя сбор персональных данных, их накопление, систематизацию и 
+	хранение в автоматизированной системе обработки информации, их уточнение 
+	(обновление, изменение), обезличивание, блокирование, уничтожение и передачу 
+	(распространение) сторонним организациям для целей реализации моих прав и 
+	законных интересов, а также иными, не связанными с осуществлением 
+	предпринимательской деятельности, мероприятиями.</span></p>
+	<p class="MsoNormal" style="text-align: justify; text-indent: 50px; margin-left: 30px; margin-right: 30px; margin-bottom: 0">
+	<span style="font-size: 16pt">Информация передается по зашифрованному каналу 
+	связи с использованием информационно-телекоммуникационных сетей, или иными, 
+	предусмотренными законодательством способами.</span></p>
+	<p class="MsoNormal" style="text-align: justify; text-indent: 50px; margin-left: 30px; margin-right: 30px; margin-bottom: 0">
+	<span style="font-size: 16pt">Настоящее согласие действует с момента 
+	предоставления и прекращается по моему письменному заявлению (отзыву), 
+	согласно п. 1 ст. 9 Федерального закона от 27.07.2006 г. № 152-ФЗ «О 
+	персональных данных», согласие может быть отозвано при условии письменного 
+	уведомления оператора не менее чем за 30 дней до предполагаемой даты 
+	прекращения использования данных оператором.</span></p>
+<br/>
+	<div class=WordSection1>
+
+&nbsp;<hr/>
+
+<div class=WordSection1>
+
+<p class=MsoNormal align=left style='margin-left:30px; margin-right:30px'><i>
+<font size="5"><b>19.09.2016</b></font></i><o:p></o:p></p>
+
+</div>
+
+
+	<p class=MsoNormal style='text-align:justify'>&nbsp;</p>
+<p class="MsoNormal" align="center" style="text-align:center">
+<font face="Tahoma"><b><font style="font-size: 16pt">ПАМЯТКА</font><span style="font-size: 16pt">
+</span></b></font></p>
+<p class="MsoNormal" align="center" style="text-align: center; margin: 0 30px">
+<font face="Tahoma"><span style="font-size: 16pt">по реализации в 2016/17 
+учебном году Научно-образовательной программы конкурсного отбора обучающихся 
+образовательных организаций Самарской области в Губернаторский реестр творчески 
+одаренной молодежи в сфере, науки, техники и технологий «Взлет» &nbsp;(далее НОП 
+ВЗЛЕТ)</span></font></p>
+<p class="MsoNormal" align="center" style="text-align: center; margin: 0 30px">&nbsp;</p>
+<p class="MsoNormal" align="center" style="text-align:center">
+<font face="Tahoma" style="font-size: 16pt; font-weight: 700; font-style: italic">
+<span lang="EN-US">I</span>. ОСНОВНЫЕ СВЕДЕНИЯ</font></p>
+<ol style="margin-top: 0cm; margin-bottom: 0cm" start="1" type="1">
+	<li class="MsoNormal" style="text-align: justify">
+	<p style="margin-left: 30px; margin-right: 30px">
+	<font face="Tahoma" style="font-size: 16pt">В 2016/17 учебном году НОП ВЗЛЕТ 
+	включает проведение областного конкурса «Взлет» исследовательских проектов 
+	обучающихся образовательных организаций Самарской области (далее - Конкурс 
+	ВЗЛЕТ) и развивающую деятельность со школьниками, вошедшими в Губернаторский 
+	реестр творчески одаренной молодежи Самарской области в сфере науки, техники 
+	и технологий (далее - Губернаторский реестр), в соответствии с базовой 
+	развивающей программой.</font></li>
+	<li class="MsoNormal" style="text-align: justify">
+	<p style="margin-left: 30px; margin-right: 30px">
+	<font face="Tahoma" style="font-size: 16pt">В 2016/17 учебном году областная 
+	конференция научных работ школьников и Конкурс ВЗЛЕТ объединены в единый 
+	Конкурс ВЗЛЕТ.</font></li>
+	<li class="MsoNormal" style="text-align: justify">
+	<p style="margin-left: 30px; margin-right: 30px">
+	<font face="Tahoma" style="font-size: 16pt">Все ученики, их руководители и 
+	научный консультанты от вузов, желающие участвовать в Конкурсе ВЗЛЕТ, должны 
+	до 1 октября с.г. зарегистрироваться&nbsp; на сайте <span lang="EN-US">
+	vzletsamara</span>.<span lang="EN-US">ru</span> через координаторов НОП 
+	ВЗЛЕТ в своих организациях (см. раздел <span lang="EN-US">II</span> 
+	настоящей Памятки).</font></li>
+	<li class="MsoNormal" style="text-align: justify">
+	<p style="margin-left: 30px; margin-right: 30px">
+	<font face="Tahoma" style="font-size: 16pt">Все ученики, в том числе и 
+	участники Конкурса ВЗЛЕТ предыдущего учебного года, а также впервые 
+	участвующие в НОП ВЗЛЕТ учителя – руководители учеников &nbsp;и научный 
+	консультанты от вузов, &nbsp;должны зарегистрироваться заново и дать согласие на 
+	обработку своих персональных данных. </font></li>
+	<li class="MsoNormal" style="text-align: justify">
+	<p style="margin-left: 30px; margin-right: 30px">
+	<font face="Tahoma" style="font-size: 16pt">Руководители учеников и&nbsp; научные 
+	консультанты от вузов, участвовавшие в&nbsp; Конкурсе ВЗЛЕТ предыдущего учебного 
+	года, должны со своими кодами доступа через сайт <span lang="EN-US">
+	vzletsamara</span>.<span lang="EN-US">ru </span>дать согласие на обработку 
+	своих персональных данных.</font></li>
+	<li class="MsoNormal" style="text-align: justify">
+	<p style="margin-left: 30px; margin-right: 30px">
+	<font face="Tahoma" style="font-size: 16pt">Ученики со своими руководителями 
+	должны до 16 октября зарегистрировать на сайте <span lang="EN-US">
+	vzletsamara</span>.<span lang="EN-US">ru </span>темы своих проектов и 
+	приступить к их выполнению.</font></li>
+	<li class="MsoNormal" style="text-align: justify">
+	<p style="margin-left: 30px; margin-right: 30px">
+	<font face="Tahoma" style="font-size: 16pt">Тематика проектов включает 40 
+	направлений, приведенных в разделе <span lang="EN-US">III </span>настоящей 
+	Памятки.</font></li>
+	<li class="MsoNormal" style="text-align: justify">
+	<p style="margin-left: 30px; margin-right: 30px">
+	<font face="Tahoma" style="font-size: 16pt">Не допускается коллективное 
+	выполнение исследовательских проектов.</font></li>
+	<li class="MsoNormal" style="text-align: justify">
+	<p style="margin-left: 30px; margin-right: 30px">
+	<font face="Tahoma" style="font-size: 16pt">Допускается выполнение проекта 
+	без научного консультанта, но участие научного консультанта несколько 
+	повышает рейтинг проекта при его оценке на заключительном этапе Конкурса 
+	ВЗЛЕТ. Фиктивное включение консультанта (кроме случаев, когда в его роли 
+	выступает сам руководитель проекта) отслеживается системой и может привести 
+	к отказу в приеме работы на заключительный региональный этап Конкурса ВЗЛЕТ. 
+	Выбранная тема проекта в процессе его выполнения может быть скорректирована.</font></li>
+	<li class="MsoNormal" style="text-align: justify">
+	<p style="margin-left: 30px; margin-right: 30px">
+	<font face="Tahoma" style="font-size: 16pt">В Конкурсе ВЗЛЕТ сохраняются 
+	школьный и окружной этапы, однако&nbsp; участие в них не является обязательным, 
+	хотя приветствуется и поощряется небольшим дополнительным баллом к общей 
+	оценке проекта на заключительном этапе конкурса.</font></li>
+	<li class="MsoNormal" style="text-align: justify">
+	<p style="margin-left: 30px; margin-right: 30px">
+	<font face="Tahoma" style="font-size: 16pt">Выполненные проекты должны быть 
+	направлены на заключительный региональный этап Конкурса ВЗЛЕТ до 15.00 9 
+	апреля 2017 года.</font></li>
+	<li class="MsoNormal" style="text-align: justify">
+	<p style="margin-left: 30px; margin-right: 30px">
+	<font face="Tahoma" style="font-size: 16pt">Все участники дистанционного 
+	этапа Конкурса ВЗЛЕТ 2015/16 учебного года зачислены в Губернаторский реестр. 
+	В текущем учебном году, помимо выполнения индивидуальных проектов на 
+	Конкурсе ВЗЛЕТ, они будут охвачены комплексом дополнительных развивающих 
+	мероприятий и смогут пользоваться мерами стимулирования и поддержки, которые 
+	будут объявлены дополнительно.</font></li>
+</ol>
+<p class="MsoNormal" align="center" style="text-align: center; margin: 0 30px">&nbsp;</p>
+<p class="MsoNormal" align="center" style="margin-left:18.0pt;text-align:center">
+<font face="Tahoma" style="font-size: 16pt; font-weight: 700; font-style: italic">
+<span lang="EN-US">II</span>. ИНСТРУКЦИЯ ПО РЕГИСТРАЦИИ УЧАСТНИКОВ&nbsp; В НОП ВЗЛЕТ</font></p>
+<p class="msolistparagraph" style="text-align: justify; margin: 0 30px">
+<span style="font-size: 16pt; color: black">1. Регистрация<span class="apple-converted-space">&nbsp;</span><b>новых</b><span class="apple-converted-space">&nbsp;</span>пользователей/участников 
+системы ВЗЛЕТ проходит по следующей схеме:</span></p>
+<p class="msolistparagraphcxspmiddle" style="text-align: justify; margin: 0 30px">
+<span style="font-size: 16pt; color: black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+1.1 Ученика и учителя регистрирует координатор системы ВЗЛЕТ в их учебном 
+заведении (школе, лицее, техникуме и т.п.).</span></p>
+<p class="msolistparagraphcxspmiddle" style="text-align: justify; margin: 0 30px">
+<span style="font-size: 16pt; color: black">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+1.2 Координатора системы ВЗЛЕТ в учебном заведении регистрирует координатор 
+системы ВЗЛЕТ в соответствующем территориальном управлении/департаменте 
+образования г.г.&nbsp;Самара и Тольятти (<span class="grame">список&nbsp;</span><span class="apple-converted-space">&nbsp;</span><span class="grame">координаторов</span><span class="apple-converted-space">&nbsp;</span>в 
+Приложении)</span></p>
+<p class="msolistparagraphcxspmiddle" style="text-align: justify; text-indent: -18.0pt; margin: 0 30px">
+<span style="font-size: 16pt; color: black">&nbsp;&nbsp;&nbsp;<span class="apple-converted-space">&nbsp;2.
+</span>Регистрация осуществляется через информационную систему ВЗЛЕТ (</span><span style="font-size: 16pt"><span class="spelle"><span lang="EN-US" style="color: black">vzletsamara</span></span><span style="color:black">.</span><span class="spelle"><span lang="EN-US" style="color: black">ru</span></span><span style="color:black">). 
+При этом, регистрируемый пользователь, получает на свою электронную почту логин 
+и временный пароль. Используя их, ему необходимо выйти на сайт<span class="apple-converted-space">&nbsp;</span></span><span class="spelle"><span lang="EN-US" style="color: black">vzletsamara</span></span><span style="color:black">.</span><span class="spelle"><span lang="EN-US" style="color: black">ru</span></span><span class="apple-converted-space"><span style="color:black">&nbsp;</span></span></span><span style="color:black"><span style="font-size: 16pt">и 
+дать согласие на обработку своих персональных данных в НОП ВЗЛЕТ, пройдя по 
+соответствующей ссылке. После этого, пользователю будет отправлен на электронную 
+почту его постоянный пароль.</span></span></p>
+<p class="msolistparagraphcxspmiddle" style="text-align: justify; margin: 0 30px">
+<span style="font-size: 16pt">3. </span>
+<span style="font-size: 16pt; color: black"><b>Все школьники проходят 
+регистрацию заново</b>.</span></p>
+<p class="msolistparagraphcxspmiddle" style="text-align: justify; margin: 0 30px">
+<span style="font-size: 16pt; color: black">4. <b>Ранее зарегистрированные 
+пользователи</b><span class="apple-converted-space">&nbsp;</span>также должны выйти 
+на сайт используя имеющийся логин и пароль и дать согласие на обработку своих 
+персональных данных, после чего получат на свою электронную почту новый 
+постоянный пароль.</span></p>
+<p class="msolistparagraphcxspmiddle" style="text-align: justify; margin: 0 30px">
+<span style="font-size: 16pt; color: black">5. В случае затруднений сообщать по 
+адресу<span class="apple-converted-space">&nbsp;</span></span><span style="font-size: 16pt"><span style="font-family:Tahoma;color:black"><a style="color: blue; text-decoration: underline; text-underline: single" href="mailto:mvc@vzletsamara.ru"><span lang="EN-US" style="color: black; text-decoration: none">mvc</span><span style="color: black; text-decoration: none">@</span><span lang="EN-US" style="color: black; text-decoration: none">vzletsamara</span><span style="color: black; text-decoration: none">.</span><span lang="EN-US" style="color: black; text-decoration: none">ru</span></a></span><span class="apple-converted-space"><span style="color:black">&nbsp;</span></span></span><span style="font-size: 16pt; color: black">с 
+указанием телефона и эл. почты для обратной связи.</span></p>
+<p class="msolistparagraphcxspmiddle" style="text-align: justify; margin: 0 30px">
+<span style="font-size: 16pt; color: black">6. <b>Начало регистрации</b><span class="apple-converted-space">&nbsp;</span>школьников, 
+координаторов различного уровня, научных консультантов и учителей с 14.09.2016.</span></p>
+<p class="msolistparagraphcxspmiddle" style="text-align: justify; margin: 0 30px">
+<span style="font-size: 16pt; color: black">7. <b>Конец регистрации</b><span class="apple-converted-space">&nbsp;</span>(а 
+не выбора темы проекта) школьников - 01.10.2016.</span></p>
+<p class="msolistparagraphcxsplast" style="text-align: justify; margin: 0 30px">
+<span style="font-size: 16pt; color: black">8. <b>Конец предварительного выбора</b><span class="apple-converted-space">&nbsp;</span>темы 
+проекта и согласования с научными консультантами или ввод тем проекта, 
+выполняемого школьниками под руководством учителя без привлечения научного 
+консультанта - 16.10.2016.</span></p>
+<p class="MsoNormal" align="center" style="text-align: center; margin: 0 30px">&nbsp;</p>
+<p class=MsoNormal style='text-align:justify'>&nbsp;</p>
+<p class="MsoNormal" align="center" style="margin-left:18.0pt;text-align:center">
+<font face="Tahoma" style="font-size: 16pt; font-weight: 700; font-style: italic">
+<span lang="EN-US">III</span>. НАУЧНЫЕ НАПРАВЛЕНИЯ, </font></p>
+<p class="MsoNormal" align="center" style="margin-left:18.0pt;text-align:center">
+<font face="Tahoma" style="font-size: 16pt; font-weight: 700; font-style: italic">
+ПО КОТОРЫМ ПРИНИМАЮТСЯ ПРОЕКТЫ НА КОНКУРС ВЗЛЕТ </font></p>
+<p class=MsoNormal style='text-align:justify'>&nbsp;</p>
+
+</div>
+
+
+	<ol>
+		<li>
+		<p class="MsoNormal" style="margin: 0 30px">
+		<font face="Tahoma" style="font-size: 16pt">Математика</font></li>
+		<li>
+		<p class="MsoNormal" style="margin: 0 30px">
+		<font face="Tahoma" style="font-size: 16pt">Информатика </font></li>
+		<li>
+		<p class="MsoNormal" style="margin: 0 30px">
+		<font face="Tahoma" style="font-size: 16pt">Информационные технологии</font></li>
+		<li>
+		<p class="MsoNormal" style="margin: 0 30px">
+		<font face="Tahoma" style="font-size: 16pt">Физика</font></li>
+		<li>
+		<p class="MsoNormal" style="margin: 0 30px">
+		<font face="Tahoma" style="font-size: 16pt">Механика</font></li>
+		<li>
+		<p class="MsoNormal" style="margin: 0 30px">
+		<font face="Tahoma" style="font-size: 16pt">Биология </font></li>
+		<li>
+		<p class="MsoNormal" style="margin: 0 30px">
+		<font face="Tahoma" style="font-size: 16pt">Медицина</font></li>
+		<li>
+		<p class="MsoNormal" style="margin: 0 30px">
+		<font face="Tahoma" style="font-size: 16pt">Химия</font></li>
+		<li>
+		<p class="MsoNormal" style="margin: 0 30px">
+		<font face="Tahoma" style="font-size: 16pt">Астрономия</font></li>
+		<li>
+		<p class="MsoNormal" style="margin: 0 30px">
+		<font face="Tahoma" style="font-size: 16pt">Экология</font></li>
+		<li>
+		<p class="MsoNormal" style="margin: 0 30px">
+		<font face="Tahoma" style="font-size: 16pt">Краеведение</font></li>
+		<li>
+		<p class="MsoNormal" style="margin: 0 30px">
+		<font face="Tahoma" style="font-size: 16pt">География</font></li>
+		<li>
+		<p class="MsoNormal" style="margin: 0 30px">
+		<font face="Tahoma" style="font-size: 16pt">Приборостроение</font></li>
+		<li>
+		<p class="MsoNormal" style="margin: 0 30px">
+		<font face="Tahoma" style="font-size: 16pt">Железнодорожный транспорт</font></li>
+		<li>
+		<p class="MsoNormal" style="margin: 0 30px">
+		<font face="Tahoma" style="font-size: 16pt">Автомобильный транспорт</font></li>
+		<li>
+		<p class="MsoNormal" style="margin: 0 30px">
+		<font face="Tahoma" style="font-size: 16pt">Техническое творчество</font></li>
+		<li>
+		<p class="MsoNormal" style="margin: 0 30px">
+		<font face="Tahoma" style="font-size: 16pt">Сельское хозяйство</font></li>
+		<li>
+		<p class="MsoNormal" style="margin: 0 30px">
+		<font face="Tahoma" style="font-size: 16pt">Энергетика</font></li>
+		<li>
+		<p class="MsoNormal" style="margin: 0 30px">
+		<font face="Tahoma" style="font-size: 16pt">Строительство</font></li>
+		<li>
+		<p class="MsoNormal" style="margin: 0 30px">
+		<font face="Tahoma" style="font-size: 16pt">Архитектура </font></li>
+		<li>
+		<p class="MsoNormal" style="margin: 0 30px">
+		<font face="Tahoma" style="font-size: 16pt">Охрана окружающей среды</font></li>
+		<li>
+		<p class="MsoNormal" style="margin: 0 30px">
+		<font face="Tahoma" style="font-size: 16pt">Авиационная техника</font></li>
+		<li>
+		<p class="MsoNormal" style="margin: 0 30px">
+		<font face="Tahoma" style="font-size: 16pt">Космическая техника</font></li>
+		<li>
+		<p class="MsoNormal" style="margin: 0 30px">
+		<font face="Tahoma" style="font-size: 16pt">Машиностроение </font></li>
+		<li>
+		<p class="MsoNormal" style="margin: 0 30px">
+		<font face="Tahoma" style="font-size: 16pt">Робототехника</font></li>
+		<li>
+		<p class="MsoNormal" style="margin: 0 30px">
+		<font face="Tahoma" style="font-size: 16pt">Экономика</font></li>
+		<li>
+		<p class="MsoNormal" style="margin: 0 30px">
+		<font face="Tahoma" style="font-size: 16pt">Менеджмент</font></li>
+		<li>
+		<p class="MsoNormal" style="margin: 0 30px">
+		<font face="Tahoma" style="font-size: 16pt">Педагогика</font></li>
+		<li>
+		<p class="MsoNormal" style="margin: 0 30px">
+		<font face="Tahoma" style="font-size: 16pt">Психология</font></li>
+		<li>
+		<p class="MsoNormal" style="margin: 0 30px">
+		<font face="Tahoma" style="font-size: 16pt">Социология </font></li>
+		<li>
+		<p class="MsoNormal" style="margin: 0 30px">
+		<font face="Tahoma" style="font-size: 16pt">Культурология</font></li>
+		<li>
+		<p class="MsoNormal" style="margin: 0 30px">
+		<font face="Tahoma" style="font-size: 16pt">Правоведение</font></li>
+		<li>
+		<p class="MsoNormal" style="margin: 0 30px">
+		<font face="Tahoma" style="font-size: 16pt">История </font></li>
+		<li>
+		<p class="MsoNormal" style="margin: 0 30px">
+		<font face="Tahoma" style="font-size: 16pt">Обществознание</font></li>
+		<li>
+		<p class="MsoNormal" style="margin: 0 30px">
+		<font face="Tahoma" style="font-size: 16pt">Литературоведение</font></li>
+		<li>
+		<p class="MsoNormal" style="margin: 0 30px">
+		<font face="Tahoma" style="font-size: 16pt">Искусствоведение</font></li>
+		<li>
+		<p class="MsoNormal" style="margin: 0 30px">
+		<font face="Tahoma" style="font-size: 16pt">Русский язык </font></li>
+		<li>
+		<p class="MsoNormal" style="margin: 0 30px">
+		<font face="Tahoma" style="font-size: 16pt">Английский язык </font></li>
+		<li>
+		<p class="MsoNormal" style="margin: 0 30px">
+		<font face="Tahoma" style="font-size: 16pt">Немецкий язык</font></li>
+		<li>
+		<p class="MsoNormal" style="margin: 0 30px">
+		<font face="Tahoma" style="font-size: 16pt">Французский язык</font></li>
+	</ol>
+
+
+	&nbsp;<hr/>
+
+<div class=WordSection1>
+
+<p class=MsoNormal align=left style='margin-left:30px; margin-right:30px'>
+<font size="5"><b><i>26</i></b></font><i><font size="5"><b>.09.2016</b></font></i></p>
+<p class=MsoNormal align=left style='margin-left:30px; margin-right:30px'>
+<font size="5">Опубликован список членов Губернаторского реестра творчески одаренной молодежи 
+в сфере науки и техники. Посмотреть список можно <u><i><b>
+<a href="files/documents/governorRegister/desicion_26_09_2016.pdf"><u>здесь</u></a></b></i></u></font></p>
+
+</div>
+
+
+	<p class="MsoNormal" style="margin: 0 30px">&nbsp;</p>
+
+
+	</body>
+
+</html>

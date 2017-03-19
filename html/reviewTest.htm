@@ -1,0 +1,970 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1251">
+<title id="titleID">Рецензия на проект (тренажер)</title>
+<link rel="stylesheet" href="style/style.css">
+<link rel="stylesheet" href="style/popupStyle.css">
+<link rel="stylesheet" href="style/reviewStyle.css">
+<link rel="stylesheet" href="style/tables.css">
+
+<script type="text/javascript" src="js/Ajax.js"></script>
+<script type="text/javascript" src="js/Base64.js"></script>
+<script type="text/javascript" src="js/script.js"></script>
+<script type="text/javascript" src="js/remText.js"></script>
+
+<script>
+
+function onLoad()
+{	
+	user = Ajax.runEval("/script/login.exe?user");
+
+	//Если учитель, ученик, консультант, рецензент
+	if ((eval(user.userStatusCode) == 2) || (eval(user.userStatusCode) == 3) || (eval(user.userStatusCode) == 4) || (eval(user.userStatusCode) == 9) || (eval(user.userStatusCode) == 18) || (eval(user.userStatusCode) == 100) || (eval(user.userStatusCode) == 6) || (eval(user.userStatusCode) == 9) || (eval(user.userStatusCode) == 14) || (eval(user.userStatusCode) == 16) || (eval(user.userStatusCode) == 17)) {
+		document.getElementById("criteriaTable").style.visibility = "visible";
+		
+		//Текущий пользователь
+		setCurrentUser();
+	}
+	else {
+		alert("Данным тренажером может воспользоваться только пользователь системы! ");
+		location.replace("/login?&/reviewTest.htm");
+	}
+}
+
+function setReview()
+{
+	var criteria1 = document.getElementById("criteria1");
+	var criteria2 = document.getElementById("criteria2");
+	var criteria3 = document.getElementById("criteria3");
+	var criteria4 = document.getElementById("criteria4");
+	var criteria5 = document.getElementById("criteria5");
+	var criteria6 = document.getElementById("criteria6");
+	var criteria7 = document.getElementById("criteria7");
+	var criteria8 = document.getElementById("criteria8");
+	var criteria9 = document.getElementById("criteria9");
+	var criteria10 = document.getElementById("criteria10");
+	var criteria11 = document.getElementById("criteria11");
+	var criteria12 = document.getElementById("criteria12");
+	var criteria13 = document.getElementById("criteria13");
+	var criteria14 = document.getElementById("criteria14");
+	var criteria15 = document.getElementById("criteria15");
+																																		
+	var query = "setTestReview&" + 123 + "&" + criteria1.value + "&" + criteria2.value + "&" + criteria3.value + "&" + criteria4.value + "&" + criteria5.value + "&" + criteria6.value + "&" + criteria7.value + "&" + criteria8.value + "&" + criteria9.value + "&" + criteria10.value + "&" +
+					criteria11.value + "&" + criteria12.value + "&" + criteria13.value + "&" + criteria14.value + "&" + criteria15.value + "&" + 0;
+	var result = Ajax.run("/script/review.exe", query);	
+	
+	document.getElementById("parent_popup_enter").style.visibility = "hidden";
+	document.getElementById("parent_popup_enter").style.height = "1%";
+	document.getElementById("parent_popup_enter").style.display = "block";
+	
+	alert("Творческий рейтинг - " + Math.floor(result));																															
+}
+
+function changeColor(comb)
+{
+	switch (eval(comb.value)) {
+		case 0:
+			comb.style.background = "white";
+			comb.style.color = "#828080";
+		break;
+		
+		case 1:
+			comb.style.background = "#FF33CC";
+			comb.style.color = "white";
+		break;
+		
+		case 2:
+			comb.style.background = "#FFFF00";
+			comb.style.color = "#828080";
+		break;
+		
+		case 3:
+			comb.style.background = "#00FF00";
+			comb.style.color = "white";
+		break;
+		
+		case 4:
+			comb.style.background = "blue";
+			comb.style.color = "white";
+		break;
+	}
+}
+
+</script>
+
+</head>
+
+<body onload="onLoad();">
+
+<div style="visibility: hidden;" id="parent_popup_enter">
+  		<div id="popup_enter">
+		    <div id="placeHolderImage">
+		    	<div style="padding: 20px; margin-left:100px; margin-right: 100px; font-family: Tahoma; font-size: 18;">
+					<center><font color="#000000"><span><i>Выполняется ввод информации в систему</i></span></font></center>
+					<center><font color="#000000"><span><i id="countDownload">Пожалуйста, подождите...</i></span></font></center>
+					<center><img src="img/univ_loader.gif" /></center>
+				</div>
+		    </div>
+		</div>
+	</div>
+
+
+
+<div id="wrapeall">
+	<div id="header">
+		<div class="logoText">
+			<span style="background-color: #FFFF00"></span></div>
+	</div>
+		
+	<p></p>
+
+
+	<div class="headline">
+		<p style="margin-top: 0; margin-bottom: 0">
+		&nbsp;</p>
+		<p style="margin-top: 0; margin-bottom: 0">
+		<span style="font-size: 16pt">Тестовая рецензия на проект
+		</span>
+		</p>
+		<p style="margin-top: 0; margin-bottom: 0">
+		&nbsp;</p>
+		<div name="currentUser">
+					<p style="margin-left: 100px; margin-right: 100px; margin-top:0; margin-bottom:10px" align="right">
+					<font color="#FFFFFF"><b>
+					<span style="font-size: 12pt; background-color: #000080" id="currentUser">0</span></b></font><span style="font-size: 16pt">
+					</span>
+					
+					
+					<p style="margin-top: 0; margin-bottom: 0" align="right">&nbsp;</p>
+					
+					
+					<center>
+					<table class="simple-little-table" style="visibility:hidden" border="1" width="95%" id="criteriaTable" style="visibility: hidden;">
+						<tr>
+							<td align="center" valign="top" width="20%">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<center>
+							<span style="font-size: 16pt; font-weight: 700">Критерий</span></td></center>
+							<td align="center" valign="top" width="39%">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<span style="font-size: 16pt; font-weight: 700">
+							Вариант ответа</span></td>
+							<td align="center" valign="top" width="20%">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<span style="font-size: 16pt; font-weight: 700">
+							Краткий комментарий</span></td>
+						</tr>
+						<tr>
+							<td align="left" valign="top" width="20%">&nbsp;</td>
+							<td align="left" valign="top" width="39%">&nbsp;</td>
+							<td align="left" valign="top" width="20%">&nbsp;</td>
+						</tr>
+						<tr>
+							<td width="20%" height="58" style="text-align: left">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<font face="Tahoma">
+							<span style="font-size: 14pt; line-height: 115%">1 
+							Характер работы</span></font></td>
+							<td width="39%" height="58">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<select id="criteria1" class="criteria" size="1" name="D1" onchange="javascript:changeColor(this);">
+							<option selected value="0">0 - реферативный</option>
+							<option value="1">1 - реферативный с исследовательскими элементами
+							</option>
+							<option value="2">2 - исследовательский, т.е. в работе имеется результат, который был неочевиден до ее выполнения
+							</option>
+							<option value="3">3 - исследовательский, к тому же автор сопоставляет полученный результат с известными аналогичными результатами
+							</option>
+							</select></td>
+							<td valign="top" width="20%" height="58">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<textarea id="briefComment1" class="briefComment" rows="3" name="briefComment1" cols="30" maxlength="150"></textarea></td>
+						</tr>
+						<tr>
+							<td width="20%" style="text-align: left">&nbsp;</td>
+							<td width="39%">&nbsp;</td>
+							<td valign="top" width="20%">&nbsp;</td>
+						</tr>
+						<tr>
+							<td width="20%" style="text-align: left">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<font face="Tahoma">
+							<span style="font-size: 14pt; line-height: 115%">2 
+							Актуальность направления, в котором выполнен проект, 
+							в соответствии с авторитетными перечнями (см. 
+							ниже таблицы А, Б)</span></font></td>
+							<td width="39%">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<select id="criteria2" class="criteria" size="1" name="D2" onchange="javascript:changeColor(this);">
+							<option selected value="0">0 - не входит в Перечни</option>
+							<option value="1">1 – входит в Перечень 1
+							</option>
+							<option value="2">2 - входит в Перечень 2
+							</option>
+							</select><p style="margin:0cm;margin-bottom:.0001pt">&nbsp;</p>
+							<p style="margin:0cm;margin-bottom:.0001pt">
+							<font face="Tahoma"><b><u>
+							<span style="font-size: 14pt">Перечень 1</span></u></b></font></p>
+							<p style="text-align: justify; margin-left: 20px; margin-right: 20px; margin-top: 0cm; margin-bottom: 0">
+							<font face="Tahoma"><b><i>
+							<span style="font-size: 12pt">для 
+							естественнонаучного и технического направлений</span></i><span style="font-size: 12pt">&nbsp; 
+							- Президентский перечень&nbsp; приоритетных 
+							научно-технических&nbsp; направлений; </span></b></font>
+							</p>
+							<p style="text-align: justify; margin-left: 20px; margin-right: 20px; margin-top: 0cm; margin-bottom: 0">&nbsp;</p>
+							<p style="text-align: justify; margin-left: 20px; margin-right: 20px; margin-top: 0cm; margin-bottom: 0">
+							<font face="Tahoma"><b><i>
+							<span style="font-size: 12pt">для 
+							социально-гуманитарного направления</span></i><span style="font-size: 12pt">&nbsp; 
+							- В 2017г. результаты работы могут быть использованы 
+							конкретным предприятием (организацией) - есть 
+							справка. В последующих годах - проект связан с 
+							приоритетными направлениями Президентского перечня.</span></b></font></p>
+							<p style="margin-top: 0; margin-bottom: 0">
+							&nbsp;<p style="margin:0cm;margin-bottom:.0001pt">
+							<font face="Tahoma"><b><u>
+							<span style="font-size: 14pt">Перечень 2</span></u></b></font></p>
+							<p style="text-align: justify; margin-left: 20px; margin-right: 20px; margin-top: 0cm; margin-bottom: .0001pt">
+							<font face="Tahoma"><b>
+							<span style="font-size: 12pt"><i>для 
+							естественнонаучного и технического направлений</i> – 
+							Перечень&nbsp; приоритетных научно-технических&nbsp; 
+							направлений для Самарской области; </span></b>
+							</font></p>
+							<p style="text-align: justify; margin-left: 20px; margin-right: 20px">
+							<font face="Tahoma"><b><i>
+							<span style="font-size: 12pt">для 
+							социально-гуманитарного направления - </span></i>
+							<span style="font-size: 12pt">В 2017г. результаты 
+							работы уже используются конкретным предприятием 
+							(организацией) - есть справка. В последующих годах - 
+							проект связан с приоритетными направлениями перечня 
+							для Самарской области.</span></b></font></td>
+							<td valign="top" width="20%">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<textarea id="briefComment2"  class="briefComment" rows="3" name="briefComment2" cols="30" maxlength="150"></textarea></td>
+						</tr>
+						<tr>
+							<td width="20%" style="text-align: left">&nbsp;</td>
+							<td width="39%">&nbsp;</td>
+							<td valign="top" width="20%">&nbsp;</td>
+						</tr>
+						<tr>
+							<td width="20%" style="text-align: left">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<font face="Tahoma">
+							<span style="font-size: 14pt; line-height: 115%">3 
+							Связь работы с исследовательской и методической 
+							деятельностью научного 
+							консультанта</span></font></td>
+							<td width="39%">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<select id="criteria3" class="criteria" size="1" name="D3" onchange="javascript:changeColor(this);">
+							<option selected value="0">0 - отсутствует</option>
+							<option value="1">1 – имеется</option>
+							<option value="2">2 - результаты работы достойны использования научным консультантом в его научно-методической деятельности
+							</option>
+							</select></td>
+							<td valign="top" width="20%">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<textarea id="briefComment3" class="briefComment" rows="3" name="briefComment3" cols="30" maxlength="150"></textarea></td>
+						</tr>
+						<tr>
+							<td width="20%" style="text-align: left">
+							<font face="Tahoma" style="font-size: 14pt"></li>
+								<liidth="20%">&nbsp;</font></td>
+							<td width="39%">&nbsp;</td>
+							<td valign="top" width="20%">&nbsp;</td>
+						</tr>
+						<tr>
+							<td width="20%" style="text-align: left">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<font face="Tahoma">
+							<span style="font-size: 14pt; line-height: 115%">4 
+							Связь работы с исследовательской и методической 
+							деятельностью&nbsp; руководителя</span></font></td>
+							<td width="39%">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<select id="criteria4" class="criteria" size="1" name="D4" onchange="javascript:changeColor(this);">
+							<option selected value="0">0 - отсутствует</option>
+							<option value="1">1 – имеется</option>
+							<option value="2">2 - результаты работы достойны использования руководителем в его научно-методической деятельности
+							</option>
+							</select></td>
+							<td valign="top" width="20%">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<textarea id="briefComment4" class="briefComment" rows="3" name="briefComment4" cols="30" maxlength="150"></textarea></td>
+						</tr>
+						<tr>
+							<td width="20%" style="text-align: left">&nbsp;</td>
+							<td width="39%">&nbsp;</td>
+							<td valign="top" width="20%">&nbsp;</td>
+						</tr>
+						<tr>
+							<td width="20%" style="text-align: left">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<font face="Tahoma">
+							<span style="font-size: 14pt; line-height: 115%">5 
+							Практическая значимость</span></font></td>
+							<td width="39%">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<select id="criteria5" class="criteria" size="1" name="D5" onchange="javascript:changeColor(this);">
+							<option selected value="0">0 - работа не имеет практического значения
+							</option>
+							<option value="1">1 – результаты работы могут быть использованы конкретным предприятием, (организацией) – есть справка
+							</option>
+							<option value="2">2 - результаты работы уже используются конкретным предприятием (организацией) – есть справка
+							</option>
+							</select></td>
+							<td valign="top" width="20%">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<textarea id="briefComment5" class="briefComment" rows="3" name="briefComment5" cols="30" maxlength="150"></textarea></td>
+						</tr>
+						<tr>
+							<td width="20%" style="text-align: left">&nbsp;</td>
+							<td width="39%">&nbsp;</td>
+							<td valign="top" width="20%">&nbsp;</td>
+						</tr>
+						<tr>
+							<td width="20%" style="text-align: left">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<font face="Tahoma">
+							<span style="font-size: 14pt; line-height: 115%">6 
+							Имеется обзор проблематики по&nbsp; 
+							направлению, в котором выполнена работа</span></font></td>
+							<td width="39%">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<select id="criteria6" class="criteria" size="1" name="D6" onchange="javascript:changeColor(this);">
+							<option selected value="0">0 - анализ отсутствует
+							</option>
+							<option value="1">1 – знает историю развития направления, его перспективы, ученых и названия их работ
+							</option>
+							<option value="2">2 – знает об современных научных школах, их отличиях, различные точки зрения на проблему приводятся без обсуждения
+							</option>
+							<option value="3">3 - знает об современных научных школах, их отличиях, различные точки зрения на проблему приводятся и обсуждаются
+							</option>
+							</select></td>
+							<td valign="top" width="20%">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<textarea id="briefComment6" class="briefComment" rows="3" name="briefComment6" cols="30" maxlength="150"></textarea></td>
+						</tr>
+						<tr>
+							<td width="20%" style="text-align: left">&nbsp;</td>
+							<td width="39%">&nbsp;</td>
+							<td valign="top" width="20%">&nbsp;</td>
+						</tr>
+						<tr>
+							<td width="20%" style="text-align: left">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<font face="Tahoma">
+							<span style="font-size: 14pt; line-height: 115%">7 
+							Имеется обзор литературы по теме работы</span></font></td>
+							<td width="39%">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<select id="criteria7" class="criteria" size="1" name="D7" onchange="javascript:changeColor(this);">
+							<option selected value="0">0 - отсутствует</option>
+							<option value="1">1 – имеется из одного – двух источников
+							</option>
+							<option value="2">2 - имеется из нескольких источников, увязан с темой работы
+							</option>
+							</select></td>
+							<td valign="top" width="20%">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<textarea id="briefComment7" class="briefComment" rows="3" name="briefComment7" cols="30" maxlength="150"></textarea></td>
+						</tr>
+						<tr>
+							<td width="20%" style="text-align: left">&nbsp;</td>
+							<td width="39%">&nbsp;</td>
+							<td valign="top" width="20%">&nbsp;</td>
+						</tr>
+						<tr>
+							<td width="20%" style="text-align: left">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<font face="Tahoma">
+							<span style="font-size: 14pt; line-height: 115%">8 
+							Освоены дополнительные знания, умения, навыки сверх 
+							школьной программы (с учетом возраста)</span></font></td>
+							<td width="39%">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<select id="criteria8" class="criteria" size="1" name="D8" onchange="javascript:changeColor(this);">
+							<option selected value="0">0 - нет</option>
+							<option value="1">1 - освоены достаточно простые, не требующие больших затрат времени, не носящие универсального характера
+							</option>
+							<option value="2">2 - освоены требующие достаточных затрат времени, универсального характера
+							</option>
+							</select></td>
+							<td valign="top" width="20%">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<textarea id="briefComment8" class="briefComment" rows="3" name="briefComment8" cols="30" maxlength="150"></textarea></td>
+						</tr>
+						<tr>
+							<td width="20%" style="text-align: left">&nbsp;</td>
+							<td width="39%">&nbsp;</td>
+							<td valign="top" width="20%">&nbsp;</td>
+						</tr>
+						<tr>
+							<td width="20%" style="text-align: left">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<font face="Tahoma">
+							<span style="font-size: 14pt; line-height: 115%">9 
+							Используются специальные теоретические методы</span></font></td>
+							<td width="39%">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<select id="criteria9" class="criteria" size="1" name="D9" onchange="javascript:changeColor(this);">
+							<option selected value="0">0 - нет</option>
+							<option value="1">1 - используются традиционные, сравнительно несложные для освоении школьником теоретические методы
+							</option>
+							<option value="2">2 – используется достаточно сложные для освоении школьником теоретические методы
+							</option>
+							<option value="3">3 - используются междисциплинарные методы, выходящие за рамки отдельного научного направления
+							</option>
+							</select><p style="margin:0 20px; text-align:justify">
+							&nbsp;<p style="margin:0 20px; text-align:justify">
+							<b><i><font size="3" face="Tahoma">Для 
+							естесственнонаучного и технического направлений - 
+							математические методы</font></i></b><p style="margin:0 20px; text-align:left">
+							&nbsp;<p style="margin:0 20px; text-align:justify">
+							<b><i><font size="3" face="Tahoma">Для 
+							социально-гуманитарного направления - понятийный 
+							аппарат социально-гуманитарного познания</font></i></b></td>
+							<td valign="top" width="20%">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<textarea id="briefComment9" class="briefComment" rows="3" name="briefComment9" cols="30" maxlength="150"></textarea></td>
+						</tr>
+						<tr>
+							<td width="20%" style="text-align: left">&nbsp;</td>
+							<td width="39%">&nbsp;</td>
+							<td valign="top" width="20%">&nbsp;</td>
+						</tr>
+						<tr>
+							<td width="20%" style="text-align: left">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<font face="Tahoma">
+							<span style="font-size: 14pt; line-height: 115%">10 
+							Используются специальные прикладные (в частности, 
+							экспериментальные) приему, методы и методики</span></font></td>
+							<td width="39%">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<select id="criteria10" class="criteria" size="1" name="D10" onchange="javascript:changeColor(this);">
+							<option selected value="0">0 - нет</option>
+							<option value="1">1 – используются входящие в школьную программу и доступные в рамках обычной  школы
+							</option>
+							<option value="2">2 – используется несложные для освоении школьником, но  выходящие за рамки школьной программы и возможностей школы
+							</option>
+							<option value="3">3* - используется достаточно сложные для освоении школьником междисциплинарные приемы, методы и методики
+							</option>
+							<option value="4">4* – используются достаточно сложные для освоения школьником, применение которых потребовало взаимодействия с внешней средой
+							</option>
+							</select><p style="margin-top: 0; margin-bottom: 0; text-align:left; margin-left:20px">
+							&nbsp;<p style="margin-top: 0; margin-bottom: 0; text-align:left; margin-left:20px">
+							<span lang="en-us"><font color="#FF0000">
+							<span style="font-weight: 700; font-size: 14pt"><i>
+							3* </font>-<font color="#FF0000"> </font></i></span>
+							</span><font size="3" face="Tahoma"><i><b>
+							используется достаточно сложные для освоении 
+							школьником, выходящие за рамки школьной программы и 
+							возможностей школы;&nbsp; междисциплинарные приемы, 
+							методы и методики</b></i></font><p style="margin:0 20px; text-align:justify">
+							&nbsp;<p style="margin:0 20px; text-align:justify">
+							<i><font face="Tahoma">
+							<font style="font-size: 12pt; font-weight: 700" color="#FF0000">
+							4*</font><font size="3"><b> </b></font></font>
+							<span style="font-weight: 700; font-size: 14pt">-</span><font size="3"><b><font face="Tahoma"> 
+							например, использование уникального оборудования 
+							вузов и предприятий, получение реальных или близких 
+							к ним данных, записи фольклора у его носителей, 
+							проведения полевых, этнографических исследований)</font></b></font></i></td>
+							<td valign="top" width="20%">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<textarea id="briefComment10" class="briefComment" rows="3" name="briefComment10" cols="30" maxlength="150"></textarea></td>
+						</tr>
+						<tr>
+							<td width="20%" style="text-align: left">&nbsp;</td>
+							<td width="39%">&nbsp;</td>
+							<td valign="top" width="20%">&nbsp;</td>
+						</tr>
+						<tr>
+							<td width="20%" style="text-align: left">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<span style="font-size: 14pt; line-height: 115%">
+							<font face="Tahoma">
+							11 
+							Разработаны и реализованы специальные средства для выполнения 
+							работы <b>(например, разработанные программы для ЭВМ, 
+							созданные экспериментальные 
+							установки, модели, изготовленные костюмы и т.п. по 
+							результатам этнографических исследовани</b></font></span><b><font face="Tahoma"><span style="font-size: 14pt; line-height: 115%">й)</span></font></b></td>
+							<td width="39%">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<select id="criteria11" class="criteria" size="1" name="D11" onchange="javascript:changeColor(this);">
+							<option selected value="0">0 - нет</option>
+							<option value="1">1 - разработаны достаточно простые средства, не требующие больших затрат времени, высокой квалификации
+							</option>
+							<option value="2">2 - разработаны средства, требующие достаточных затрат времени или высокой квалификации
+							</option>
+							</select></td>
+							<td valign="top" width="20%">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<textarea id="briefComment11" class="briefComment" rows="3" name="briefComment11" cols="30" maxlength="150"></textarea></td>
+						</tr>
+						<tr>
+							<td width="20%" style="text-align: left">&nbsp;</td>
+							<td width="39%">&nbsp;</td>
+							<td valign="top" width="20%">&nbsp;</td>
+						</tr>
+						<tr>
+							<td width="20%" style="text-align: left">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<font face="Tahoma">
+							<span style="font-size: 14pt; line-height: 115%">12 
+							Масштабность многоплановость проведенного 
+							исследование</span></font></td>
+							<td width="39%">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<select id="criteria12" class="criteria" size="1" name="D12" onchange="javascript:changeColor(this);">
+							<option selected value="0">0 - отсутствует</option>
+							<option value="1">1 - характеризуется  небольшим числом определяющих параметров, направлений
+							</option>
+							<option value="2">2 - характеризуется  значительны числом определяющих параметров, направлений
+							</option>
+							</select></td>
+							<td valign="top" width="20%">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<textarea id="briefComment12" class="briefComment" rows="3" name="briefComment12" cols="30" maxlength="150"></textarea></td>
+						</tr>
+						<tr>
+							<td width="20%" style="text-align: left">&nbsp;</td>
+							<td width="39%">&nbsp;</td>
+							<td valign="top" width="20%">&nbsp;</td>
+						</tr>
+						<tr>
+							<td width="20%" style="text-align: left">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<font face="Tahoma">
+							<span style="font-size: 14pt; line-height: 115%">13 
+							Получены новые научные результаты</span></font></td>
+							<td width="39%">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<select id="criteria13" class="criteria" size="1" name="D13" onchange="javascript:changeColor(this);">
+							<option selected value="0">0 - отсутствует</option>
+							<option value="1">1 – предположительно, принадлежат, в основном, научному руководителю
+							</option>
+							<option value="2">2 – предположительно, получены совместно с научным руководителем
+							</option>
+							<option value="3">3 – предположительно, получены, в основном, самим учащимся
+							</option>
+							</select></td>
+							<td valign="top" width="20%">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<textarea id="briefComment13" class="briefComment" rows="3" name="briefComment13" cols="30" maxlength="150"></textarea></td>
+						</tr>
+						<tr>
+							<td width="20%" style="text-align: left">&nbsp;</td>
+							<td width="39%">&nbsp;</td>
+							<td valign="top" width="20%">&nbsp;</td>
+						</tr>
+						<tr>
+							<td width="20%" style="text-align: left">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<font face="Tahoma">
+							<span style="font-size: 14pt; line-height: 115%">14 
+							Имеются оригинальные идеи </span></font></td>
+							<td width="39%">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<select id="criteria14" class="criteria" size="1" name="D14" onchange="javascript:changeColor(this);">
+							<option selected value="0">0 - оригинальные идеи отсутствуют
+							</option>
+							<option value="1">1 – предложены оригинальные варианты развития идей других исследователей
+							</option>
+							<option value="2">2 – предложены оригинальные идеи самим учащимся без достаточной аргументации
+							</option>
+							<option value="3">3 - предложены оригинальные идеи с достаточной для обоснования аргументацией
+							</option>
+							</select></td>
+							<td valign="top" width="20%">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<textarea id="briefComment14" class="briefComment" rows="3" name="briefComment14" cols="30" maxlength="150"></textarea></td>
+						</tr>
+						<tr>
+							<td width="20%" style="text-align: left">&nbsp;</td>
+							<td width="39%">&nbsp;</td>
+							<td valign="top" width="20%">&nbsp;</td>
+						</tr>
+						<tr>
+							<td width="20%" style="text-align: left">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<font face="Tahoma">
+							<span style="font-size: 14pt; line-height: 115%">15 
+							Качество оформления работы</span></font></td>
+							<td width="39%">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<select id="criteria15" class="criteria" size="1" name="D15" onchange="javascript:changeColor(this);">
+							<option selected value="0">0 - неряшливое, неграмотное, непонятное описание работы
+							</option>
+							<option value="1">1 - работа оформлена аккуратно, грамотно, но ключевые положения и выводы работы не обоснованы
+							</option>
+							<option value="2">2 - работа оформлена аккуратно, грамотно, но  лишь некоторые положения и ключевые выводы работы имеют обоснование
+							</option>
+							<option value="3">3 - работа оформлена аккуратно, грамотно, все положения и ключевые выводы работы имеют обоснование
+							</option>
+							</select></td>
+							<td valign="top" width="20%">
+							<p style="margin-top: 0; margin-bottom: 0">
+							<textarea id="briefComment15" class="briefComment" rows="3" name="briefComment15" cols="30" maxlength="150"></textarea></td>
+						</tr>
+						<tr>
+							<td width="20%" style="text-align: left">&nbsp;</td>
+							<td width="39%">&nbsp;</td>
+							<td valign="top" width="20%">&nbsp;</td>
+						</tr>
+						</table>
+					<p align="center" style="margin-top: 0; margin-bottom: 0">
+					<b><span lang="ru">
+							<font style="font-size: 22pt">
+							<a href="javascript:setReview();" class="button button-blue">
+					Узнать творческий рейтинг</a></font></span></b></p>
+					</center>
+					<p>&nbsp;</p>
+					<h2 style="margin: 0"><span style="font-size: 14pt">Таблица
+					<span lang="ru">А</span> - Приоритетные направления развития 
+					науки, <span lang="ru">техники и </span>технологий </span>
+					</h2>
+					<h2 style="margin: 0">
+					<span style="font-size: 14pt" lang="ru">и</span><span style="font-size: 14pt"> 
+					перечень критических технологий в Российской Федерации</span></h2>
+					<p class="MsoNormal" style="margin-top: 0; margin-bottom: 0">
+					<span style="font-size: 14pt">&nbsp;</span><strong><span style="font-size: 14pt">(утв. 
+					Указом Президента РФ от 7 июля 2011 г. № 899)</span></strong></p>
+					<table class="MsoNormalTable" style="border-collapse: collapse; border: medium none" id="table1" bgcolor="#FFFFFF" border="1" cellpadding="0" cellspacing="0">
+						<tr>
+							<td style="width: 478.55pt; border: 1.0pt solid windowtext; padding-left: 5.4pt; padding-right: 5.4pt; padding-top: 0cm; padding-bottom: 0cm" valign="top" width="638">
+							<p class="10" style="margin-top:0cm;margin-right:3.0pt;margin-bottom:
+  0cm;margin-left:0cm;margin-bottom:.0001pt;text-align:center;line-height:21.1pt" align="center">
+							<font face="Tahoma"><strong>
+							<span style="font-size: 14pt; font-weight: normal">
+							Приоритетные направления развития науки, технологий 
+							и техники</span></strong></font></p>
+							<ol start="1" style="margin-bottom: 0cm" type="1">
+								<li class="MsoNormal"><font face="Tahoma">
+								Безопасность и противодействие терроризму.</font></li>
+								<li class="MsoNormal"><font face="Tahoma">
+								Индустрия наносистем.</font></li>
+								<li class="MsoNormal"><font face="Tahoma">
+								Информационно-телекоммуникационные системы.</font></li>
+								<li class="MsoNormal"><font face="Tahoma">Науки 
+								о жизни.</font></li>
+								<li class="MsoNormal"><font face="Tahoma">
+								Перспективные виды вооружения, военной и 
+								специальной техники.</font></li>
+								<li class="MsoNormal"><font face="Tahoma">
+								Рациональное природопользование.</font></li>
+								<li class="MsoNormal"><font face="Tahoma">
+								Транспортные и космические системы.</font></li>
+								<li class="MsoNormal"><font face="Tahoma">
+								Энергоэффективность, энергосбережение, ядерная 
+								энергетика.</font></li>
+							</ol>
+							<p class="MsoNormal" style="margin-left: 18.0pt" align="center">
+							<font face="Tahoma"><span style="font-size: 14pt">
+							Перечень критических технологий</span></font></p>
+							<ol start="1" style="margin-bottom: 0cm" type="1">
+								<li class="MsoNormal"><font face="Tahoma">
+								Базовые и критические военные и промышленные 
+								технологии для создания перспективных видов 
+								вооружения, военной и специальной техники.</font></li>
+								<li class="MsoNormal"><font face="Tahoma">
+								Базовые технологии силовой электротехники.</font></li>
+								<li class="MsoNormal"><font face="Tahoma">
+								Биокаталитические, биосинтетические и 
+								биосенсорные технологии.</font></li>
+								<li class="MsoNormal"><font face="Tahoma">
+								Биомедицинские и ветеринарные технологии.</font></li>
+								<li class="MsoNormal"><font face="Tahoma">
+								Геномные, протеомные и постгеномные технологии.</font></li>
+								<li class="MsoNormal"><font face="Tahoma">
+								Клеточные технологии.</font></li>
+								<li class="MsoNormal"><font face="Tahoma">
+								Компьютерное моделирование наноматериалов, 
+								наноустройств и нанотехнологий.</font></li>
+								<li class="MsoNormal"><font face="Tahoma">Нано-, 
+								био-, информационные, когнитивные технологии.</font></li>
+								<li class="MsoNormal"><font face="Tahoma">
+								Технологии атомной энергетики, ядерного 
+								топливного цикла, безопасного обращения с 
+								радиоактивными отходами и отработавшим ядерным 
+								топливом.</font></li>
+								<li class="MsoNormal"><font face="Tahoma">
+								Технологии биоинженерии.</font></li>
+								<li class="MsoNormal"><font face="Tahoma">
+								Технологии диагностики наноматериалов и 
+								наноустройств.</font></li>
+								<li class="MsoNormal"><font face="Tahoma">
+								Технологии доступа к широкопc class="MsoNormal"><font face="Tahoma">
+								Технологии информационных, управляющих, 
+								навигационных систем.</font></li>
+								<li class="MsoNormal"><font face="Tahoma">
+								Технологии наноустройств и микросистемной 
+								техники.</font></li>
+								<li class="MsoNormal"><font face="Tahoma">
+								Технологии новых и возобновляемых источников 
+								энергии, включая водородную энергетику.</font></li>
+								<li class="MsoNormal"><font face="Tahoma">
+								Технологии получения и обработки конструкционных 
+								наноматериалов.</font></li>
+								<li class="MsoNormal"><font face="Tahoma">
+								Технологии получения и обработки функциональных 
+								наноматериалов.</font></li>
+								<li class="MsoNormal"><font face="Tahoma">
+								Технологии и программное обеспечение 
+								распределенных и высокопроизводительных 
+								вычислительных систем.</font></li>
+								<li class="MsoNormal"><font face="Tahoma">
+								Технологии мониторинга и прогнозирования 
+								состояния окружающей среды, предотвращения и 
+								ликвидации ее загрязнения.</font></li>
+								<li class="MsoNormal"><font face="Tahoma">
+								Технологии поиска, разведки, разработки 
+								месторождений полезных ископаемых и их добычи.</font></li>
+								<li class="MsoNormal"><font face="Tahoma">
+								Технологии предупреждения и ликвидации 
+								чрезвычайных ситуаций природного и техногенного 
+								характера.</font></li>
+								<li class="MsoNormal"><font face="Tahoma">
+								Технологии снижения потерь от социально значимых 
+								заболеваний.</font></li>
+								<li class="MsoNormal"><font face="Tahoma">
+								Технологии создания высокоскоростных 
+								транспортных средств и интеллектуальных систем 
+								управления новыми видами транспорта.</font></li>
+								<li class="MsoNormal"><font face="Tahoma">
+								Технологии создания ракетно-космической и 
+								транспортной техникиff нового поколения.</font></li>
+								<li class="MsoNormal"><font face="Tahoma">
+								Технологии создания электронной компонентной 
+								базы и энергоэффективных световых устройств.</font></li>
+								<li class="MsoNormal"><font face="Tahoma">
+								Технологии создания энергосберегающих систем 
+								транспортировки, распределения и использования 
+								энергии.</font></li>
+								<li class="MsoNormal"><font face="Tahoma">
+								Технологии энергоэффективного производства и 
+								преобразования энергии на органическом топливе.</font></li>
+							</ol>
+							</td>
+						</tr>
+					</table>
+					<p>&nbsp;</p>
+					<h2 style="margin: 0"><span style="font-size: 14pt">Таблица
+					<span lang="ru">Б</span> –<span style="font-weight:normal">
+					</span>Приоритетные направления развития науки,
+					<span lang="ru">техники и </span>технологий </span></h2>
+					<h2 style="margin: 0"><span style="font-size: 14pt">и 
+					перечень критических технологий в Самарской области</span></h2>
+					<p class="MsoNormal" style="text-align: center; margin-top: 0; margin-bottom: 0" align="center">
+					<strong><span style="font-size: 14pt">(</span></strong><b><span style="font-size: 14pt">Утверждены 
+					Постановлением Губернатора Самарской области от 24 июля 2003 
+					г. N 286)</span></b>&nbsp;</p>
+					<table class="MsoNormalTable" style="border-collapse: collapse; border: medium none" id="table2" bgcolor="#FFFFFF" border="1" cellpadding="0" cellspacing="0">
+						<tr>
+							<td style="width: 478.55pt; border: 1.0pt solid windowtext; padding-left: 5.4pt; padding-right: 5.4pt; padding-top: 0cm; padding-bottom: 0cm" valign="top" width="638">
+							<p style="text-align: center; margin-left: 0cm; margin-right: 0cm; margin-top: 0cm; margin-bottom: .0001pt">
+							<span style="font-size: tahoma">
+							<font style="font-size: 14pt">Приоритетные 
+							направления развития науки, технологий и техники в 
+							Самарской области</font></span></p>
+							<p style="margin:0cm;margin-bottom:.0001pt;text-align:justify">
+							<span style="font-size: tahoma"><font size="3">&nbsp;</font></span></p>
+							<p style="margin:0cm;margin-bottom:.0001pt;text-align:justify">
+							<span style="font-size: tahoma">
+							<font face="Tahoma" size="3">1. Информационные 
+							технологии и электроника.</font></span></p>
+							<p style="margin:0cm;margin-bottom:.0001pt;text-align:justify">
+							<span style="font-size: tahoma">
+							<font face="Tahoma" size="3">2. Космические и 
+							авиационные технологии.</font></span></p>
+							<p style="margin:0cm;margin-bottom:.0001pt;text-align:justify">
+							<span style="font-size: tahoma">
+							<font face="Tahoma" size="3">3. Новые материалы и 
+							химические технологии.</font></span></p>
+							<p style="margin:0cm;margin-bottom:.0001pt;text-align:justify">
+							<span style="font-size: tahoma">
+							<font face="Tahoma" size="3">4. Новые транспортные 
+							технологии.</font></span></p>
+							<p style="margin:0cm;margin-bottom:.0001pt;text-align:justify">
+							<span style="font-size: tahoma">
+							<font face="Tahoma" size="3">5. Производственные 
+							технологии.</font></span></p>
+							<p style="margin:0cm;margin-bottom:.0001pt;text-align:justify">
+							<span style="font-size: tahoma">
+							<font face="Tahoma" size="3">6. Технологии живых 
+							систем.</font></span></p>
+							<p style="margin:0cm;margin-bottom:.0001pt;text-align:justify">
+							<span style="font-size: tahoma">
+							<font face="Tahoma" size="3">7. Экология и 
+							рациональное природопользование.</font></span></p>
+							<p style="margin:0cm;margin-bottom:.0001pt;text-align:justify">
+							<span style="font-size: tahoma">
+							<font face="Tahoma" size="3">8. Энергосберегающие 
+							технологии.</font></span></p>
+							<p style="margin:0cm;margin-bottom:.0001pt;text-align:justify">
+							<span style="font-size: tahoma">
+							<font face="Tahoma" size="3">&nbsp;</font></span></p>
+							<p style="text-align: center; margin-left: 0cm; margin-right: 0cm; margin-top: 0cm; margin-bottom: .0001pt">
+							<span style="font-size: tahoma">
+							<font style="font-size: 14pt" face="Tahoma">Перечень 
+							критических технологий в Самарской области</font></span></p>
+							<p style="margin:0cm;margin-bottom:.0001pt;text-align:justify">
+							<span style="font-size: tahoma">
+							<font face="Tahoma" size="3">&nbsp;</font></span></p>
+							<p style="margin:0cm;margin-bottom:.0001pt;text-align:center" align="center">
+							<b><span style="font-size: tahoma">
+							<font face="Tahoma" size="3">Информационные 
+							технологии и электроника</font></span></b></p>
+							<p style="margin:0cm;margin-bottom:.0001pt;text-align:justify">
+							<span style="font-size: tahoma">
+							<font face="Tahoma" size="3">1. Компьютерное 
+							моделирование и высокопроизводительные 
+							вычислительные системы.</font></span></p>
+							<p style="margin:0cm;margin-bottom:.0001pt;text-align:justify">
+							<span style="font-size: tahoma">
+							<font face="Tahoma" size="3">2. Распознавание 
+							образов и анализ изображений.</font></span></p>
+							<p style="margin:0cm;margin-bottom:.0001pt;text-align:justify">
+							<span style="font-size: tahoma">
+							<font face="Tahoma" size="3">3. Опто-, радио и 
+							акустоэлектроника, оптическая и СВЧ-связь, 
+							информационно-телекоммуникационные системы.</font></span></p>
+							<p style="margin:0cm;margin-bottom:.0001pt;text-align:center" align="center">
+							<b><span style="font-size: tahoma">
+							<font face="Tahoma" size="3">Космические и 
+							авиационные технологии</font></span></b></p>
+							<p style="margin:0cm;margin-bottom:.0001pt;text-align:justify">
+							<span style="font-size: tahoma">
+							<font face="Tahoma" size="3">Авиационная, 
+							ракетно-космическая техника с использованием новых 
+							технических решений.</font></span></p>
+							<p style="margin:0cm;margin-bottom:.0001pt;text-align:center" align="center">
+							<b><span style="font-size: tahoma">
+							<font face="Tahoma" size="3">Новые материалы и 
+							химические технологии</font></span></b></p>
+							<p style="margin:0cm;margin-bottom:.0001pt;text-align:justify">
+							<span style="font-size: tahoma">
+							<font face="Tahoma" size="3">1. Металлы и сплавы со 
+							специальными свойствами.</font></span></p>
+							<p style="margin:0cm;margin-bottom:.0001pt;text-align:justify">
+							<span style="font-size: tahoma">
+							<font face="Tahoma" size="3">2. Каталитические 
+							системы и технологии.</font></span></p>
+							<p style="margin:0cm;margin-bottom:.0001pt;text-align:justify">
+							<span style="font-size: tahoma">
+							<font face="Tahoma" size="3">3. Полимеры, композиты, 
+							керамические материалы, лакокрасочные материалы.</font></span></p>
+							<p style="margin:0cm;margin-bottom:.0001pt;text-align:center" align="center">
+							<b><span style="font-size: tahoma">
+							<font face="Tahoma" size="3">Новые транспортные 
+							технологии</font></span></b></p>
+							<p style="margin:0cm;margin-bottom:.0001pt;text-align:justify">
+							<span style="font-size: tahoma">
+							<font face="Tahoma" size="3">1. Автомобильная 
+							техника на базе новых технических решений.</font></span></p>
+							<p style="margin:0cm;margin-bottom:.0001pt;text-align:justify">
+							<span style="font-size: tahoma">
+							<font face="Tahoma" size="3">2. Безопасность 
+							движения, управления транспортом, интермодальные 
+							перевозки и логические системы.</font></span></p>
+							<p style="margin:0cm;margin-bottom:.0001pt;text-align:center" align="center">
+							<b><span style="font-size: tahoma">
+							<font face="Tahoma" size="3">Производственные 
+							технологии</font></span></b></p>
+							<p style="margin:0cm;margin-bottom:.0001pt;text-align:justify">
+							<span style="font-size: tahoma">
+							<font face="Tahoma" size="3">1. Лазерные и 
+							электронно-ионно-плазменные технологии.</font></span></p>
+							<p style="margin:0cm;margin-bottom:.0001pt;text-align:justify">
+							<span style="font-size: tahoma">
+							<font face="Tahoma" size="3">2. Информационная 
+							интеграция и системная поддержка жизненного цикла 
+							продукции.</font></span></p>
+							<p style="margin:0cm;margin-bottom:.0001pt;text-align:justify">
+							<span style="font-size: tahoma">
+							<font face="Tahoma" size="3">3. Конверсионные 
+							технологии двойного применения.</font></span></p>
+							<p style="margin:0cm;margin-bottom:.0001pt;text-align:justify">
+							<span style="font-size: tahoma">
+							<font face="Tahoma" size="3">4. Строительные 
+							технологии.</font></span></p>
+							<p style="margin:0cm;margin-bottom:.0001pt;text-align:justify">
+							<span style="font-size: tahoma">
+							<font face="Tahoma" size="3">5. Автоматизация и 
+							управление технологическими процессами и 
+							комплексами, гибкие производственные системы, 
+							робототехнические системы и микромашины.</font></span></p>
+							<p style="margin:0cm;margin-bottom:.0001pt;text-align:center" align="center">
+							<b><span style="font-size: tahoma">
+							<font face="Tahoma" size="3">Технологии живых систем</font></span></b></p>
+							<p style="margin:0cm;margin-bottom:.0001pt;text-align:justify">
+							<span style="font-size: tahoma">
+							<font face="Tahoma" size="3">1. Производство и 
+							переработка сельскохозяйственного сырья.</font></span></p>
+							<p style="margin:0cm;margin-bottom:.0001pt;text-align:justify">
+							<span style="font-size: tahoma">
+							<font face="Tahoma" size="3">2. Синтез лекарственных 
+							средств и пищевых добавок, системы жизнеобеспечения 
+							и защиты человека.</font></span></p>
+							<p style="margin:0cm;margin-bottom:.0001pt;text-align:justify">
+							<span style="font-size: tahoma">
+							<font face="Tahoma" size="3">3. Технологии 
+							биоинженерии, биологические средства защиты растений 
+							и животных.</font></span></p>
+							<p style="margin:0cm;margin-bottom:.0001pt;text-align:center" align="center">
+							<b><span style="font-size: tahoma">
+							<font face="Tahoma" size="3">Экология и рациональное 
+							природопользование</font></span></b></p>
+							<p style="margin:0cm;margin-bottom:.0001pt;text-align:justify">
+							<span style="font-size: tahoma">
+							<font face="Tahoma" size="3">1. Мониторинг 
+							окружающей среды.</font></span></p>
+							<p style="margin:0cm;margin-bottom:.0001pt;text-align:justify">
+							<span style="font-size: tahoma">
+							<font face="Tahoma" size="3">2. Обезвреживание 
+							техногенных сред.</font></span></p>
+							<p style="margin:0cm;margin-bottom:.0001pt;text-align:justify">
+							<span style="font-size: tahoma">
+							<font face="Tahoma" size="3">3. Снижение риска и 
+							уменьшение последствий природных и техногенных 
+							катастроф; перспективные технологии и технические 
+							решения обеспечения экологической безопасности при 
+							разработке и эксплуатации энергетических станций, 
+							транспортных средств, авиационной и 
+							ракетно-космической техники.</font></span></p>
+							<p style="margin:0cm;margin-bottom:.0001pt;text-align:center" align="center">
+							<b><span style="font-size: tahoma">
+							<font face="Tahoma" size="3">Энергосберегающие 
+							технологии</font></span></b></p>
+							<p style="margin:0cm;margin-bottom:.0001pt;text-align:justify">
+							<span style="font-size: tahoma">
+							<font face="Tahoma" size="3">1. Технологии 
+							конвертации и создания двигателей для 
+							газоперекачивающих агрегатов и газотурбинных 
+							электростанций.</font></span></td>
+						</tr>
+					</table>
+					<p style="margin-left: 100px; margin-right: 100px" align="right">
+					<span style="font-size: 16pt">
+		</div>
+		
+		
+		</div>	
+	<div id="footer">
+		<div class="footerText">
+			<span>Copyright ПМиВТ</span>
+		</div>
+	</div>
+</div>
+
+
+</body>
+
+</html>

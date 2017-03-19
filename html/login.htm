@@ -1,0 +1,130 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1251">
+<title>Выбор пользователя</title>
+<link rel="stylesheet" href="style/style.css">
+
+<script type="text/javascript" src="js/Ajax.js"></script>
+<script type="text/javascript" src="js/Base64.js"></script>
+
+<script>
+
+function onLoad()
+{
+	//Получаем названия статусов пользователей в системе
+	var status = document.getElementById("status");
+	status.innerHTML = "";
+	var statuses = Ajax.runEval("/script/enterTheme.exe?getStatus");
+
+	//Статус пользователя в системе
+	for(var i = 0; i < statuses.length; i++)
+	{
+		status.options[status.options.length] = new Option(statuses[i].statusName, statuses[i].statusCode);	
+	}
+}
+
+
+function statusChanged()
+{
+	
+	document.getElementById("statusList").innerHTML = "";
+	var userStatusCode = document.getElementById("status").value;
+	var statusList = Ajax.runEval("/script/enterTheme.exe?getStatusList&" + userStatusCode);
+	
+	var result = "<div align=\"center\">";
+	result += "<table border=\"1\" width=\"80%\">";
+	result += "<tr>";
+	result += "<td align=\"left\" valign=\"top\">" + "№п/п" + "</td>";
+	
+	result += "<td align=\"left\" valign=\"top\">" + "Персональный код" + "</td>";
+	
+	result += "<td align=\"left\" valign=\"top\">" + "ФИО" + "</td>";
+	result += "<td align=\"left\" valign=\"top\">" + "Название организации" + "</td>";
+	
+	result += "<td align=\"left\" valign=\"top\">" + "Подразделение 1" + "</td>";
+	
+	result += "<td align=\"left\" valign=\"top\">" + "Должность" + "</td>";
+	result += "<td align=\"left\" valign=\"top\">" + "Статус" + "</td>";		
+	
+	result += "</tr>";			
+	
+	for(var i = 0; i < statusList.length; i++)
+	{
+		result += "<tr>";
+		result += "<td align=\"left\" valign=\"top\">" + String(i+1) + "</td>";
+		
+		result += "<td align=\"left\" valign=\"top\">" + statusList[i].statusListCode + "</td>";
+		
+		result += "<td align=\"left\" valign=\"top\">";
+		result += "<a href=\"javascript:getThemesByUser('" + statusList[i].statusListFIO + "'," + statusList[i].statusListCode + ", " + userStatusCode + ");\">" + statusList[i].statusListFIO + "</a>";
+		result += "</td>";
+		result += "<td align=\"left\" valign=\"top\">" + statusList[i].statusListOrganizationName + "</td>";
+		
+		result += "<td align=\"left\" valign=\"top\">" + statusList[i].statusListSubdivisionLevel1Name + "</td>";
+		
+		result += "<td align=\"left\" valign=\"top\">" + statusList[i].statusListPostName + "</td>";
+		result += "<td align=\"left\" valign=\"top\">" + statusList[i].statusListStatusName + "</td>";
+		
+		result += "</tr>";
+	}
+	
+	result += "</table>";
+	result += "</div>";
+	document.getElementById("statusList").innerHTML = result;
+}
+
+function getThemesByUser(userFIO, userCode, userStatusCode)
+{
+	//var newWin = window.open("userThemes.htm?statusCode=" + userCode + "&" + "userFIO=" + userFIO);
+	location.href = "userThemes.htm?userCode=" + userCode + "&" + "userStatusCode=" + userStatusCode + "&" + "userFIO=" + Base64.encode(userFIO);
+}
+
+
+</script>
+
+
+
+
+</head>
+
+<body onload="onLoad();">
+<div id="wrapeall">
+	<div id="header">
+		<div class="logoText">
+			<span style="background-color: #FFFF00">hfghfghfghfghfg 
+			nvbnnvbnnvnvbnvnbnvnvbnfhfghfgh</span></div>
+	</div>
+		
+	<p></p>
+
+
+	<div class="headline">
+		Пользователи<span> </span>
+		<p><span lang="ru"><font size="3"><span style="font-weight: 400">
+		Пользователь системы должен иметь в системе зарегистрированный статус. 
+		Если вы еще не зарегистрированы, <a href="regUser.htm">зарегистрируйтесь</a>.</span></font></span></p>
+		<p><span lang="ru"><font size="3"><span style="font-weight: 400">Выберите свой статус и перейдите 
+		по интересующей вас ссылке.</span></font></span></p>
+		<div align="center">
+			<table border="1" width="66%" id="table1">
+				<tr>
+					<td align="left" valign="top">Статус в системе</td>
+					<td align="left" valign="top" width="870">
+					<select size="1" id="status" name="D1" onchange="statusChanged();">
+					</select></td>
+				</tr>
+			</table>
+			<p><span id="statusList">222</span></div>
+	</div>	
+	<div id="footer">
+		<div class="footerText">
+			<span>Copyright ПМиВТ</span>
+		</div>
+	</div>
+</div>
+
+
+</body>
+
+</html>

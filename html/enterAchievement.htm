@@ -1,0 +1,391 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1251">
+<title>Ввод нового достижения</title>
+<link rel="stylesheet" href="style/style.css">
+
+<script type="text/javascript" src="js/Ajax.js"></script>
+<script type="text/javascript" src="js/Base64.js"></script>
+<script type="text/javascript" src="js/remText.js"></script>
+
+<script>
+
+var user;
+function onLoad()
+{
+	user = Ajax.runEval("/script/login.exe?user");
+	//Если координатор от школы
+	if (eval(user.userStatusCode) == 6) {
+		document.getElementById("currentUser").innerHTML = "Вы вошли как " + user.userFIO + ", " + user.userStatusName;
+		getParams();
+	}
+	else {
+		location.replace("/login?&/enterAchievement.htm");
+	}
+}
+
+function getParams()
+{
+	var child = document.getElementById("child");	
+	var childs = Ajax.runEval("/script/achievement.exe?getChild");
+	
+	//Ученики
+	for(var i = 0; i < childs.length; i++)
+	{
+		child.options[child.options.length] = new Option(childs[i].childFIO, childs[i].childCode);	
+	}
+	
+	
+	var conference = document.getElementById("conference");	
+	var conferences = Ajax.runEval("/script/achievement.exe?getConference");
+	
+	//Конференции
+	for(var i = 0; i < conferences.length; i++)
+	{
+		conference.options[conference.options.length] = new Option(conferences[i].conferenceName, conferences[i].conferenceCode);	
+	}
+	
+	var levelConference = document.getElementById("levelConference");	
+	var levelConferences = Ajax.runEval("/script/achievement.exe?getLevelConference");
+	
+	//Конференции
+	for(var i = 0; i < levelConferences.length; i++)
+	{
+		levelConference.options[levelConference.options.length] = new Option(levelConferences[i].levelConferenceName, levelConferences[i].levelConferenceCode);	
+	}
+		
+	var tutor = document.getElementById("tutor");	
+	var tutors = Ajax.runEval("/script/achievement.exe?getTutor");
+	
+	//Учителя (руководители)
+	for(var i = 0; i < tutors.length; i++)
+	{
+		tutor.options[tutor.options.length] = new Option(tutors[i].tutorFIO, tutors[i].tutorCode);	
+	}
+
+	
+	var consultant = document.getElementById("consultant");	
+	var consultants = Ajax.runEval("/script/achievement.exe?getConsultant");
+	
+	//Консультанты
+	for(var i = 0; i < consultants.length; i++)
+	{
+		consultant.options[consultant.options.length] = new Option(consultants[i].consultantFIO, consultants[i].consultantCode);	
+	}
+	
+	//Город	
+	var conferenceLocation = document.getElementById("conferenceLocation");	
+	var conferenceLocations = Ajax.runEval("/script/achievement.exe?getConferenceLocation");
+	
+	//Местоположение конференции
+	for(var i = 0; i < conferenceLocations.length; i++)
+	{
+		conferenceLocation.options[conferenceLocation.options.length] = new Option(conferenceLocations[i].conferenceLocationName, conferenceLocations[i].conferenceLocationCode);	
+	}
+	
+	
+	var achievementView = document.getElementById("achievementView");	
+	var achievementViews = Ajax.runEval("/script/achievement.exe?getAchievementView");
+	
+	//Результат участия (вид достижения)
+	for(var i = 0; i < achievementViews.length; i++)
+	{
+		achievementView.options[achievementView.options.length] = new Option(achievementViews[i].achievementViewName, achievementViews[i].achievementViewCode);	
+	}
+	
+	
+	var conferenceYear = document.getElementById("conferenceYear");	
+	var conferenceYears = Ajax.runEval("/script/achievement.exe?getConferenceYear");
+	
+	//Результат участия (вид достижения)
+	for(var i = 0; i < conferenceYears.length; i++)
+	{
+		conferenceYear.options[conferenceYear.options.length] = new Option(conferenceYears[i].conferenceYearName, conferenceYears[i].conferenceYearCode);	
+	}
+}
+
+
+function enterAchievement()
+{
+	var query = "";
+	
+	var child = document.getElementById("child");
+	var conference = document.getElementById("conference");
+	var levelConference = document.getElementById("levelConference");
+	var tutor = document.getElementById("tutor");
+	var consultant = document.getElementById("consultant");
+	var conferenceLocation = document.getElementById("conferenceLocation");
+	var conferenceYear = document.getElementById("conferenceYear");
+	var themeName = document.getElementById("themeName");
+	var achievementView = document.getElementById("achievementView");
+
+
+	if (eval(child.value) == 0) {
+		child.style.background = "red";
+		alert("Вы не выбрали ученика! ");	
+	}
+	else {
+		child.style.background = "white";
+		if (eval(conference.value) == 0) {
+			conference.style.background = "red";
+			alert("Вы не выбрали конференцию! ");		
+		}
+		else {
+			conference.style.background = "white";
+			/*if (eval(tutor.value) == 0) {
+				tutor.style.background = "red";
+				alert("Вы не выбрали руководителя! ");		
+			}*/
+			//else {
+				//tutor.style.background = "white";
+				if (eval(conferenceLocation.value) == 0) {
+					conferenceLocation.style.background = "red";
+					alert("Вы не выбрали место проведения конференции! ");		
+				}
+				else {
+					conferenceLocation.style.background = "white";
+					if (eval(conferenceYear.value) == 0) {
+						conferenceYear.style.background = "red";
+						alert("Вы не выбрали год проведения конференции! ");						
+					}
+					else {
+						conferenceYear.style.background = "white";
+						/*if (themeName.value == "") {
+							themeName.style.background = "red";
+							alert("Вы не ввели тему проевта! ");
+						}*/
+						//else {
+							//themeName.style.background = "white";
+							if (eval(achievementView.value) == 0) {
+								achievementView.style.background = "red";
+								alert("Вы не выбрали результат участия (вид достижения) в конференции! ");
+							}
+							else {
+								if (eval(levelConference.value) == 0) {
+									levelConference.style.background = "red";
+									alert("Вы не выбрали уровеьн конференции! ");
+								}
+								else {
+									levelConference.style.background = "white";
+								
+								
+									query = "/script/achievement.exe?setAchievement&" + child.value + "&" + conference.value + "&" + tutor.value + "&" + consultant.value + "&" + conferenceLocation.value + "&" + 
+																						conferenceYear.value + "&" + Base64.encode(T(themeName.value)) + "&" + achievementView.value + "&" + levelConference.value;
+																						
+									alert(Ajax.run(query));
+									location.href = "index.html";
+								}
+							}
+						}
+					//}
+				//}
+			}
+		}
+	}
+		
+
+
+
+
+
+
+}
+
+
+function sectionChanged()
+{
+	var section = document.getElementById("section");
+	if (eval(section.value) == 1) {
+		section.style.background = "red";	
+	}
+	else {
+		section.style.background = "white";
+	}
+}
+
+
+
+</script>
+
+
+
+
+</head>
+
+<body onload="onLoad();">
+<div id="wrapeall">
+	<div id="header">
+		<div class="logoText">
+			<span style="background-color: #FFFF00">hfghfghfghfghfg 
+			nvbnnvbnnvnvbnvnbnvnvbnfhfghfgh</span></div>
+	</div>
+		
+	<p></p>
+
+
+	<div class="headline">
+		<p style="text-align: right"><font color="#FFFFFF">
+		<span style="background-color: #0000FF" id="currentUser">0</span></font><span style="font-weight: 400"><i>
+		</i></span></p>
+		<p>Ввод <span lang="ru">нового достижения</span><span> </span>
+		<p><span style="font-weight: 400; font-style: italic"><font size="3">Информация должна вводиться на основании официального документа, 
+		копия которого хранится в школе<span lang="ru">.</span></font></span><p class="MsoNormal" style="text-indent: -18.0pt; margin-left: 36.0pt; margin-top: 0; margin-bottom: 0">&nbsp;</p>
+		<p class="MsoNormal" style="text-indent: -18.0pt; margin-left: 36.0pt; margin-top: 0; margin-bottom: 0">
+		<span style="font-weight: 400; font-style: italic"><font size="3">Если 
+		Вы не найдете нужного ученика в открывающемся списке, значит он еще не 
+		зарегистрирован в системе ВЗЛЕТ. </font></span></p>
+		<p class="MsoNormal" style="text-indent: -18.0pt; margin-left: 36.0pt; margin-top: 0; margin-bottom: 0">
+		<span style="font-weight: 400; font-style: italic"><font size="3">
+		Необходимо зарегистрировать его через координатора образовательной 
+		организации, в которой он обучается</font></span></p>
+		<p class="MsoNormal" style="text-indent: -18.0pt; margin-left: 36.0pt; margin-top: 0; margin-bottom: 0">&nbsp;</p>
+		<p class="MsoNormal" style="text-indent: -18.0pt; margin-left: 36.0pt; margin-top: 0; margin-bottom: 0">
+		<span style="font-size: 12.0pt; font-weight: 400; font-style: italic">
+		Если Вы не найдете нужной конференции/конкурса в открывающемся списке, 
+		сообщите об этой конференции/конкурсе по электронной почту </span></p>
+		<p class="MsoNormal" style="text-indent: -18.0pt; margin-left: 36.0pt; margin-top: 0; margin-bottom: 0">
+		<span style="font-weight: 400; font-style: italic">
+		<span style="font-size: 12.0pt">администратору систему ВЗЛЕТ по адресу
+		</span><span lang="EN-US" style="font-size: 12.0pt">
+		<a style="color: blue; text-decoration: underline; text-underline: single" href="mailto:mvc@vzletsamara.ru">
+		mvc<span lang="RU">@</span>vzletsamara<span lang="RU">.</span>ru</a></span><span style="font-size: 12.0pt"> 
+		и оно будет введено в систему.</span></span></div>	
+
+
+	<div id="middlePartPage">
+		<div align="center">
+			<table border="1" width="66%" id="table1">
+				<tr>
+					<td align="left" valign="top" bgcolor="#FFAE5E">
+					<span lang="ru">Выберите из списка ученика</span><font color="#FF0000" style="font-size: 16pt; font-weight: 700"> *</font></td>
+					<td align="left" valign="top" width="547">
+					<p>
+					<select id="child" size="1" name="D5">
+					<option selected value="0">Укажите</option>
+					</select></td>
+				</tr>
+				<tr>
+					<td align="left" valign="top">&nbsp;</td>
+					<td align="left" valign="top" width="547">&nbsp;</td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" bgcolor="#FFAE5E">
+					Укажите название конкурса/конференции и др. <font color="#FF0000" style="font-size: 16pt; font-weight: 700">*</font></td>
+					<td align="left" valign="top" width="547">
+					<p>
+					<select id="conference" size="1" name="D1">
+					<option selected value="0">Укажите</option>
+					</select></td>
+				</tr>
+				<tr>
+					<td align="left" valign="top">
+					&nbsp;</td>
+					<td align="left" valign="top" width="547">
+					&nbsp;</td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" bgcolor="#FFAE5E">
+					Укажите уровень конкурса/конференции и др. <font color="#FF0000" style="font-size: 16pt; font-weight: 700">*</font></td>
+					<td align="left" valign="top" width="547">
+					<select id="levelConference" size="1" name="D9">
+					<option selected value="0">Укажите</option>
+					</select></td>
+				</tr>
+				<tr>
+					<td align="left" valign="top">&nbsp;</td>
+					<td align="left" valign="top" width="547">&nbsp;</td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" bgcolor="#FFAE5E">Руководитель 
+					(учитель)</td>
+					<td align="left" valign="top" width="547">
+					<select id="tutor" size="1" name="D2">
+					<option selected value="0">Укажите</option>
+					</select></td>
+				</tr>
+				<tr>
+					<td align="left" valign="top">&nbsp;</td>
+					<td align="left" valign="top" width="547">
+					&nbsp;</td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" bgcolor="#FFAE5E">Научный 
+					консультант (если есть)</td>
+					<td align="left" valign="top" width="547">
+					<select id="consultant" size="1" name="D3">
+					<option selected value="0">Укажите</option>
+					</select></td>
+				</tr>
+				<tr>
+					<td align="left" valign="top">&nbsp;</td>
+					<td align="left" valign="top" width="547">&nbsp;</td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" bgcolor="#FFAE5E">
+					<span lang="ru">Город</span> проведения конкурса/конференции и др. <font color="#FF0000" style="font-size: 16pt; font-weight: 700">*</font></td>
+					<td align="left" valign="top" width="547">
+					<select id="conferenceLocation" size="1" name="D6">
+					<option selected value="0">Укажите</option>
+					</select></td>
+				</tr>
+				<tr>
+					<td align="left" valign="top">&nbsp;</td>
+					<td align="left" valign="top" width="547">&nbsp;</td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" bgcolor="#FFAE5E">
+					Год проведения конкурса/конференции и др. <font color="#FF0000" style="font-size: 16pt; font-weight: 700">*</font></td>
+					<td align="left" valign="top" width="547">
+					<select id="conferenceYear" size="1" name="D8">
+					<option selected value="0">Укажите</option>
+					</select></td>
+				</tr>
+				<tr>
+					<td align="left" valign="top">&nbsp;</td>
+					<td align="left" valign="top" width="547">&nbsp;</td>
+				</tr>
+				<tr>
+					<td align="left" bgcolor="#FFAE5E">Название 
+					темы проекта/работы</td>
+					<td align="left" valign="top" width="547">
+					<textarea id="themeName" maxlength="250" rows="4" name="S1" cols="54" ></textarea></td>
+				</tr>
+				<tr>
+					<td align="left" valign="top">&nbsp;</td>
+					<td align="left" valign="top" width="547">
+					&nbsp;</td>
+				</tr>
+				<tr>
+					<td align="left" valign="top" bgcolor="#FFAE5E">Результат 
+					участия (вид достижения) в конкурсе/конференции и др. <font color="#FF0000" style="font-size: 16pt; font-weight: 700">*</font></td>
+					<td align="left" valign="top" width="547">
+					<select id="achievementView" size="1" name="D7">
+					<option selected value="0">Укажите</option>
+					</select></td>
+				</tr>
+				<tr>
+					<td align="left" valign="top">&nbsp;</td>
+					<td align="left" valign="top" width="547">
+					&nbsp;</td>
+				</tr>
+				<tr>
+					<td align="left" valign="top">&nbsp;</td>
+					<td align="left" valign="top" width="547">
+					<p align="center">
+					<input type="button" value="Ввести" name="B3" onclick="enterAchievement();" style="float: left"></td>
+				</tr>
+				</table>
+		</div>
+	</div>	
+	<div id="footer">
+		<div class="footerText">
+			<span>Copyright ПМиВТ</span>
+		</div>
+	</div>
+</div>
+
+
+</body>
+
+</html>

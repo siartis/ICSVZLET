@@ -1,0 +1,98 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1251">
+<title>Контакты</title>
+<link rel="stylesheet" href="style/style.css">
+
+<script type="text/javascript" src="js/ajax.js"></script>
+<script type="text/javascript" src="js/Base64.js"></script>
+<script>
+
+function getUniversities()
+{
+	var universities = Ajax.runEval("/cgi-bin/test1/test1.exe?getUniversities");
+	var university = document.getElementById("university");
+	
+	//Университет
+	for(var i = 0; i < universities.length; i++)
+	{
+		university.options[university.options.length] = new Option(universities[i].universityName, universities[i].universityCode);	
+	}
+}
+
+function getSubdivisions()
+{
+	//alert(document.getElementById("university").value);
+	var universityCode = document.getElementById("university").value;
+	var subdivisions = Ajax.runEval("/cgi-bin/test1/test1.exe?getSubdivisions&" + universityCode);
+	
+	document.getElementById("subdivision").innerHTML = "";
+	//Подразделение
+	for(var i = 0; i < subdivisions.length; i++)
+	{
+		subdivision.options[subdivision.options.length] = new Option(subdivisions[i].subdivisionName, subdivisions[i].subdivisionCode);	
+	}
+}
+
+
+</script>
+
+
+</head>
+
+<body onload="getUniversities();">
+<div id="wrapeall">
+	<div id="header">
+		<div class="logoText">
+			<span style="background-color: #FFFF00">hfghfghfghfghfg
+			nvbnnvbnnvnvbnvnbnvnvbnfhfghfgh</span></div>
+	</div>
+		
+	<p></p>
+
+
+	<div class="headline">
+		<span>Регистрация образовательной организации</span>
+	</div>	
+
+
+	<div id="middlePartPage">
+		<div align="center">
+			<table border="1" width="70%" id="table1">
+				<tr>
+					<td align="left" valign="top">Университет</td>
+					<td align="left" valign="top"><select id="university" size="1" name="D1" onchange="getSubdivisions();">
+					</select></td>
+				</tr>
+				<tr>
+					<td align="left" valign="top">&nbsp;</td>
+					<td align="left" valign="top">&nbsp;</td>
+				</tr>
+				<tr>
+					<td align="left" valign="top">Подразделение</td>
+					<td align="left" valign="top"><select id="subdivision" size="1" name="D2">
+					</select></td>
+				</tr>
+				<tr>
+					<td align="left" valign="top">&nbsp;</td>
+					<td align="left" valign="top">&nbsp;</td>
+				</tr>
+				<tr>
+					<td align="left" valign="top">Пароль</td>
+					<td align="left" valign="top">&nbsp;</td>
+				</tr>
+				</table>
+		</div>
+	</div>	
+	<div id="footer">
+		<div class="footerText">
+			<span>Copyright ПМиВТ</span>
+		</div>
+	</div>
+</div>
+
+
+</body>
+
+</html>
