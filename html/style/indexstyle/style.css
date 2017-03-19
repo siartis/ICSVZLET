@@ -1,0 +1,147 @@
+body {
+	font-family: "Tahoma";
+}
+
+#header {
+	margin: 0 auto;
+	text-align: center;
+}
+.logo {
+	width: 287px;
+	height: 300px;
+	margin-left: 15px;
+	margin-right: 15px;
+}
+
+.TitleText {
+	text-align: center;
+	margin-left: 270px;
+	margin-right: 270px;
+	font-family: Tahoma;
+	font-weight: bold;
+	font-size: 16px;
+	margin-top: 15px;
+}
+
+/* Стили для гиперссылок */
+
+a:hover {
+	text-decoration: none;
+	background: #696666;
+/*	background: #9e9696;*/
+	color: white;
+} /*наведение*/
+
+a {
+	text-decoration: none;
+	color: black;
+}
+
+
+/*Информация о совместимости браузеров*/
+
+.compatibility {
+	/*margin-top: 5px;*/
+	text-align: center;
+	font-family: Tahoma;
+	font-size: 16px;
+	font-weight: bold;
+}
+
+.indexNews {
+	font-family: Tahoma;
+	font-size: 16px;
+	margin-left: 215px;
+	margin-right: 215px;
+}
+
+/*Текст на главной странице*/
+.Introduction {
+	margin-left: 215px;
+	margin-right: 215px;
+	font-size: 10pt;
+}
+
+/*Нижняя часть страницы*/
+
+.footerText {
+	margin-top: 70px;
+	text-align: center;
+	font-family: Tahoma;
+	font-size: 16px;
+}
+
+/* Стили для меню */
+#Menus {
+	background: #bfd2d4;
+	height: 21px;	
+	margin: 0 auto;
+	width: 75%;
+}
+
+.liSubMenus {
+	text-align: center;
+	background: #bfd2d4;
+	height: 21px;	
+	margin: 0 auto;
+	width: 60%;
+}
+
+
+.liMenus ul {
+	margin-top: 10px;
+	font-size: 16px;
+	text-align: center;
+ }
+
+
+.liSubMenus ul {
+	margin-top: 10px;
+	font-size: 16px;
+	text-align: center;
+ }
+ 
+.liMenus li {
+	display: inline;
+	margin: 8px;
+ }
+
+.liSubMenus li {
+	display: inline;
+	margin: 8px;
+ }
+
+.newLogo {
+	/*width: 287px;*/
+	/*height: 300px;*/
+	margin-left: 15px;
+	margin-right: 15px;
+	margin-top: 10px;
+}
+
+
+
+
+/*Стили баннера по мероприятиям*/
+.activity {
+	display: block;
+	position: relative;
+	margin: auto;
+	width: 500px;
+	height: 70px;
+	background: #fcfa32;
+	color: #B22222;
+	font-size: 29px;
+	text-align: center;
+	border-radius: 45px;
+	padding-top:10px;
+}
+.activity span{
+	font-size: 23px;
+	}
+.activity:hover{
+	background:#8ec63f;
+	color:#fff;
+	}
+
+
