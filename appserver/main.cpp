@@ -65,22 +65,7 @@ int main(int argc, char *argv[])
     //QCoreApplication a(argc, argv);
     QApplication a(argc, argv);
     QString path=a.applicationDirPath()+"/";
-    //path="d://M//apache/appserver/";
-    //path="d://apache/appserver/";
-
-
-    //path="c://odarmol/appserver5/";
-
-
-    path="D:/odarmolTest/odarmol/appServer/";
-
-
-//    QTextCodec *cyrillicCodec = QTextCodec::codecForName("CP1251");
-//    QTextCodec::setCodecForLocale(cyrillicCodec);
-//    //QTextCodec::setCodecForCStrings(cyrillicCodec);
-
-    //QStringList a1=a.libraryPaths();
-    //a.setLibraryPaths(QStringList()<<"D:/SAIT/Apache/appserver");
+    path="D:/vzlet/appServer/";
 
     TABLE t;
     int M,M_PARENT;
@@ -147,15 +132,10 @@ int main(int argc, char *argv[])
         qApp->quit();
         exit(0);
     }
-    //API::db.setDatabaseName(OPTION::DB::CONNECT);
-
-    //Строка подключения для Microsoft SQL Server
-    //API::db.setDatabaseName("DRIVER={SQL Server};Database=VzletBase; Server=Win8Pro-ПК\\SQLEXPRESS;");
-
     API::db.setDatabaseName("vzletbase");
     API::db.setHostName("localhost");
-    API::db.setUserName("root");
-    API::db.setPassword("gettherefast");
+    API::db.setUserName("");
+    API::db.setPassword("");
     API::db.setPort(3306);
 
 
